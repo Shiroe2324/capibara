@@ -12,7 +12,7 @@ module.exports = {
         PermissionFlagsBits.EmbedLinks
     ],
     userPermissions: [],
-    execute: async (msg, args, client, color, Utils) => {
+    execute: async (msg, args, client, Utils) => {
         Utils.setCooldown('work', msg.author.id); // se establece el cooldown
 
         const money = Math.floor(Math.random() * 401) + 100; // coins obtenidas (entre 100 a 500)

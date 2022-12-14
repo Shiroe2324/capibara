@@ -3,7 +3,6 @@ require('dotenv').config()
 
 const { Client, Collection } = require('discord.js');
 const prefix = process.env.PREFIX; // prefix del bot
-const color = process.env.COLOR; // color universal del bot
 const handler = require('./handler.js'); // archivo de los comandos handler
 const Utils = require('./utils.js'); // funciones de ayuda para programar
 const client = new Client({ intents: 3276799 }); // client del bot (usuario de discord del bot)
@@ -62,7 +61,7 @@ client.on('messageCreate', async (msg) => {
     }
 
     // ejecución del comando
-    command.execute(msg, args, client, color, Utils).catch((err) => console.error(err));
+    command.execute(msg, args, client, Utils).catch((err) => console.error(err));
 });
 
 // inicio de sesión del bot

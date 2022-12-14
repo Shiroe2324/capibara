@@ -15,51 +15,72 @@ const UserSchema = new mongoose.Schema({
     cooldowns: { type: Map, default: new Map() } // cooldowns de los comandos del usuario
 });
 
+
+
+
 /** 
 * Clase con funciones de ayuda
 * @class Utils | Helper
 */
 class Utils {
-    /**
-    * Crea un nuevo helper con el mensaje enviado
-    * @param {Message} Msg - El mensaje enviado
-    * @param {string[]} Args - Los argumentos del mensaje
-    * @param {Client} Client - client del bot (usuario de discord del bot)
-    */
-    constructor(Msg, Args, Client) {
-        this.msg = Msg;
-        this.args = Args;
-        this.client = Client;
-    }
+    
+    static users = mongoose.model('user', UserSchema); // modelo del UserSchema
+    static color = "#D9022B"// color universal del bot
 
-
-    static users = mongoose.model('user', UserSchema); // model del UserSchema
+    // ————————————————————————————————————————————————————————————————————————————————————————————————————————— //
 
 
     /**
     * Funcion que ejecuta una busqueda de los miembros de un server con los datos dados
+    * @param {Message} msg - El mensaje enviado
+    * @param {string[]} args - Los argumentos del mensaje
     * @param {Boolean} allowedAuthor - Boolean para verificar si se incluye al autor del mensaje en la busqueda
     * @returns {GuildMember|object} la informacion del miembro encontrado o un object si hubo algun error
     */
-    async findMember(allowedAuthor = false) {
-        let member = this.msg.mentions.members.first() || this.msg.guild.members.cache.get(this.args[0]); // busqueda del miembro por medio de mención o de id
+    async findMember(msg, args, allowedAuthor = false) {
+        let member = msg.mentions.members.first() || msg.guild.members.cache.get(args[0]); // busqueda del miembro por medio de mención o de id
 
         // verificador si se incluye el autor en la busqueda, si está activado y no coloca ningún argumento, devuelve al autor del mensaje
-        if (allowedAuthor && !this.args[0]) {
-            member = this.msg.member;
+        if (allowedAuthor && !args[0]) {
+            member = msg.member;
         }
 
         // verificador si no encuentra miembro con mención o id
         if (!member) {
-            const name = this.args.join(' ').toLowerCase(); // nombre, tag o apodo de la persona a buscar
+            const name = args.join(' ').toLowerCase(); // nombre, tag o apodo de la persona a buscar
             if (!name) return { error: true, messageError: 'Tienes que mencionar a una persona' }; // verificador si no coloca ningun nombre
 
-            member = this.msg.guild.members.cache.find(mb => mb.user.tag?.toLowerCase().includes(name) || mb.nickname?.toLowerCase().includes(name)); // busqueda del miembro por medio de su nombre, tag o apodo
+            member = msg.guild.members.cache.find(mb => mb.user.tag?.toLowerCase().includes(name) || mb.nickname?.toLowerCase().includes(name)); // busqueda del miembro por medio de su nombre, tag o apodo
             if (!member) return { error: true, messageError: 'No se encontró a ningún usuario con ese nombre' } // verificador por si no se encuentra a nadie en la busqueda
         }
 
         return member; // la información del miembro encontrado
     }
+
+
+    // ————————————————————————————————————————————————————————————————————————————————————————————————————————— //
+
+
+    /**
+    * genera un index aleatorio con las posibilidades agregadas (la suma de las posibilidades tiene que ser 1)
+    * @param {object} indexList - la lista de index's maximos con sus posibilidades en decimales
+    * @returns {number} el index aleatorio elegido
+    */
+    static weightedRandom(indexList) {
+        let total = 0; // cantidad de porcentaje total
+        const randomNumber = Math.random(); // numero aleatorio [0,1)
+
+        // se itera cada elemento del object indexList
+        for (let index in indexList) {
+            total += indexList[index]; // se le suma al porcentaje total la probabilidad del index que se está iterando
+            
+            // se verifica si el numero aleatorio [0,1) es menor o igual al porcentaje total actual, si es asi se devuelve el index que se está iterando
+            if (randomNumber <= total) return Number(index);
+        }
+    }
+
+
+    // ————————————————————————————————————————————————————————————————————————————————————————————————————————— //
 
 
     /**
@@ -74,6 +95,43 @@ class Utils {
     }
 
 
+    // ————————————————————————————————————————————————————————————————————————————————————————————————————————— //
+
+    
+    /**
+    * quita los formatos a una cadena o numero de monedas
+    * @param {UsersModel} user - la base de datos del usuario para conseguir sus monedas
+    * @param {string|number} coins - la cadena o numero de monedas a formatear
+    * @returns {number} el numero de monedas ya formateado
+    */
+    static async setCoinsFormat (user, coins) {
+        if (typeof Number(coins) === 'number' && !isNaN(coins)) return coins; // si es solamente un numero sin formato, se retorna el propio numero
+
+        //se verifica si se necesitan todas las monedas, la mitad, solo una cuarta parte
+        switch (coins) {
+            case 'all': return user.coins;
+            case 'half': return user.coins / 2; 
+            case 'quarter': return user.coins / 4;
+        }
+
+        /* se verifica por medio de una RexExp si la cadena cumple con los requisitos, ejemplos: ['19m', '9.6b', '1k', '999q']
+        en caso contrario se retorna NaN */
+        if (!/^([0-9]+[.])?[0-9]+[kmbtq]$/gi.test(coins)) return NaN;
+
+        const formatedCoins = parseFloat(coins); // se quitan las letras y se pasa al tipo Number Float
+
+        // se verifica que formato se está usando, y lo devuelve en su valor exacto (mil, millon, billon, trillon, quatrillon)
+        if (coins.endsWith('k')) return formatedCoins * 1000;
+        if (coins.endsWith('m')) return formatedCoins * 1000000;
+        if (coins.endsWith('b')) return formatedCoins * 1000000000;
+        if (coins.endsWith('t')) return formatedCoins * 1000000000000;
+        if (coins.endsWith('q')) return formatedCoins * 1000000000000000;
+    }
+
+
+    // ————————————————————————————————————————————————————————————————————————————————————————————————————————— //
+
+    
     /**
     * formatea una fecha a un texto mas legible
     * @param {number} time - la fecha a formatear
@@ -84,9 +142,9 @@ class Utils {
         const date = new Date(Math.abs(Date.now() - time)); // fecha formateada
 
         // tiempos de la fecha dada (años, meses, dias, horas, minutos, segundos)
-        const times = [            
+        const times = [
             { value: date.getUTCFullYear() - 1970, suffix: date.getUTCFullYear() - 1970 <= 1 ? 'año' : 'años' },
-            { value: date.getUTCMonth(), suffix: date.getUTCMonth() <= 1 ? 'mes' : 'meses'},
+            { value: date.getUTCMonth(), suffix: date.getUTCMonth() <= 1 ? 'mes' : 'meses' },
             { value: date.getUTCDate() - 1, suffix: date.getUTCDate() - 1 <= 1 ? 'dia' : 'dias' },
             { value: date.getUTCHours(), suffix: date.getUTCHours() <= 1 ? 'hora' : 'horas' },
             { value: date.getUTCMinutes(), suffix: date.getUTCMinutes() <= 1 ? 'minuto' : 'minutos' },
@@ -104,6 +162,9 @@ class Utils {
     }
 
 
+    // ————————————————————————————————————————————————————————————————————————————————————————————————————————— //
+
+    
     /**
     * añade xp a un usuario en su base de datos global
     * @param {string} userId - la id del usuario 
@@ -121,6 +182,9 @@ class Utils {
     }
 
 
+    // ————————————————————————————————————————————————————————————————————————————————————————————————————————— //
+
+    
     /**
     * añade coins a un usuario en un servidor
     * @param {string} userId - la id del usuario 
@@ -136,6 +200,9 @@ class Utils {
     }
 
 
+    // ————————————————————————————————————————————————————————————————————————————————————————————————————————— //
+
+    
     /**
     * remueve coins a un usuario en un servidor
     * @param {string} userId - la id del usuario 
@@ -151,6 +218,9 @@ class Utils {
     }
 
 
+    // ————————————————————————————————————————————————————————————————————————————————————————————————————————— //
+
+    
     /**
     * busca a un usuario en alguna base de datos
     * @param {string} userId - la id del usuario 

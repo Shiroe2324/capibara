@@ -8,7 +8,7 @@ module.exports = {
     onlyCreator: true,
     botPermissions: [],
     userPermissions: [],
-    execute: async (msg, args, client, color, Utils) => {
+    execute: async (msg, args, client, Utils) => {
         const helper = new Utils(msg, args, client); // clase inciada con funciones de ayuda
 
         const code = args.join(" "); // codigo a evaluar 

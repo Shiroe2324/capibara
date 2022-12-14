@@ -11,9 +11,8 @@ module.exports = {
         PermissionFlagsBits.EmbedLinks
     ],
     userPermissions: [],
-    execute: async (msg, args, client, color, Utils) => {
-        const helper = new Utils(msg, args, client);
-        const member = await helper.findMember(true); // funcion para buscar miembros en un server
+    execute: async (msg, args, client, Utils) => {
+        const member = await helper.findMember(msg, args, true); // funcion para buscar miembros en un server
 
         if (member.error) return msg.reply(member.messageError); // verificador si hay algun error al buscar el miembro
 
@@ -29,7 +28,7 @@ module.exports = {
             .addFields([{ name: 'Imagen Completa', value: `[Click aquí](${avatar})` }])
             .setImage(avatar)
             .setFooter({ text: `ID: ${member.id}` })
-            .setColor(color)
+            .setColor(Utils.color)
 
         msg.channel.send({ embeds: [embed] }) // mensaje con el embed
     }
