@@ -111,7 +111,7 @@ class Utils {
     * @returns {boolean} un boolean si el usuario sube de nivel
     */
     static async addXp(userId, xp) {
-        const user = await this.users.findOne({ user: userId, guild: 'global' }); // base de datos global del usuario
+        const user = await this.userFetch(userId, 'global'); // base de datos global del usuario
 
         user.xp += xp; // xp añadida
         user.level = Math.floor(0.1 * Math.sqrt(user.xp)); // level que tiene por su xp
@@ -129,7 +129,7 @@ class Utils {
     * @returns {UsersModel} el usuario a quien se le añadió las coins
     */
     static async addCoins(userId, guildId, coins) {
-        const user = await this.users.findOne({ user: userId, guild: guildId }); // base de datos del usuario en el servidor
+        const user = await this.userFetch(userId, guildId); // base de datos del usuario en el servidor
         user.coins += coins; // coins añadidas
         await user.save(); // se guarda la base de datos
         return user; // y se retonan los datos del usuario
@@ -144,7 +144,7 @@ class Utils {
     * @returns {UsersModel} el usuario a quien se le quitó las coins
     */
     static async removeCoins(userId, guildId, coins) {
-        const user = await this.users.findOne({ user: userId, guild: guildId }); // base de datos del usuario en el servidor
+        const user = await this.userFetch(userId, guildId); // base de datos del usuario en el servidor
         user.coins -= coins; // coins removidas
         user.save(); // se guarda la base de datos
         return user; // y se retonan los datos del usuario

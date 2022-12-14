@@ -13,7 +13,7 @@ module.exports = {
     ],
     userPermissions: [],
     execute: async (msg, args, client, color, Utils) => {
-        Utils.setCooldown('work', msg.author.id);
+        Utils.setCooldown('work', msg.author.id); // se establece el cooldown
 
         const money = Math.floor(Math.random() * 401) + 100; // coins obtenidas (entre 100 a 500)
         const xp = Math.floor(Math.random() * 21) + 10; // xp optenidas (enre 10 a 30)
@@ -27,6 +27,7 @@ module.exports = {
         ]
 
         Utils.addCoins(msg.author.id, msg.guild.id, money); // se añaden las coins a la base de datos del usuario en el servidor
+        Utils.addCoins(msg.author.id, 'global', money); // se añaden las coins a la base de datos global del usuario
         const hasLeveledUp = await Utils.addXp(msg.author.id, xp); // se añade la xp a la base  de datos global del usuario y se confirma si sube de xp con las constante
         const message = texts[Math.floor(Math.random() * texts.length)] // se elige un mensaje de la lista aleatoriamente
 
