@@ -25,8 +25,9 @@ const UserSchema = new mongoose.Schema({
 class Utils {
     
     static users = mongoose.model('user', UserSchema); // modelo del UserSchema
-    static color = "#D9022B"// color universal del bot
+    static color = '#D9022B'// color universal del bot
 
+    
     // ————————————————————————————————————————————————————————————————————————————————————————————————————————— //
 
 
@@ -37,7 +38,7 @@ class Utils {
     * @param {Boolean} allowedAuthor - Boolean para verificar si se incluye al autor del mensaje en la busqueda
     * @returns {GuildMember|object} la informacion del miembro encontrado o un object si hubo algun error
     */
-    async findMember(msg, args, allowedAuthor = false) {
+    static async findMember(msg, args, allowedAuthor = false) {
         let member = msg.mentions.members.first() || msg.guild.members.cache.get(args[0]); // busqueda del miembro por medio de mención o de id
 
         // verificador si se incluye el autor en la busqueda, si está activado y no coloca ningún argumento, devuelve al autor del mensaje
@@ -82,6 +83,17 @@ class Utils {
 
     // ————————————————————————————————————————————————————————————————————————————————————————————————————————— //
 
+    /**
+     * @param {number} [max] - el número maximo a sacar
+     * @returns {number} el número aleatorio sacado
+     */
+    static random(max = 0) {
+        return Math.floor(Math.random() * max+1);
+    }
+
+
+    // ————————————————————————————————————————————————————————————————————————————————————————————————————————— //
+
 
     /**
     * establece el cooldown a un comando y un usuario en especifico
@@ -116,7 +128,7 @@ class Utils {
 
         /* se verifica por medio de una RexExp si la cadena cumple con los requisitos, ejemplos: ['19m', '9.6b', '1k', '999q']
         en caso contrario se retorna NaN */
-        if (!/^([0-9]+[.])?[0-9]+[kmbtq]$/gi.test(coins)) return NaN;
+        if (!/^([0-9]+[.])?[0-9]+[kmbtq]$/i.test(coins)) return NaN;
 
         const formatedCoins = parseFloat(coins); // se quitan las letras y se pasa al tipo Number Float
 
