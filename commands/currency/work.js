@@ -29,7 +29,7 @@ module.exports = {
         Utils.addCoins(msg.author.id, msg.guild.id, money); // se añaden las coins a la base de datos del usuario en el servidor
         Utils.addCoins(msg.author.id, 'global', money); // se añaden las coins a la base de datos global del usuario
         const hasLeveledUp = await Utils.addXp(msg.author.id, xp); // se añade la xp a la base  de datos global del usuario y se confirma si sube de xp con las constante
-        const message = texts[Utils.random(texts.length-1)]; // se elige un mensaje de la lista aleatoriamente
+        const message = Utils.random(texts); // se elige un mensaje de la lista aleatoriamente
 
         // se confirma si el usuario sube de nivel y se manda el mensaje
         if (hasLeveledUp) {

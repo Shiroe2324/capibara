@@ -84,11 +84,16 @@ class Utils {
     // ————————————————————————————————————————————————————————————————————————————————————————————————————————— //
 
     /**
-     * @param {number} [max] - el número maximo a sacar
-     * @returns {number} el número aleatorio sacado
+     * genera un numero aleatorio, o escoge un elemento aleatorio de un array
+     * @param {number|array} max - el numero maximo a sacar, o el elemento aleatorio elegido del array
+     * @returns {number} el número aleatorio o el index aleatorio sacado
      */
     static random(max = 0) {
-        return Math.floor(Math.random() * max+1);
+        if (typeof max === 'object') {
+            return max[Math.floor(Math.random() * max.length)];
+        } else {
+            return Math.floor(Math.random() * max+1);
+        }
     }
 
 
@@ -130,7 +135,7 @@ class Utils {
         en caso contrario se retorna NaN */
         if (!/^([0-9]+[.])?[0-9]+[kmbtq]$/i.test(coins)) return NaN;
 
-        const formatedCoins = parseFloat(coins); // se quitan las letras y se pasa al tipo Number Float
+        const formatedCoins = parseFloat(coins); // se quitan las letras y se pasa al tipo FloatingNumber 
 
         // se verifica que formato se está usando, y lo devuelve en su valor exacto (mil, millon, billon, trillon, quatrillon)
         if (coins.endsWith('k')) return formatedCoins * 1000;
