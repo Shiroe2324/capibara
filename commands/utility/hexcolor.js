@@ -3,8 +3,11 @@ const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
     name: 'hexcolor',
+    usage: 'hexcolor [color]',
     aliases: ['hex'],
     cooldown: 3000,
+    category: 'utilidad',
+    description: 'Muestra un color en formato hexadecimal.',
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,

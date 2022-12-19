@@ -2,8 +2,11 @@ const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
     name: 'slot',
+    usage: 'slot [cantidad] (-s)',
     aliases: ['slots'],
     cooldown: 5000,
+    category: 'economia',
+    description: 'Un tragamonedas el cual se gana si hay una linea vertical, diagonal u horizontal de tres emojis iguales.\nCada emoji tiene su valor, van de 0.5 - 1.0 y 2.0 de multiplicador.\nPuedes colocar **-s** al final para apostar monedas del servidor.',
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
@@ -30,9 +33,9 @@ module.exports = {
         if (isNaN(betCoins)) {
             return msg.reply(`Tienes que colocar una cantidad de ${coinsName} valida!`)
         } else if (user.coins < betCoins) {
-            return msg.reply(`No puedes apostar más ${coinsName} de las que posees actualmente!`);
+            return msg.reply(`No puedes apostar **más ${coinsName}** de las que posees actualmente!`);
         } else if (betCoins < 20) {
-            return msg.reply(`No puedes apostar menos de 20 ${coinsName}!`);
+            return msg.reply(`No puedes apostar menos de **20 ${coinsName}**!`);
         }
 
         Utils.setCooldown('slot', msg.author.id); // se establece el cooldown

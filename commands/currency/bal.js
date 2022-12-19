@@ -2,8 +2,11 @@ const { EmbedBuilder, PermissionFlagsBits, Embed } = require('discord.js');
 
 module.exports = {
     name: 'balance',
+    usage: 'balance',
     aliases: ['bal'],
     cooldown: 1000,
+    category: 'economia',
+    description: 'Muestra tu balance (global y del servidor).',
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,

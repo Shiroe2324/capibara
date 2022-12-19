@@ -2,22 +2,27 @@ const { PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
     name: '',
+    usage: '',
     aliases: [],
     cooldown: 0,
+    category: '',
+    description: '',
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,  
         PermissionFlagsBits.SendMessages
     ],
     userPermissions: [],
-    execute: async (msg, args, client, color, Utils) => {
+    execute: async (msg, args, client, Utils) => {
 
     }
 }
 
 name = el nombre del comando
+usage = el uso del comando
 aliases = los alias del comando
 cooldown = el tiempo de espera ente ejecución del comando (en milisegundos)
+description = la descripción del comando
 onlyCreator = si el comando es solo para el creador del bot
 botPermissions = permisos del bot necesarios para ejecutar el comando
 userPermissions = permisos del usuario necesarios para ejecutar el comando

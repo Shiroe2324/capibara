@@ -15,6 +15,50 @@ const UserSchema = new mongoose.Schema({
     cooldowns: { type: Map, default: new Map() } // cooldowns de los comandos del usuario
 });
 
+// permisos en español de los servidores de discord
+const Permissions = {
+    CreateInstantInvite: "Crear Invitaciones Instantaneas",   
+    KickMembers: "Expulsar Miembros",
+    BanMembers: "Banear Miembros",
+    Administrator: "Administrador",
+    ManageChannels: "Administrar Canales",
+    ManageGuild: "Administrar El Servidor",
+    AddReactions: "Añadir Reacciones",
+    ViewAuditLog: "Ver el Registro de Auditoría",
+    PrioritySpeaker: "Prioridad al Hablar",
+    Stream: "Crear Streams",
+    ViewChannel: "Ver Canales",
+    SendMessages: "Enviar Mensajes",
+    SendTTSMessages: "Enviar Mensajes TTS",
+    ManageMessages: "Administrar Canales",
+    EmbedLinks: "insetar Enlaces",
+    AttachFiles: "Enviar Archivos",
+    ReadMessageHistory: "Leer el Historial de Mensajes",
+    MentionEveryone: "Mencionar a Todos",  
+    UseExternalEmojis: "Usar Emojis Externos",
+    ViewGuildInsights: "Ver las Perspectivas del Servidor",
+    Connect: "Conectar al Canal de Voz",
+    Speak: "Hablar en el Canal de Voz",
+    MuteMembers: "Silenciar Miembros",
+    DeafenMembers: "Ensordecer Miembros",
+    MoveMembers: "Mover Miembros de Canales de Voz",
+    UseVAD: "usar el VAD",
+    ChangeNickname: "Cambiar Apodos",
+    ManageNicknames: "Administrar Apodos",
+    ManageRoles: "Administrar Roles",
+    ManageWebhooks: "Administrar Webhooks",
+    ManageEmojisAndStickers: "Administrar Emojis y Stickers",
+    UseApplicationCommands: "Usar Comandos de Aplicaciones",
+    RequestToSpeak: "Solicitud Para Hablar",
+    ManageEvents: "Administrar Eventos",
+    ManageThreads: "Administrar Hilos",
+    CreatePublicThreads: "Crear Hilos Publicos",
+    CreatePrivateThreads: "Crear Hilos Privados",
+    UseExternalStickers: "Usar Emojis Externos",
+    SendMessagesInThreads: "Enviar Mensajes en Hilos",
+    UseEmbeddedActivities: "Usar Actividades integradas",
+    ModerateMembers: "Moderar Miembros"
+};
 
 
 
@@ -23,11 +67,11 @@ const UserSchema = new mongoose.Schema({
 * @class Utils | Helper
 */
 class Utils {
-    
+
     static users = mongoose.model('user', UserSchema); // modelo del UserSchema
     static color = '#D9022B'// color universal del bot
+    static permissions = Permissions; // Permisos de discord
 
-    
     // ————————————————————————————————————————————————————————————————————————————————————————————————————————— //
 
 
@@ -74,7 +118,7 @@ class Utils {
         // se itera cada elemento del object indexList
         for (let index in indexList) {
             total += indexList[index]; // se le suma al porcentaje total la probabilidad del index que se está iterando
-            
+
             // se verifica si el numero aleatorio [0,1) es menor o igual al porcentaje total actual, si es asi se devuelve el index que se está iterando
             if (randomNumber <= total) return Number(index);
         }
@@ -92,7 +136,7 @@ class Utils {
         if (typeof max === 'object') {
             return max[Math.floor(Math.random() * max.length)];
         } else {
-            return Math.floor(Math.random() * max+1);
+            return Math.floor(Math.random() * max + 1);
         }
     }
 
@@ -114,20 +158,20 @@ class Utils {
 
     // ————————————————————————————————————————————————————————————————————————————————————————————————————————— //
 
-    
+
     /**
     * quita los formatos a una cadena o numero de monedas
     * @param {UsersModel} user - la base de datos del usuario para conseguir sus monedas
     * @param {string|number} coins - la cadena o numero de monedas a formatear
     * @returns {number} el numero de monedas ya formateado
     */
-    static async setCoinsFormat (user, coins) {
+    static async setCoinsFormat(user, coins) {
         if (typeof Number(coins) === 'number' && !isNaN(coins)) return coins; // si es solamente un numero sin formato, se retorna el propio numero
 
         //se verifica si se necesitan todas las monedas, la mitad, solo una cuarta parte
         switch (coins) {
             case 'all': return user.coins;
-            case 'half': return user.coins / 2; 
+            case 'half': return user.coins / 2;
             case 'quarter': return user.coins / 4;
         }
 
@@ -148,7 +192,7 @@ class Utils {
 
     // ————————————————————————————————————————————————————————————————————————————————————————————————————————— //
 
-    
+
     /**
     * formatea una fecha a un texto mas legible
     * @param {number} time - la fecha a formatear
@@ -181,7 +225,7 @@ class Utils {
 
     // ————————————————————————————————————————————————————————————————————————————————————————————————————————— //
 
-    
+
     /**
     * añade xp a un usuario en su base de datos global
     * @param {string} userId - la id del usuario 
@@ -201,7 +245,7 @@ class Utils {
 
     // ————————————————————————————————————————————————————————————————————————————————————————————————————————— //
 
-    
+
     /**
     * añade coins a un usuario en un servidor
     * @param {string} userId - la id del usuario 
@@ -219,7 +263,7 @@ class Utils {
 
     // ————————————————————————————————————————————————————————————————————————————————————————————————————————— //
 
-    
+
     /**
     * remueve coins a un usuario en un servidor
     * @param {string} userId - la id del usuario 
@@ -237,7 +281,7 @@ class Utils {
 
     // ————————————————————————————————————————————————————————————————————————————————————————————————————————— //
 
-    
+
     /**
     * busca a un usuario en alguna base de datos
     * @param {string} userId - la id del usuario 

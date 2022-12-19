@@ -2,8 +2,11 @@ const { PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
     name: 'work',
+    usage: 'work',
     aliases: [],
     cooldown: 300000,
+    category: 'economia',
+    description: 'Consigues monedas haciendo trabajos junto con capibaras.\nlas monedas conseguidas se añaden tanto a las globales como a las del servidor',
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,

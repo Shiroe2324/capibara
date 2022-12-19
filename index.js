@@ -1,7 +1,7 @@
 require('dotenv').config()
 // ————————————————————— INICIO DEL BOT ————————————————————— //
 
-const { Client, Collection } = require('discord.js');
+const { Client, Collection, Events } = require('discord.js');
 const prefix = process.env.PREFIX; // prefix del bot
 const handler = require('./handler.js'); // archivo de los comandos handler
 const Utils = require('./utils.js'); // funciones de ayuda para programar
@@ -16,7 +16,7 @@ client.once('ready', async () => {
 });
 
 // evento cuando se genera un nuevo mensaje
-client.on('messageCreate', async (msg) => {
+client.on(Events.MessageCreate, async (msg) => {
     // filtro de mensajes
     if (msg.author.bot) return;
     if (!msg.content.startsWith(prefix)) return;
@@ -50,13 +50,25 @@ client.on('messageCreate', async (msg) => {
         if (msg.author.id != process.env['OWNER']) return;
     }
 
+    // verificador de los permisos del bot en el canal
+    if (!msg.channel.permissionsFor(client.user).has(command.botPermissions)) {
+        const missingPermissions = msg.channel.permissionsFor(client.user).missing(command.botPermission).map(permission => `\`${Utils.permissions[permission]}\``);
+        return msg.reply(`No puedo ejecutar ese comando, me hacen falta los siguientes permisos: ${missingPermissions.join(', ')}`)
+    }
+
+    // verificador de los permisos del usuario en el canal
+    if (!msg.channel.permissionsFor(msg.author).has(command.userPermissions)) {
+        const missingPermissions = msg.channel.permissionsFor(msg.author).missing(command.userPermissions).map(permission => `\`${Utils.permissions[permission]}\``);
+        return msg.reply(`No puedes ejecutar ese comando, te hacen falta los siguientes permisos: ${missingPermissions.join(', ')}`)
+    }
+
     // sistema cooldown, primero se verifica si tiene base de datos global
     if (globalUser) {
         const userCooldown = globalUser.cooldowns.get(command.name); // se obtiene el cooldown del usuario
 
         // se verifica si tiene cooldown en el comando, y si el tiempo actual es menor al tiempo restante
         if (userCooldown && (userCooldown + command.cooldown) > Date.now()) {
-            return msg.reply(`No puedes hacer eso todavia, tienes que esperar **${Utils.setTimeFormat((userCooldown + command.cooldown)+1000)}** 🕗`)
+            return msg.reply(`No puedes hacer eso todavia, tienes que esperar ** ${ Utils.setTimeFormat((userCooldown + command.cooldown) + 1000) }** 🕗`)
         }
     }
 

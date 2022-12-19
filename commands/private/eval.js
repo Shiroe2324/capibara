@@ -3,8 +3,11 @@ const { inspect } = require('util');
 
 module.exports = {
     name: 'eval',
+    usage: '',
     aliases: ['e'],
     cooldown: 0,
+    category: '',
+    description: '',
     onlyCreator: true,
     botPermissions: [],
     userPermissions: [],

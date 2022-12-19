@@ -3,8 +3,11 @@ const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
     name: 'randomcolor',
+    usage: 'randomcolor',
     aliases: ['randcolor'],
     cooldown: 3000,
+    category: 'utilidad',
+    description: 'Genera un color aleatorio en formato.',
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
