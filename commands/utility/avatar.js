@@ -1,4 +1,4 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { ComponentType, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
     name: 'avatar',
@@ -15,11 +15,18 @@ module.exports = {
     ],
     userPermissions: [],
     execute: async (msg, args, client, Utils) => {
-        const member = await Utils.findMember(msg, args, true); // funcion para buscar miembros en un server
+        const { member, error, messageError, message } = await Utils.findMember(msg, args, true); // funcion para buscar miembros en un server
 
-        if (member.error) return msg.reply(member.messageError); // verificador si hay algun error al buscar el miembro
+        if (error) return message ? message.edit({ content: messageError, embeds: [] }) : msg.reply(messageError); // verificador si hay algun error al buscar el miembro
 
-        if (member.user.avatarURL({ size: 2048, dynamic: true }) === null) return msg.reply('El usuario mencionado no tiene avatar') // verificador de si el miembro tiene avatar
+        // verificador de si el miembro tiene avatar
+        if (!member.user.avatarURL()) {
+            if (message) {
+                return message.edit({ content: 'El usuario mencionado no tiene avatar', embeds: [] });
+            } else {
+                msg.reply('el usuario mencionado no tiene avatar');
+            }
+        }
 
         Utils.setCooldown('avatar', msg.author.id); // se establece el cooldown
 
@@ -34,53 +41,69 @@ module.exports = {
         /*se verifica si el usuario tiene avatar en el servidor, si es asi se envia el embed con los botones para cambiar entre avatars
         en caso contrario solamente se envía el embed sin botones*/
         if (!member.avatarURL()) {
-            msg.channel.send({ embeds: [embed(member.user.avatarURL({ size: 2048, dynamic: true }))] }) // mensaje con el embed sin botones
+            // mensaje con el embed sin botones
+            if (message) {
+                message.edit({ embeds: [embed(member.user.avatarURL({ size: 2048, dynamic: true }))] })
+            } else {
+                msg.channel.send({ embeds: [embed(member.user.avatarURL({ size: 2048, dynamic: true }))] })
+            }
         } else {
-            // funcion que genera una nueva linea de botones
-            const row = (component) => new ActionRowBuilder()
-                .addComponents(component);
-
             // funcion que genera un nuevo boton
-            const button = (id, label, emoji) => new ButtonBuilder()
-                .setCustomId(id)
-                .setLabel(label)
-                .setEmoji(emoji)
-                .setStyle(ButtonStyle.Primary);
+            const button = (id, label, emoji, disable = false) => {
+                return new ActionRowBuilder().addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(id)
+                        .setLabel(label)
+                        .setEmoji(emoji)
+                        .setDisabled(disable)
+                        .setStyle(ButtonStyle.Primary)
+                );
+            }
+
+            const localButton = button('local', 'ver avatar local', '🌇'); // boton para ver el avatar local
+            const globalButton = button('global', 'ver avatar global', '🌏'); // boton para ver el avatar global
+
+            let avatar = member.user.avatarURL({ size: 2048, dynamic: true }); // URL del avatar del usuario
+            let component = [localButton] // componente del mensaje
 
             // el mensaje enviado por el bot con los botones y el embed
-            const message = await msg.channel.send({
-                embeds: [embed(member.user.avatarURL({ size: 2048, dynamic: true }))],
-                components: [row(button('local', 'ver avatar local', '🌇'))]
-            });
+            const bMessage = message ? await message.edit({ embeds: [embed(avatar)], components: component }) : await msg.channel.send({ embeds: [embed(avatar)], components: component });
 
-            //el filtro para los botones
+            //el filtro para los botones, solo permite que el autor pueda usar el boton
             const filter = (interaction) => {
                 if (interaction.user.id === msg.author.id) return true;
                 return interaction.reply({ content: `solamente **${msg.author.tag}** puede hacer eso!`, ephemeral: true });
             };
 
             // el collector que verificará los botones
-            const collector = message.channel.createMessageCollector(filter, { time: 60000 });
+            const collector = bMessage.channel.createMessageComponentCollector({ filter, time: 60000, componentType: ComponentType.Button });
 
             // evento cuando un boton es presionado
             collector.on('collect', async (interaction) => {
-                let avatar, component; // el link del avatar y la linea de botones
-
-                // se verifica si el usuario tiene avatar en el servidor | si el boton presionado es el global o el local
-                if (member.avatarURL() === null) {
+                /*se verifica si el usuario tiene avatar en el servidor | si el boton presionado es el global o el local
+                dependiendo del boton seleccionado, se envía el avatar global o local, si no tiene avatar local, solo se envía el global sin botones*/
+                if (!member.avatarURL()) {
                     avatar = member.user.avatarURL({ size: 2048, dynamic: true });
-                    component = [];
+                    component = []
                 } else if (interaction.customId === 'local') {
                     avatar = member.avatarURL({ size: 2048, dynamic: true });
-                    component = [row(button('global', 'ver avatar global', '🌏'))];
+                    component = [globalButton]
                 } else if (interaction.customId === 'global') {
                     avatar = member.user.avatarURL({ size: 2048, dynamic: true });
-                    component = [row(button('local', 'ver avatar local', '🌇'))];
+                    component = [localButton]
                 }
 
-                // se actualiza el mensaje con el avatar y su respectivo boton
-                await interaction.update({ embeds: [embed(avatar)], components: component });
+                await interaction.update({ embeds: [embed(avatar)], components: component }); // se envia el avatar seleccionado
             });
+
+            collector.on('end', async (collected) => {
+                const quoteEmbed = EmbedBuilder.from(bMessage.embeds[0]);
+                const disabledButton = bMessage.components[0].components[0].data.custom_id === 'global' ?
+                    button('global', 'ver avatar global', '🌏', true) :
+                    button('local', 'ver avatar local', '🌇', true);
+
+                bMessage.edit({ embeds: [quoteEmbed], components: [disabledButton] });
+            })
         }
     }
 }

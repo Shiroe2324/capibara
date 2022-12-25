@@ -12,8 +12,6 @@ module.exports = {
     botPermissions: [],
     userPermissions: [],
     execute: async (msg, args, client, Utils) => {
-        const helper = new Utils(msg, args, client); // clase inciada con funciones de ayuda
-
         const code = args.join(" "); // codigo a evaluar 
         if (!code) return msg.channel.send("???"); // verificador si se colocó el codigo
 

@@ -3,8 +3,8 @@ require('dotenv').config()
 
 const { Client, Collection, Events } = require('discord.js');
 const prefix = process.env.PREFIX; // prefix del bot
-const handler = require('./handler.js'); // archivo de los comandos handler
-const Utils = require('./utils.js'); // funciones de ayuda para programar
+const handler = require('./handler'); // archivo de los comandos handler
+const Utils = require('./utils'); // funciones de ayuda para programar
 const client = new Client({ intents: 3276799 }); // client del bot (usuario de discord del bot)
 
 client.commands = new Collection(); // lista de comandos para el handler
