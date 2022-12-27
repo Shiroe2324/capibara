@@ -1,4 +1,4 @@
-const { PermissionFlagsBits, Message, Client } = require('discord.js');
+const { EmbedBuilder, PermissionFlagsBits, Message, Client } = require('discord.js');
 const Utils = require('../../utils');
 
 /**
@@ -13,16 +13,18 @@ const Utils = require('../../utils');
  * @property userPermissions - Lista de permisos del usuario para el comando.
  */
 module.exports = {
-    name: '',
-    usage: '',
-    aliases: [],
-    cooldown: 0,
-    category: '',
-    description: '',
+    name: 'balance',
+    usage: 'balance',
+    aliases: ['bal'],
+    cooldown: 1000,
+    category: 'economia',
+    description: 'Muestra tu balance (global y del servidor).',
     onlyCreator: false,
     botPermissions: [
-        PermissionFlagsBits.ViewChannel,  
-        PermissionFlagsBits.SendMessages
+        PermissionFlagsBits.ViewChannel,
+        PermissionFlagsBits.SendMessages,
+        PermissionFlagsBits.EmbedLinks,
+        PermissionFlagsBits.UseExternalEmojis
     ],
     userPermissions: [],
 
@@ -33,6 +35,16 @@ module.exports = {
      * @param {Client} client - El cliente del bot.
      */
     execute: async (msg, args, client) => {
+        Utils.setCooldown('balance', msg.author.id);
 
+        const globalUser = await Utils.userFetch(msg.author.id, 'global');
+        const guildUser = await Utils.userFetch(msg.author.id, msg.guild.id);
+
+        const embed = new EmbedBuilder()
+            .setTitle('Tu balance es')
+            .setDescription(`capicoins: ${globalUser.coins}\nservercoins: ${guildUser.coins}`)
+            .setColor(Utils.color);
+
+        msg.reply({ embeds: [embed] })
     }
 }

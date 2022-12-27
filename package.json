@@ -1,13 +1,21 @@
 {
-  "name": "nodejs",
+  "name": "desktop",
   "version": "1.0.0",
-  "description": "",
+  "description": "Un bot de discord hecho en discord.js con tematica de capibara, y principalmente con comandos estilo casino!",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ."
   },
-  "keywords": [],
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shiroe2324/capibara.git"
+  },
+  "keywords": [
+    "Discord",
+    "Bot",
+    "Casino"
+  ],
+  "author": "Shiroe2324",
   "license": "ISC",
   "dependencies": {
     "@types/node": "^18.0.6",
@@ -16,5 +24,9 @@
     "mongoose": "^6.7.5",
     "node-fetch": "^3.2.6",
     "superagent": "^8.0.6"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/Shiroe2324/capibara/issues"
+  },
+  "homepage": "https://github.com/Shiroe2324/capibara#readme"
 }

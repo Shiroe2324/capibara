@@ -1,11 +1,11 @@
 const userFetch = require('./userFetch');
 
 /**
-* añade xp a un usuario en su base de datos global
-* @param {string} userId - la id del usuario 
-* @param {number} xp - la xp a añadir
-* @returns {boolean} un boolean si el usuario sube de nivel
-*/
+ * añade xp a un usuario en su base de datos global.
+ * @param {string} userId - la id del usuario.
+ * @param {number} xp - la xp a añadir.
+ * @returns {boolean} un boolean si el usuario sube de nivel.
+ */
 module.exports = async (userId, xp) => {
     const user = await userFetch(userId, 'global'); // base de datos global del usuario
 

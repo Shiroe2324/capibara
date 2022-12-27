@@ -1,11 +1,11 @@
 const { users } = require('./schemas');
 
 /**
-* quita los formatos a una cadena o numero de monedas
-* @param {users} user - la base de datos del usuario para conseguir sus monedas
-* @param {string|number} coins - la cadena o numero de monedas a formatear
-* @returns {number} el numero de monedas ya formateado
-*/
+ * quita los formatos a una cadena o numero de monedas.
+ * @param {users} user - la base de datos del usuario para conseguir sus monedas.
+ * @param {string|number} coins - la cadena o numero de monedas a formatear.
+ * @returns {number} el numero de monedas ya formateado.
+ */
 module.exports = (user, coins) => {
     if (typeof Number(coins) === 'number' && !isNaN(coins)) return coins; // si es solamente un numero sin formato, se retorna el propio numero
 

@@ -1,6 +1,4 @@
-const Discord = require('discord.js');
-const { PermissionFlagsBits, Message, Client } = Discord;
-const { inspect } = require('util');
+const { PermissionFlagsBits, Message, Client } = require('discord.js');
 const Utils = require('../../utils');
 
 /**
@@ -15,12 +13,12 @@ const Utils = require('../../utils');
  * @property userPermissions - Lista de permisos del usuario para el comando.
  */
 module.exports = {
-    name: 'eval',
-    usage: 'eval [code]',
-    aliases: ['e'],
+    name: 'blacklist',
+    usage: 'blacklist [usuario]',
+    aliases: ['bl'],
     cooldown: 0,
     category: 'privada',
-    description: 'Evalua un codigo colocado y retorna dicho codigo',
+    description: 'Coloca en blacklist a un usuario',
     onlyCreator: true,
     botPermissions: [],
     userPermissions: [],
@@ -32,21 +30,14 @@ module.exports = {
      * @param {Client} client - El cliente del bot.
      */
     execute: async (msg, args, client) => {
-        const code = args.join(" "); // codigo a evaluar 
-        if (!code) return msg.channel.send("???"); // verificador si se colocó el codigo
+        const user = client.users.fetch(args[0]); // se busca si el usuario en discord
+        if (!user) return msg.reply('El usuario no existe.'); // se verifica si existe
+     
+        const userdb = await Utils.user(args[0], 'global'); // base de datos del usuario
 
-        try {
-            const evaled = await eval(code); // codigo evaluado
-            const result = inspect(evaled, { depth: 0 }); // resultado del codigo evaluado
-
-            // verificador si el mensaje no se pasa del limite de caracteres
-            if (result.length <= 2000) {
-                msg.channel.send(Discord.codeBlock('js', result))
-            } else {
-                msg.channel.send(Discord.codeBlock('yaml', 'el resultado es muy largo'))
-            }
-        } catch (err) {
-            msg.channel.send(Discord.codeBlock('js', err)) // mensaje cuando el codigo evaluado tiene un error
-        }
+        // se añade la blacklist al usuario
+        userdb.blacklist = true;
+        await userdb.save();
+        msg.reply('El usuario se ha añadido a la blacklist.');
     }
 }

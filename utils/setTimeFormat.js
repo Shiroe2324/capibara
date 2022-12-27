@@ -1,8 +1,8 @@
 /**
-* formatea una fecha a un texto mas legible
-* @param {number} time - la fecha a formatear
-* @returns {string} un texto con la fecha formateada
-*/
+ * formatea una fecha a un texto mas legible.
+ * @param {number} time - la fecha a formatear.
+ * @returns {string} un texto con la fecha formateada.
+ */
 module.exports = (time) => {
     let text = ''; // texto de la fecha formateada
     const date = new Date(Math.abs(Date.now() - time)); // fecha formateada

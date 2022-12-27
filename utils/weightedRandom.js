@@ -1,8 +1,8 @@
 /**
-* genera un index aleatorio con las posibilidades agregadas (la suma de las posibilidades tiene que ser 1)
-* @param {object} indexList - la lista de index's maximos con sus posibilidades en decimales
-* @returns {number} el index aleatorio elegido
-*/
+ * genera un index aleatorio con las posibilidades agregadas (la suma de las posibilidades tiene que ser 1).
+ * @param {object} indexList - la lista de index's maximos con sus posibilidades en decimales.
+ * @returns {number} el index aleatorio elegido.
+ */
 module.exports = (indexList) => {
     let total = 0; // cantidad de porcentaje total
     const randomNumber = Math.random(); // numero aleatorio [0,1)

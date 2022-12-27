@@ -3,8 +3,10 @@ module.exports = {
     addCoins: require('./utils/addCoins'),
     addXp: require('./utils/addXp'),
     findMember: require('./utils/findMember'),
+    guildFetch: require('./utils/guildFetch'),
     pageSystem: require('./utils/pageSystem'),
     random: require('./utils/random'),
+    removeAccents: require('./utils/removeAccents'),
     removeCoins: require('./utils/removeCoins'),
     setCoinsFormat: require('./utils/setCoinsFormat'),
     setCooldown: require('./utils/setCooldown'),
@@ -12,13 +14,16 @@ module.exports = {
     userFetch: require('./utils/userFetch'),
     weightedRandom: require('./utils/weightedRandom'),
 
-    //schemas de las bases de datos de mongoDB del bot
+    /**schemas de las bases de datos de mongoDB del bot*/
     schemas: require('./utils/schemas'),
 
-    // color universal del bot
-    color: '#D9022B',
+    /**color universal del bot*/
+    color: process.env.COLOR,
+
+    /**nombre de la moneda universal del bot*/
+    coin: process.env.COIN_NAME,
     
-    // permisos en español de los servidores de discord
+    /**permisos en español de los servidores de discord*/
     Permissions: {
         CreateInstantInvite: "Crear Invitaciones Instantaneas",
         KickMembers: "Expulsar Miembros",
