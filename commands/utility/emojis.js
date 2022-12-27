@@ -48,7 +48,7 @@ module.exports = {
                 .setTitle(`Lista de emojis de **${msg.guild.name}** (${emojis.length})`)
                 .setThumbnail(msg.guild.iconURL({ dynamic: true, size: 2048 }))
                 .setDescription(current.join('\n'))
-                .setFooter({ text: `ID: ${msg.guild.id}` })
+                .setFooter({ text: `ID: ${msg.guild.id} ${emojis.length > 10 ? `--- página: ${(index+10)/10} de ${Math.ceil(emojis.length/10)}` : ''}` })
                 .setColor(Utils.color)
         }
 

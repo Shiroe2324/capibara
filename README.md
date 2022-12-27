@@ -10,24 +10,49 @@ el bot contará con diversos comandos, principalmente de casino como blackjack, 
 ## Comandos
 actualmente el bot cuenta con los siguientes comandos.
 
-1. **Miscelaneos**
+1. **Utilidad**
     * Avatar
+    * emojis
+    * help
     * Hexcolor
     * randomcolor
 2. **Economía**
+    * Balance
+    * coinflip
     * Slots
     * Work
-    * Balance
+3. **Administración**
+    * setprefix
+
+----------------------------------------------------------------
 
 ### Permisos del bot para los comandos
+
+#### Utilidad
 |  COMANDOS | Ver el canal | Enviar mensajes | Enviar Embeds | Enviar Emojis Externos |
 |:---------:|:------------:|:---------------:|:-------------:|:----------------------:|
 |  Avatar   |      ✔️      |       ✔️       |      ✔️       |           ❌           |
+|  emojis   |      ✔️      |       ✔️       |      ✔️       |           ❌           |
+|   help    |      ✔️      |       ✔️       |      ✔️       |           ✔️           |
 | Hexcolor  |      ✔️      |       ✔️       |      ✔️       |           ❌           |
 |randomcolor|      ✔️      |       ✔️       |      ✔️       |           ❌           |
+
+#### Economía
+|  COMANDOS | Ver el canal | Enviar mensajes | Enviar Embeds | Enviar Emojis Externos |
+|:---------:|:------------:|:---------------:|:-------------:|:----------------------:|
 | Balance   |      ✔️      |       ✔️       |      ✔️       |           ✔️           |
-|   Work    |      ✔️      |       ✔️       |      ❌       |           ✔️           |
+| coinflip  |      ✔️      |       ✔️       |      ✔️       |           ✔️           |
 |  Slots    |      ✔️      |       ✔️       |      ✔️       |           ✔️           |
+|   Work    |      ✔️      |       ✔️       |      ❌       |           ✔️           |
+
+#### Administración
+|  COMANDOS | Ver el canal | Enviar mensajes | Enviar Embeds | Enviar Emojis Externos |
+|:---------:|:------------:|:---------------:|:-------------:|:----------------------:|
+| setprefix |      ✔️      |       ✔️       |      ❌       |           ❌           |
+
+----------------------------------------------------------------
 
 ### Permisos del usuario para los comandos
-> actualemente ningún comando requiere de algun permiso en especifico del usuario para ejecutar un comando.
+|  COMANDOS | Administrador |
+|:---------:|:-------------:|
+| setprefix |      ✔️       |
