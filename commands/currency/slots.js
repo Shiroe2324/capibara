@@ -35,16 +35,17 @@ module.exports = {
      * @param {Client} client - El cliente del bot.
      */
     execute: async (msg, args, client) => {
-        let guild = 'global'; // base de datos donde se guardarán las monedas
-        let coinsName = 'capicoins'; // el tipo de moneda usada
+        const guild = await Utils.guildFetch(msg.guild.id); // base de datos del servidor
+        let guildType = 'global'; // base de datos donde se guardarán las monedas
+        let coinsName = Utils.coin; // el tipo de moneda usada
         
         // se verifica si se usarán monedas del servidor o globales
         if (args[1] === '-s') {
-            guild = msg.guild.id;
-            coinsName = 'servercoins'
+            guildType = msg.guild.id;
+            coinsName = guild.coinName;
         }
 
-        const user = await Utils.userFetch(msg.author.id, guild); // base de datos del usuario
+        const user = await Utils.userFetch(msg.author.id, guildType); // base de datos del usuario
         const formatedCoins = await Utils.setCoinsFormat(user, args[0]); // se formatean las monedas dadas
         const betCoins = Math.round(formatedCoins); // las se redondean a un número entero las monedas dadas
 
@@ -119,10 +120,10 @@ module.exports = {
         en caso contrario, se le coloca que perdií junto con la cantidad de monedas perdidasm y se le quitan las monedas apostadas*/
         if (multiplier === 0) {
             embed.setColor(0xff0000).addFields([{ name: 'Perdiste...', value: `Lastimosamente has perdido **${betCoins}** ${coinsName}` }]);
-            Utils.removeCoins(msg.author.id, guild, betCoins);
+            Utils.removeCoins(msg.author.id, guildType, betCoins);
         } else {
             embed.setColor(0x00ff00).addFields([{ name: 'Ganaste!!', value: `Has ganado **${Math.floor(betCoins * multiplier)}** ${coinsName}` }]);
-            Utils.addCoins(msg.author.id, guild, Math.floor(betCoins * multiplier));
+            Utils.addCoins(msg.author.id, guildType, Math.floor(betCoins * multiplier));
         }
 
         msg.reply({ embeds: [embed] }); // se envía el embed

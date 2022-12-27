@@ -39,10 +39,11 @@ module.exports = {
 
         const globalUser = await Utils.userFetch(msg.author.id, 'global');
         const guildUser = await Utils.userFetch(msg.author.id, msg.guild.id);
+        const guild = await Utils.guildFetch(msg.guild.id);
 
         const embed = new EmbedBuilder()
             .setTitle('Tu balance es')
-            .setDescription(`capicoins: ${globalUser.coins}\nservercoins: ${guildUser.coins}`)
+            .setDescription(`**${Utils.coin}**: ${globalUser.coins}\n**${guild.coinName}**: ${guildUser.coins}`)
             .setColor(Utils.color);
 
         msg.reply({ embeds: [embed] })

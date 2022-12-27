@@ -36,7 +36,7 @@ module.exports = {
     execute: async (msg, args, client) => {
         Utils.setCooldown('emojis', msg.author.id); // se establece el cooldown
 
-        const emojis = msg.guild.emojis.cache.map(emoji => `${emoji} - \`${emoji}\``); // la lista de emojis del servidor
+        const emojis = msg.guild.emojis.cache.map(emoji => `${emoji} - \`${emoji}\` (**[Link](${emoji.url})**)`); // la lista de emojis del servidor
 
         // se verifica si no hay emojis
         if (emojis.length === 0) return msg.reply('El servidor no cuenta con emojis.');

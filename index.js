@@ -58,7 +58,7 @@ client.on(Events.MessageCreate, async (msg) => {
 
     // se verifica si tiene cooldown en el comando, y si el tiempo actual es menor al tiempo restante
     if (userCooldown && (userCooldown + command.cooldown) > Date.now()) {
-        return msg.reply(`No puedes hacer eso todavia, tienes que esperar ** ${Utils.setTimeFormat((userCooldown + command.cooldown) + 1000)}** 🕗`)
+        return msg.reply(`Todavia no puedes ejecutar ese comando, tienes que esperar **${Utils.setTimeFormat((userCooldown + command.cooldown) + 1000)}** 🕗 más.`)
     }
 
     // ejecución del comando
