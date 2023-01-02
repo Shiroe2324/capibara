@@ -34,9 +34,8 @@ module.exports = {
      * @param {Client} client - El cliente del bot.
      */
     execute: async (msg, args, client) => {
-        const guild = await Utils.guildFetch(msg.guild.id); // base de datos del servidor
+        const guild = await Utils.guildFetch(msg.guild.id);
 
-        // verificadores si el prefix está bien colocado o se encuentra en uso
         if (!args[0]) {
             return msg.channel.send('El prefix debe tener al menos 1 caracter.');    
         } else if (args[0].length > 16) {
@@ -45,9 +44,8 @@ module.exports = {
             return msg.channel.send('El prefix colocado es el actual prefix del servidor.'); 
         }
         
-        Utils.setCooldown('emojis', msg.author.id); // se establece el cooldown
+        Utils.setCooldown('emojis', msg.author.id);
 
-        // se guarda el prefix
         guild.prefix = args[0];
         await guild.save(); 
 

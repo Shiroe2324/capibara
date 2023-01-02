@@ -1,4 +1,4 @@
-const { PermissionFlagsBits, Message, Client, EmbedBuilder } = require('discord.js');
+const { PermissionFlagsBits, Message, Client, ActionRowBuilder, StringSelectMenuBuilder, ComponentType } = require('discord.js');
 const Utils = require('../../utils');
 
 /**
@@ -13,12 +13,12 @@ const Utils = require('../../utils');
  * @property userPermissions - Lista de permisos del usuario para el comando.
  */
 module.exports = {
-    name: 'dice',
-    usage: 'dice [cantidad]',
-    aliases: [],
+    name: 'roulette',
+    usage: 'roulette [cantidad] [casilla]',
+    aliases: ['wheel'],
     cooldown: 10000,
     category: 'economia',
-    description: 'Lanza un dado de 6 caras.\nSe gana si la cara en la que cae es 4, 5 o 6.\nSi la cara es 4 se ganar un cuarto de lo apostado, si la cara es 5 se gana la mitad de lo apostado, si la cara es 6 se gana todo lo apostado.',
+    description: '',
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
@@ -48,39 +48,40 @@ module.exports = {
             return msg.reply(`No puedes apostar menos de **20 ${guild.coinName}**!`);
         }
 
-        Utils.setCooldown('dice', msg.author.id);
-
-        const dice = Utils.random(6)
-        const diceResult = [];
-        let multiplier = 0;
-        for (let i = 0; i < dice; i++) {
-            diceResult.push(guild.coinName);
+        let boxes = [{ number: 0, color: 'green' }];
+        for (let i = 1; i < 37; i++) {
+            boxes.push({ number: i, color: i % 2 === 0 ? 'black' : 'red' });
         }
 
-        switch (dice) {
-            case 6: multiplier = 1; break;
-            case 5: multiplier = 0.5; break;
-            case 4: multiplier = 0.25; break;
-        }
+        const selectedBox = Utils.random(boxes);
 
-        const winnerEmbed = new EmbedBuilder()
-            .setColor('#00FF00')
-            .setAuthor({ name: `Dado de ${msg.author.tag}`, iconURL: msg.author.avatarURL({ dynamic: true }) })
-            .setDescription(`${diceResult.join(' ')}`)
-            .addFields([{ name: `🎲 - ${dice}`, value: `Has ganado ${betCoins * multiplier} ${guild.coinName}` }]);
-
-        const loserEmbed = new EmbedBuilder()
-            .setColor('#FF0000')
-            .setAuthor({ name: `Dado de ${msg.author.tag}`, iconURL: msg.author.avatarURL({ dynamic: true }) })
-            .setDescription(`${diceResult.join(' ')}`)
-            .addFields([{ name: `🎲 - ${dice}`, value: `Has Perdido ${betCoins} ${guild.coinName} ...` }]);
-
-        if (multiplier !== 0) {
-            Utils.addCoins(msg.author.id, msg.guild, betCoins * multiplier);
-            msg.channel.send({ embeds: [winnerEmbed] });
-        } else {
-            Utils.removeCoins(msg.author.id, msg.guild, betCoins);
-            msg.channel.send({ embeds: [loserEmbed] });
-        }
+        const row = new ActionRowBuilder()
+            .addComponents(
+                new StringSelectMenuBuilder()
+                    .setCustomId('selections')
+                    .setPlaceholder('Elige que tipo de jugada quieres hacer')
+                    .addOptions(
+                        {
+                            label: 'Inicio',
+                            description: 'Panel principal con todas las categorías',
+                            value: 'first',
+                        },
+                        {
+                            label: 'Economía',
+                            description: 'Panel con comandos de economía',
+                            value: 'second',
+                        },
+                        {
+                            label: 'Utilidad',
+                            description: 'Panel con comandos de utilidad',
+                            value: 'third',
+                        },
+                        {
+                            label: 'Administración',
+                            description: 'Panel con comandos de administracion',
+                            value: 'fourth',
+                        }
+                    )
+            );
     }
 }

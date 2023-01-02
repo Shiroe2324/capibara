@@ -30,12 +30,11 @@ module.exports = {
      * @param {Client} client - El cliente del bot.
      */
     execute: async (msg, args, client) => {
-        const user = client.users.fetch(args[0]); // se busca si el usuario en discord
-        if (!user) return msg.reply('El usuario no existe.'); // se verifica si existe
+        const user = client.users.fetch(args[0]);
+        if (!user) return msg.reply('El usuario no existe.');
      
-        const userdb = await Utils.user(args[0], 'global'); // base de datos del usuario
+        const userdb = await Utils.user(args[0], 'global');
 
-        // se añade la blacklist al usuario
         userdb.blacklist = true;
         await userdb.save();
         msg.reply('El usuario se ha añadido a la blacklist.');

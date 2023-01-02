@@ -1,5 +1,4 @@
 module.exports = {
-    // funciones de ayuda
     activedCommand: require('./utils/activedCommand'),
     addCoins: require('./utils/addCoins'),
     addXp: require('./utils/addXp'),

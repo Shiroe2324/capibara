@@ -36,10 +36,10 @@ module.exports = {
      */
     execute: async (msg, args, client) => {
         Utils.activedCommand(msg.author.id, 'add');
-        const search = await Utils.findMember(msg, args, true); // funcion para buscar miembros en un server
+        const search = await Utils.findMember(msg, args, true);
         Utils.activedCommand(msg.author.id, 'remove');
 
-        if (search.error) return search.message({ content: search.messageError, embeds: [], components: [] }); // verificador si hay algun error al buscar el miembro
+        if (search.error) return search.message({ content: search.messageError, embeds: [], components: [] });
 
         Utils.setCooldown('balance', msg.author.id);
 

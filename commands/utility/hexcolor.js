@@ -35,16 +35,14 @@ module.exports = {
      * @param {Client} client - El cliente del bot.
      */
     execute: async (msg, args, client) => {
-        // se verifica por medio de una RegExp si el color dado es correcto, ejemplos: ['#D9022B', 'FF00FF', '#abcdef']
         if (!/^#?[0-9a-f]{6}$/i.test(args[0])) return msg.reply('Tienes que colocar un color en formato hex válido!');
 
-        Utils.setCooldown('hexcolor', msg.author.id); // se establece el cooldown
+        Utils.setCooldown('hexcolor', msg.author.id);
 
         try {
-            const color = args[0].toLowerCase().replace('#', ''); // se quita el # y las letras se pasan a minusculas
-            const { body } = await superagent.get(`https://api.alexflipnote.dev/color/${color}`) // se busca por medio de una API el color dado
+            const color = args[0].toLowerCase().replace('#', ''); 
+            const { body } = await superagent.get(`https://api.alexflipnote.dev/color/${color}`)
 
-            // embed con los datos del color
             const embed = new EmbedBuilder()
                 .setColor(`#${color}`)
                 .setTitle(body.name)
@@ -54,9 +52,9 @@ module.exports = {
                     { name: '**RGB**', value: `${body.rgb.values[0]}, ${body.rgb.values[1]}, ${body.rgb.values[2]}`, inline: true }
                 ]);
 
-            msg.reply({ embeds: [embed] }); // se envía el embed
+            msg.reply({ embeds: [embed] });
         } catch (e) {
-            msg.reply(`Sucedió un error al buscar el color: ${e}`) // si hay un error al buscar el color, se le informa al usuario
+            msg.reply(`Sucedió un error al buscar el color: ${e}`);
         }
 
     }

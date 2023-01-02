@@ -35,12 +35,11 @@ module.exports = {
      * @param {Client} client - El cliente del bot.
      */
     execute: async (msg, args, client) => {
-        Utils.setCooldown('work', msg.author.id); // se establece el cooldown
+        Utils.setCooldown('work', msg.author.id);
 
         const guild = await Utils.guildFetch(msg.guild.id);
-        const money = Utils.random(400) + 100; // coins obtenidas (entre 100 a 500)
+        const money = Utils.random(400) + 100;
 
-        // lista de los posibles mensajes
         const texts = [
             `**${msg.author.username}** trabajaste bañando capibaras y ganaste **${money}** ${guild.coinName}`,
             `**${msg.author.username}** trabajaste dandole de comer a los capibaras y ganaste **${money}** ${guild.coinName}`,
@@ -48,9 +47,9 @@ module.exports = {
             `**${msg.author.username}** jugaste con los carpinchos y el cuidador te dió **${money}** ${guild.coinName} como agradecimiento`
         ];
 
-        Utils.addCoins(msg.author.id, msg.guild.id, money); // se añaden las coins a la base de datos del usuario en el servidor
-        const message = Utils.random(texts); // se elige un mensaje de la lista aleatoriamente
+        Utils.addCoins(msg.author.id, msg.guild.id, money); 
+        const message = Utils.random(texts);
 
-        msg.channel.send(message) // se manda el mensaje
+        msg.channel.send(message)
     }
 }

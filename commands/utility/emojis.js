@@ -34,14 +34,12 @@ module.exports = {
      * @param {Client} client - El cliente del bot.
      */
     execute: async (msg, args, client) => {
-        Utils.setCooldown('emojis', msg.author.id); // se establece el cooldown
+        Utils.setCooldown('emojis', msg.author.id);
 
         const emojis = msg.guild.emojis.cache.map(emoji => `${emoji} - \`${emoji}\` (**[Link](${emoji.url})**)`); // la lista de emojis del servidor
 
-        // se verifica si no hay emojis
         if (emojis.length === 0) return msg.reply('El servidor no cuenta con emojis.');
 
-        // embed interactivo con paginas
         const embed = (index) => {
             const current = emojis.slice(index, index + 10);
             return new EmbedBuilder()
@@ -52,7 +50,6 @@ module.exports = {
                 .setColor(Utils.color)
         }
 
-        // se ejecuta la funcion que genera el embed con las paginas
         Utils.pageSystem(msg, embed, emojis.length, 120000, true);
     }
 }

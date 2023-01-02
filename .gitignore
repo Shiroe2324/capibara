@@ -1,5 +1,3 @@
 node_modules
 .env
-.replit
-replit.nix
-.upm
+.vscode

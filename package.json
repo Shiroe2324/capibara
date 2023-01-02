@@ -1,35 +1,35 @@
 {
-  "name": "desktop",
-  "version": "1.0.0",
-  "description": "Un bot de discord hecho en discord.js con tematica de capibara, y principalmente con comandos estilo casino!",
-  "main": "index.js",
-  "scripts": {
-    "start": "node ."
-  },
-  "engines": {
-    "node": "18.12.1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Shiroe2324/capibara.git"
-  },
-  "keywords": [
-    "Discord",
-    "Bot",
-    "Casino"
-  ],
-  "author": "Shiroe2324",
-  "license": "ISC",
-  "dependencies": {
-    "@types/node": "^18.0.6",
-    "discord.js": "^14.7.1",
-    "dotenv": "^16.0.3",
-    "mongoose": "^6.7.5",
-    "node-fetch": "^3.2.6",
-    "superagent": "^8.0.6"
-  },
-  "bugs": {
-    "url": "https://github.com/Shiroe2324/capibara/issues"
-  },
-  "homepage": "https://github.com/Shiroe2324/capibara#readme"
+    "name": "carpinbot",
+    "version": "1.0.0",
+    "description": "Un bot de discord hecho en discord.js con tematica de capibara, y principalmente con comandos estilo casino!",
+    "main": "index.js",
+    "scripts": {
+        "start": "node ."
+    },
+    "engines": {
+        "node": "18.12.1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Shiroe2324/capibara.git"
+    },
+    "keywords": [
+        "Discord",
+        "Bot",
+        "Casino"
+    ],
+    "author": "Shiroe2324",
+    "license": "ISC",
+    "dependencies": {
+        "@types/node": "^18.0.6",
+        "discord.js": "^14.7.1",
+        "dotenv": "^16.0.3",
+        "mongoose": "^6.7.5",
+        "node-fetch": "^3.2.6",
+        "superagent": "^8.0.6"
+    },
+    "bugs": {
+        "url": "https://github.com/Shiroe2324/capibara/issues"
+    },
+    "homepage": "https://github.com/Shiroe2324/capibara#readme"
 }

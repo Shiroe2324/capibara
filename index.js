@@ -1,5 +1,5 @@
 require('dotenv').config();
-require('http').createServer((req, res) => res.end('hola UwUr')).listen();
+require('http').createServer((req, res) => res.end('hello world')).listen(); // servidor http para el mantenimiento del bot
 
 // ————————————————————— INICIO DEL BOT ————————————————————— //
 

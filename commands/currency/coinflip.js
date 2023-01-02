@@ -36,12 +36,11 @@ module.exports = {
      */
     execute: async (msg, args, client) => {
         const guild = await Utils.guildFetch(msg.guild.id);
-        const userSide = args[0]?.replace(/^(h|head)$/i, 'head').replace(/^(t|tails)$/i, 'tails'); // el lado escogido por el usuario ['head', 'tails']
-        const user = await Utils.userFetch(msg.author.id, msg.guild.id); // base de datos del usuario
-        const formatedCoins = await Utils.setCoinsFormat(user, args[1]); // se formatean las monedas dadas
-        const betCoins = Math.round(formatedCoins); // se redondean a un número entero las monedas dadas
+        const userSide = args[0]?.replace(/^(h|head)$/i, 'head').replace(/^(t|tails)$/i, 'tails');
+        const user = await Utils.userFetch(msg.author.id, msg.guild.id);
+        const formatedCoins = await Utils.setCoinsFormat(user, args[1]); 
+        const betCoins = Math.round(formatedCoins);
 
-        // se verifica si la cantidad de monedas dadas es numero, si el usuario tiene las monedas suficientes, o si apuesta más de 20 monedas
         if (isNaN(betCoins)) {
             return msg.reply(`Tienes que colocar una cantidad de ${guild.coinName} valida!`)
         } else if (user.coins < betCoins) {
@@ -52,17 +51,15 @@ module.exports = {
             return msg.reply(`Tienes que colocar uno de los dos lados de la moneda **[h/t]** o **[head/tails]**!`);
         }
 
-        Utils.setCooldown('coinflip', msg.author.id); // se establece el cooldown
+        Utils.setCooldown('coinflip', msg.author.id);
 
-        const side = Utils.random(['head', 'tails']); // el lado escogido por el sistema
+        const side = Utils.random(['head', 'tails']);
 
-        // embed del resultado
+
         const embed = new EmbedBuilder()
             .setAuthor({ name: msg.author.tag, iconURL: msg.author.avatarURL({ dynamic: true }) })
             .setDescription(`en la moneda Salió **${side}**`)
 
-        /*se verifica si el lado escogido por el usuario es el mismo escogido por el sistema, si es asi se le añaden las coins apostadas
-        en caso contrario se le retiran las coins apostadas*/
         if (side === userSide) {
             embed.setColor(0x00ff00).addFields([{ name: 'Ganaste!!', value: `Has ganado **${betCoins}** ${guild.coinName}` }]);
             Utils.addCoins(msg.author.id, msg.guild.id, betCoins);
@@ -71,6 +68,6 @@ module.exports = {
             Utils.removeCoins(msg.author.id, msg.guild.id, betCoins);
         }
 
-        msg.reply({ embeds: [embed] }); // se envía el embed
+        msg.reply({ embeds: [embed] });
     }
 }

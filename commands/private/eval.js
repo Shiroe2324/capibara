@@ -32,21 +32,20 @@ module.exports = {
      * @param {Client} client - El cliente del bot.
      */
     execute: async (msg, args, client) => {
-        const code = args.join(" "); // codigo a evaluar 
-        if (!code) return msg.channel.send("???"); // verificador si se colocó el codigo
+        const code = args.join(" ");
+        if (!code) return msg.channel.send("???");
 
         try {
-            const evaled = await eval(code); // codigo evaluado
-            const result = inspect(evaled, { depth: 0 }); // resultado del codigo evaluado
+            const evaled = await eval(code);
+            const result = inspect(evaled, { depth: 0 });
 
-            // verificador si el mensaje no se pasa del limite de caracteres
             if (result.length <= 2000) {
-                msg.channel.send(Discord.codeBlock('js', result))
+                msg.channel.send(Discord.codeBlock('js', result));
             } else {
-                msg.channel.send(Discord.codeBlock('yaml', 'el resultado es muy largo'))
+                msg.channel.send(Discord.codeBlock('yaml', 'el resultado es muy largo'));
             }
         } catch (err) {
-            msg.channel.send(Discord.codeBlock('js', err)) // mensaje cuando el codigo evaluado tiene un error
+            msg.channel.send(Discord.codeBlock('js', err));
         }
     }
 }

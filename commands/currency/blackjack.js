@@ -41,7 +41,7 @@ module.exports = {
     aliases: ['bj'],
     cooldown: 10000,
     category: 'economia',
-    description: 'Juega contra la maquina para apostar monedas! las partidas tienen una duración de 2 minutos como maximo.\nPara mas información sobre como jugar blackjack, puedes visitar [Wikipedia](https://es.wikipedia.org/wiki/Blackjack)',
+    description: 'Un juego de Blackjack en solitario contra la maquina!\nlas partidas tienen una duración de 2 minutos como maximo.\nPara mas información sobre como jugar blackjack, puedes visitar [Wikipedia](https://es.wikipedia.org/wiki/Blackjack)',
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
@@ -58,12 +58,11 @@ module.exports = {
      * @param {Client} client - El cliente del bot.
      */
     execute: async (msg, args, client) => {
-        const guild = await Utils.guildFetch(msg.guild.id); // base de datos del servidor
-        const user = await Utils.userFetch(msg.author.id, msg.guild.id); // base de datos del usuario en el servidor
-        const formatedCoins = await Utils.setCoinsFormat(user, args[0]); // se formatean las monedas dadas
-        const betCoins = Math.round(formatedCoins); // se redondean a un número entero las monedas dadas
+        const guild = await Utils.guildFetch(msg.guild.id);
+        const user = await Utils.userFetch(msg.author.id, msg.guild.id);
+        const formatedCoins = await Utils.setCoinsFormat(user, args[0]);
+        const betCoins = Math.round(formatedCoins);
 
-        // se verifica si la cantidad de monedas dadas es numero, si el usuario tiene las monedas suficientes, o si apuesta más de 20 monedas
         if (isNaN(betCoins)) {
             return msg.reply(`Tienes que colocar una cantidad de ${guild.coinName} valida!`)
         } else if (user.coins < betCoins) {

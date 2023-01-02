@@ -34,13 +34,11 @@ module.exports = {
      * @param {Client} client - El cliente del bot.
      */
     execute: async (msg, args, client) => {
-        const channel = msg.mentions.channels.first() || msg.guild.channels.cache.get(args[0]) || msg.channel; // el canal seleccionado
-        const message = client.snipes.get(channel.id); // el ultimo mensaje eliminado del canal seleccionado
+        const channel = msg.mentions.channels.first() || msg.guild.channels.cache.get(args[0]) || msg.channel;
+        const message = client.snipes.get(channel.id);
 
-        // verificador por si no se ha borrado ningún mensaje recientemente en el canal
         if (!message) return msg.reply(`No se ha borrado ningún mensaje recientemente en ${channel}.`);
 
-        // embed con la información del mensaje eliminado
         const embed = new EmbedBuilder()
             .setAuthor({ name: message.data.author.tag })
             .setThumbnail(message.data.author.avatarURL({ dynamic: true, size: 2048 }))
@@ -48,7 +46,6 @@ module.exports = {
             .setTimestamp(message.time)
             .setColor(Utils.color);
 
-        // se envía el embed
         msg.channel.send({ embeds: [embed] })
     }
 }

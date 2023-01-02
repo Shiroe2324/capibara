@@ -35,17 +35,16 @@ module.exports = {
      * @param {Client} client - El cliente del bot.
      */
     execute: async (msg, args, client) => {
-        Utils.setCooldown('randomcolor', msg.author.id); // se establece el cooldown
+        Utils.setCooldown('randomcolor', msg.author.id);
 
         try {
             let color = '';
-            for (let x = 0; x < 6; x++) {
+            while (color.length <= 6) {
                 color += `${Utils.random(16).toString(16)}`;
             };
 
-            const { body } = await superagent.get(`https://api.alexflipnote.dev/color/${color}`) // se busca por medio de una API el color
+            const { body } = await superagent.get(`https://api.alexflipnote.dev/color/${color}`)
 
-            // embed con los datos del color
             const embed = new EmbedBuilder()
                 .setColor(`#${color}`)
                 .setTitle(body.name)
@@ -55,9 +54,9 @@ module.exports = {
                     { name: '**RGB**', value: `${body.rgb.values[0]}, ${body.rgb.values[1]}, ${body.rgb.values[2]}`, inline: true }
                 ]);
 
-            msg.reply({ embeds: [embed] }); // se envía el embed
+            msg.reply({ embeds: [embed] });
         } catch (e) {
-            msg.reply(`Sucedió un error al buscar el color: ${e}`) // si hay un error al buscar el color, se le informa al usuario
+            msg.reply(`Sucedió un error al buscar el color: ${e}`);
         }
 
     }

@@ -34,13 +34,11 @@ module.exports = {
      * @param {Client} client - El cliente del bot.
      */
     execute: async (msg, args, client) => {
-        const channel = msg.mentions.channels.first() || msg.guild.channels.cache.get(args[0]) || msg.channel; // el canal seleccionado
-        const message = client.editsnipes.get(channel.id); // el ultimo mensaje eliminado del canal seleccionado
+        const channel = msg.mentions.channels.first() || msg.guild.channels.cache.get(args[0]) || msg.channel;
+        const message = client.editsnipes.get(channel.id);
 
-        // verificador por si no se ha editado ningún mensaje recientemente en el canal
         if (!message) return msg.reply(`No se ha editado ningún mensaje recientemente en ${channel}.`);
 
-        // embed con la información del mensaje editado antiguo
         const oldMessageEmbed = new EmbedBuilder()
             .setAuthor({ name: message.old.author.tag, iconURL: message.old.author.avatarURL({ dynamic: true }) })
             .setTitle('Antiguo mensaje')
@@ -48,7 +46,6 @@ module.exports = {
             .setTimestamp(message.old.createdAt)
             .setColor(Utils.color);
 
-        // embed con la información del mensaje editado nuevo
         const newMessageEmbed = new EmbedBuilder()
             .setAuthor({ name: message.new.author.tag, iconURL: message.old.author.avatarURL({ dynamic: true }) })
             .setTitle('Nuevo mensaje')
@@ -56,7 +53,6 @@ module.exports = {
             .setTimestamp(message.time)
             .setColor(Utils.color);
 
-        // se envía el embed
         msg.channel.send({ embeds: [oldMessageEmbed, newMessageEmbed] })
     }
 }
