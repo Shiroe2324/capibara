@@ -6,6 +6,9 @@
   "scripts": {
     "start": "node ."
   },
+  “engines”: {
+    “node”: “18.12.1”
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Shiroe2324/capibara.git"
