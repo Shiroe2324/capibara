@@ -1,14 +1,5 @@
-require('dotenv').config()
-const express = require('express')
-const app = express()
-
-app.get('/', (req, res) => {
-    res.send('Hello World')
-});
-
-app.listen(3000, () => {
-    console.log('listo')
-});
+require('dotenv').config();
+require('http').createServer((req, res) => res.end('hola UwUr')).listen();
 
 // ————————————————————— INICIO DEL BOT ————————————————————— //
 
@@ -94,7 +85,6 @@ client.on(Events.MessageUpdate, (oldMessage, newMessage) => {
     if (oldMessage.author.bot) return; // se retorna si el autor del mensaje es un bot
     client.editsnipes.set(oldMessage.channel.id, { old: oldMessage, new: newMessage, time: Date.now() }); // se guarda la información del mensaje editado
 });
-
 
 // inicio de sesión del bot
 client.login(process.env['TOKEN']);
