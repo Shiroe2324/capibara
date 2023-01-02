@@ -6,8 +6,8 @@ const userFetch = require('./userFetch');
  * @param {number} xp - la xp a añadir.
  * @returns {boolean} un boolean si el usuario sube de nivel.
  */
-module.exports = async (userId, xp) => {
-    const user = await userFetch(userId, 'global'); // base de datos global del usuario
+module.exports = async (userId, guildId, xp) => {
+    const user = await userFetch(userId, guildId); // base de datos global del usuario
 
     user.xp += xp; // xp añadida
     user.level = Math.floor(0.1 * Math.sqrt(user.xp)); // level que tiene por su xp

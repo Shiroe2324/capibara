@@ -46,11 +46,7 @@ module.exports = async (msg, embed, size, time, disabled = false) => {
     };
 
     // el recolector de los botones
-    const collector = message.channel.createMessageComponentCollector({
-        filter,
-        componentType: ComponentType.Button,
-        time: time
-    });
+    const collector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, time: time });
 
     let index = 0; // index actual de la lista
 

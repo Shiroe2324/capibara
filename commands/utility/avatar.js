@@ -34,7 +34,9 @@ module.exports = {
      * @param {Client} client - El cliente del bot.
      */
     execute: async (msg, args, client) => {
+        Utils.activedCommand(msg.author.id, 'add');
         const search = await Utils.findMember(msg, args, true); // funcion para buscar miembros en un server
+        Utils.activedCommand(msg.author.id, 'remove');
 
         if (search.error) return search.message({ content: search.messageError, embeds: [], components: [] }); // verificador si hay algun error al buscar el miembro
 
@@ -85,7 +87,7 @@ module.exports = {
             };
 
             // el collector que verificará los botones
-            const collector = buttonMessage.channel.createMessageComponentCollector({ filter, time: 60000, componentType: ComponentType.Button });
+            const collector = buttonMessage.createMessageComponentCollector({ filter, time: 60000, componentType: ComponentType.Button });
 
             // evento cuando un boton es presionado
             collector.on('collect', async (interaction) => {

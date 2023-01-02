@@ -58,7 +58,7 @@ module.exports = async (msg, args, allowedAuthor = false) => {
                     .setAuthor({ name: msg.author.tag, iconURL: msg.author.avatarURL({ dynamic: true }) })
                     .setTitle('Lista de miembros encontrados')
                     .setDescription(current.join('\n'))
-                    .setColor(process.env.COLOR)
+                    .setColor(process.env['COLOR'])
                     .setFooter({ text: 'Coloca el numero que está al lado del nombre para elegir a esa persona\nTambien puedes colocar cancel para cancelar' });
             }
 

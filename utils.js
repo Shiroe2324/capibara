@@ -1,5 +1,6 @@
 module.exports = {
     // funciones de ayuda
+    activedCommand: require('./utils/activedCommand'),
     addCoins: require('./utils/addCoins'),
     addXp: require('./utils/addXp'),
     findMember: require('./utils/findMember'),
@@ -11,6 +12,7 @@ module.exports = {
     setCoinsFormat: require('./utils/setCoinsFormat'),
     setCooldown: require('./utils/setCooldown'),
     setTimeFormat: require('./utils/setTimeFormat'),
+    shuffle: require('./utils/shuffle'),
     userFetch: require('./utils/userFetch'),
     weightedRandom: require('./utils/weightedRandom'),
 
@@ -18,10 +20,7 @@ module.exports = {
     schemas: require('./utils/schemas'),
 
     /**color universal del bot*/
-    color: process.env.COLOR,
-
-    /**nombre de la moneda universal del bot*/
-    coin: process.env.COIN_NAME,
+    color: process.env['COLOR'],
     
     /**permisos en español de los servidores de discord*/
     Permissions: {

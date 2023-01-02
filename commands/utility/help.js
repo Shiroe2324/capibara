@@ -58,7 +58,7 @@ module.exports = {
             let fields = [{ name: 'Uso', value: `\`${guild.prefix}${command.usage}\`` }];
 
             if (command.aliases.length !== 0) fields.push({ name: 'Aliases', value: command.aliases.join(', ') });
-            if (command.cooldown !== 0) fields.push({ name: 'Cooldown', value: Utils.setTimeFormat(Date.now() + command.cooldown) });
+            if (command.cooldown !== 0) fields.push({ name: 'Cooldown', value: Utils.setTimeFormat(Date.now() + command.cooldown + 700) });
 
             const botPermissions = new PermissionsBitField(command.botPermissions).toArray().map(permission => Utils.Permissions[permission]);
             const userPermissions = new PermissionsBitField(command.userPermissions).toArray().map(permission => Utils.Permissions[permission]);
@@ -68,7 +68,7 @@ module.exports = {
 
             const commandEmbed = new EmbedBuilder()
                 .setAuthor({ name: command.name, iconURL: client.user.avatarURL() })
-                .setDescription(command.description)
+                .setDescription(command.description.split('{coins}').join(guild.coinName))
                 .addFields(fields)
                 .setFooter({ text: 'Sintaxis: (opcional) [requerido]' })
                 .setColor(Utils.color)
@@ -95,7 +95,7 @@ module.exports = {
 
         const economyEmbed = new EmbedBuilder()
             .setAuthor({ name: 'Economía', iconURL: client.user.avatarURL() })
-            .setDescription(`Estos son los comandos de \`Economia\`.\nPuedes usarlos para ganar o administrar tus **${Utils.coin}/${guild.coinName}**.\n\nPuedes ver información mas detallada de un comando con \`${guild.prefix}help (comando)\``)
+            .setDescription(`Estos son los comandos de \`Economia\`.\nPuedes usarlos para ganar o administrar tus **${guild.coinName}**.\n\nPuedes ver información mas detallada de un comando con \`${guild.prefix}help (comando)\``)
             .setColor(Utils.color)
             .addFields([{ name: 'Comandos', value: setBlockFormat(economyCommands) }]);
 
@@ -148,7 +148,7 @@ module.exports = {
             return interaction.reply({ content: `solamente **${msg.author.tag}** puede hacer eso!`, ephemeral: true });
         };
 
-        const collector = message.channel.createMessageComponentCollector({ filter, time: 120000, componentType: ComponentType.StringSelect });
+        const collector = message.createMessageComponentCollector({ filter, time: 120000, componentType: ComponentType.StringSelect });
 
         collector.on('collect', async (interaction) => {
             switch (interaction.values[0]) {

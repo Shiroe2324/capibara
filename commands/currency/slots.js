@@ -14,11 +14,11 @@ const Utils = require('../../utils');
  */
 module.exports = {
     name: 'slot',
-    usage: 'slot [cantidad] (-s)',
+    usage: 'slot [cantidad]',
     aliases: ['slots'],
     cooldown: 5000,
     category: 'economia',
-    description: 'Un tragamonedas el cual se gana si hay una linea vertical, diagonal u horizontal de tres emojis iguales.\nCada emoji tiene su valor, van de 0.5 - 1.0 y 2.0 de multiplicador.\nPuedes colocar **-s** al final para apostar monedas del servidor.',
+    description: 'Un tragamonedas el cual se gana si hay una linea vertical, diagonal u horizontal de tres emojis iguales.\nCada emoji tiene su valor, van de 0.5, 1.0 y 2.0 de multiplicador.',
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
@@ -36,26 +36,17 @@ module.exports = {
      */
     execute: async (msg, args, client) => {
         const guild = await Utils.guildFetch(msg.guild.id); // base de datos del servidor
-        let guildType = 'global'; // base de datos donde se guardarán las monedas
-        let coinsName = Utils.coin; // el tipo de moneda usada
-        
-        // se verifica si se usarán monedas del servidor o globales
-        if (args[1] === '-s') {
-            guildType = msg.guild.id;
-            coinsName = guild.coinName;
-        }
-
-        const user = await Utils.userFetch(msg.author.id, guildType); // base de datos del usuario
+        const user = await Utils.userFetch(msg.author.id, msg.guild.id); // base de datos del usuario en el servidor
         const formatedCoins = await Utils.setCoinsFormat(user, args[0]); // se formatean las monedas dadas
         const betCoins = Math.round(formatedCoins); // las se redondean a un número entero las monedas dadas
 
         // se verifica si la cantidad de monedas dadas es numero, si el usuario tiene las monedas suficientes, o si apuesta más de 20 monedas
         if (isNaN(betCoins)) {
-            return msg.reply(`Tienes que colocar una cantidad de ${coinsName} valida!`)
+            return msg.reply(`Tienes que colocar una cantidad de ${guild.coinName} valida!`)
         } else if (user.coins < betCoins) {
-            return msg.reply(`No puedes apostar **más ${coinsName}** de las que posees actualmente!`);
+            return msg.reply(`No puedes apostar **más ${guild.coinName}** de las que posees actualmente!`);
         } else if (betCoins < 20) {
-            return msg.reply(`No puedes apostar menos de **20 ${coinsName}**!`);
+            return msg.reply(`No puedes apostar menos de **20 ${guild.coinName}**!`);
         }
 
         Utils.setCooldown('slot', msg.author.id); // se establece el cooldown
@@ -117,13 +108,13 @@ module.exports = {
             .setDescription(table.join('\n'))
 
         /*se verifica si ganó como minimo en una linea, si es asi se coloca que ganó junto con la cantidad ganada y el embed de color verde y se le agregan las monedas
-        en caso contrario, se le coloca que perdií junto con la cantidad de monedas perdidasm y se le quitan las monedas apostadas*/
+        en caso contrario, se le coloca que perdió junto con la cantidad de monedas perdidas y se le quitan las monedas apostadas*/
         if (multiplier === 0) {
-            embed.setColor(0xff0000).addFields([{ name: 'Perdiste...', value: `Lastimosamente has perdido **${betCoins}** ${coinsName}` }]);
-            Utils.removeCoins(msg.author.id, guildType, betCoins);
+            embed.setColor(0xff0000).addFields([{ name: 'Perdiste...', value: `Lastimosamente has perdido **${betCoins}** ${guild.coinName}` }]);
+            Utils.removeCoins(msg.author.id, msg.guild.id, betCoins);
         } else {
-            embed.setColor(0x00ff00).addFields([{ name: 'Ganaste!!', value: `Has ganado **${Math.floor(betCoins * multiplier)}** ${coinsName}` }]);
-            Utils.addCoins(msg.author.id, guildType, Math.floor(betCoins * multiplier));
+            embed.setColor(0x00ff00).addFields([{ name: 'Ganaste!!', value: `Has ganado **${Math.floor(betCoins * multiplier)}** ${guild.coinName}` }]);
+            Utils.addCoins(msg.author.id, msg.guild.id, Math.floor(betCoins * multiplier));
         }
 
         msg.reply({ embeds: [embed] }); // se envía el embed

@@ -16,9 +16,9 @@ module.exports = {
     name: 'balance',
     usage: 'balance',
     aliases: ['bal'],
-    cooldown: 1000,
+    cooldown: 5000,
     category: 'economia',
-    description: 'Muestra tu balance (global y del servidor).',
+    description: 'Muestra la cantidad de {coins} que tienes en el servidor.',
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
@@ -35,15 +35,20 @@ module.exports = {
      * @param {Client} client - El cliente del bot.
      */
     execute: async (msg, args, client) => {
+        Utils.activedCommand(msg.author.id, 'add');
+        const search = await Utils.findMember(msg, args, true); // funcion para buscar miembros en un server
+        Utils.activedCommand(msg.author.id, 'remove');
+
+        if (search.error) return search.message({ content: search.messageError, embeds: [], components: [] }); // verificador si hay algun error al buscar el miembro
+
         Utils.setCooldown('balance', msg.author.id);
 
-        const globalUser = await Utils.userFetch(msg.author.id, 'global');
-        const guildUser = await Utils.userFetch(msg.author.id, msg.guild.id);
-        const guild = await Utils.guildFetch(msg.guild.id);
+        const user = await Utils.userFetch(search.member.id, msg.guild.id);
+        const guild = await Utils.guildFetch(search.member.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('Tu balance es')
-            .setDescription(`**${Utils.coin}**: ${globalUser.coins}\n**${guild.coinName}**: ${guildUser.coins}`)
+            .setAuthor({ name: `Balance de ${search.member.user.tag}`, iconURL: search.member.user.avatarURL({ dynamic: true }) }, msg.author.displayName)
+            .setTitle(`**${user.coins}** ${guild.coinName}`)
             .setColor(Utils.color);
 
         msg.reply({ embeds: [embed] })
