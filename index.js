@@ -50,9 +50,9 @@ client.on(Events.MessageCreate, async (msg) => {
     const command = client.commands.get(commandName) || client.commands.find((cmd) => cmd.aliases.includes(commandName));
     if (!command) return; // verificador si el comando ejecutado existe
 
-    // verificador si el comando es solo para el creador del bot
+    // verificador si el comando es solo para los creadores del bot
     if (command.onlyCreator) {
-        if (msg.author.id != process.env['OWNER']) return;
+        if (!process.env['OWNERS'].split(' ').some(owner => msg.author.id === owner)) return;
     }
 
     // verificador por si el usuario se encuentra con un comando activado
