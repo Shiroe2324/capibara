@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node ."
   },
-  “engines”: {
-    “node”: “18.12.1”
+  "engines": {
+    "node": "18.12.1"
   },
   "repository": {
     "type": "git",
