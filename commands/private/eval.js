@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { PermissionFlagsBits, Message, Client } = Discord;
+const { PermissionFlagsBits, Message, Client, codeBlock } = Discord;
 const { inspect } = require('util');
 const Utils = require('../../utils');
 
@@ -35,17 +35,23 @@ module.exports = {
         const code = args.join(" ");
         if (!code) return msg.channel.send("???");
 
+        const command = async (name, arg) => {
+            const cmd = client.commands.get(name) || client.commands.find((c) => c.aliases.includes(name));
+            if (!cmd) return 'no se encontró ningún comando con ese nombre.';
+            return await cmd.execute(msg, arg, client);
+        };
+
         try {
             const evaled = await eval(code);
             const result = inspect(evaled, { depth: 0 });
 
-            if (result.length <= 2000) {
-                msg.channel.send(Discord.codeBlock('js', result));
-            } else {
-                msg.channel.send(Discord.codeBlock('yaml', 'el resultado es muy largo'));
+            const results = Utils.separateString(1990, result);
+            for (const x of results) {
+                msg.channel.send(codeBlock('js', x));
             }
+            
         } catch (err) {
-            msg.channel.send(Discord.codeBlock('js', err));
+            msg.channel.send(codeBlock('js', err));
         }
     }
 }

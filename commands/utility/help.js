@@ -159,9 +159,11 @@ module.exports = {
             }
         });
 
-        collector.on('end', (collected) => {
-            const quoteEmbed = EmbedBuilder.from(message.embeds[0]);
-            message.edit({ embeds: [quoteEmbed], components: [] });
+        collector.on('end', (collected, reason) => {
+            if (reason === 'time') {
+                const quoteEmbed = EmbedBuilder.from(message.embeds[0]);
+                message.edit({ embeds: [quoteEmbed], components: [] });
+            }
         })
     }
 }

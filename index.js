@@ -86,7 +86,7 @@ client.on(Events.MessageCreate, async (msg) => {
 // evento cuando se elimina un mensaje
 client.on(Events.MessageDelete, (msg) => {
     if (msg.author.bot) return; // se retorna si el author del mensaje es un bot
-    client.snipes.set(msg.channel.id, { data: msg, time: Date.now() }); // se guarda la información del mensaje eliminado
+    client.snipes.set(msg.channelId, { data: msg, time: Date.now() }); // se guarda la información del mensaje eliminado
 });
 
 // evento cuando se edita un mensaje

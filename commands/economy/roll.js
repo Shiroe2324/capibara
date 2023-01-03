@@ -261,6 +261,7 @@ module.exports = {
                     Utils.activedCommand(msg.author.id, 'remove');
                     Utils.activedCommand(oponent.id, 'remove');
                     Utils.setCooldown('roll', msg.author.id);
+                    requestCollector.stop('decline');
                     gameCollector.stop('decline')
                 }
             });
@@ -277,6 +278,7 @@ module.exports = {
                     }
 
                     if (userTotal === 1) {
+                        gameCollector.stop('user win');
                         Utils.addCoins(msg.author.id, msg.guild.id, betCoins * 2);
                         Utils.activedCommand(msg.author.id, 'remove');
                         Utils.activedCommand(oponent.id, 'remove');
@@ -285,6 +287,7 @@ module.exports = {
                         return await interaction.update({ embeds: [finishEmbed(msg.member, oponent)], components: [rowDisabled] });
                     }
                     if (oponentTotal === 1) {
+                        gameCollector.stop('oponent win');
                         Utils.addCoins(oponent.id, msg.guild.id, betCoins * 2);
                         Utils.activedCommand(msg.author.id, 'remove');
                         Utils.activedCommand(oponent.id, 'remove');

@@ -9,6 +9,7 @@ module.exports = {
     random: require('./utils/random'),
     removeAccents: require('./utils/removeAccents'),
     removeCoins: require('./utils/removeCoins'),
+    separateString: require('./utils/separateString'),
     setCoinsFormat: require('./utils/setCoinsFormat'),
     setCooldown: require('./utils/setCooldown'),
     setTimeFormat: require('./utils/setTimeFormat'),

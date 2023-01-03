@@ -40,7 +40,8 @@ module.exports = {
 
         if (search.error) return search.message({ content: search.messageError, embeds: [], components: [] });
 
-        if (!search.member.user.avatarURL()) return search.message({ content: 'El usuario mencionado no tiene avatar', embeds: [], components: [] });
+        if (search.member.id === msg.author.id && !search.member.user.avatarURL()) return search.message({ content: 'No tienes avatar!', embeds: [], components: [] });
+        if (!search.member.user.avatarURL()) return search.message({ content: 'El usuario mencionado no tiene avatar!', embeds: [], components: [] });
         
         Utils.setCooldown('avatar', msg.author.id);
 
