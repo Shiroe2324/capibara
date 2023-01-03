@@ -36,7 +36,7 @@ module.exports = {
      */
     execute: async (msg, args, client) => {
         Utils.activedCommand(msg.author.id, 'add');
-        const search = await Utils.findMember(msg, args, true);
+        const search = await Utils.findMember(msg, args, true, true);
         Utils.activedCommand(msg.author.id, 'remove');
 
         if (search.error) return search.message({ content: search.messageError, embeds: [], components: [] });
@@ -44,13 +44,13 @@ module.exports = {
         Utils.setCooldown('balance', msg.author.id);
 
         const user = await Utils.userFetch(search.member.id, msg.guild.id);
-        const guild = await Utils.guildFetch(search.member.id);
+        const guild = await Utils.guildFetch(msg.guild.id);
 
         const embed = new EmbedBuilder()
             .setAuthor({ name: `Balance de ${search.member.user.tag}`, iconURL: search.member.user.avatarURL({ dynamic: true }) }, msg.author.displayName)
-            .setTitle(`**${user.coins}** ${guild.coinName}`)
+            .setTitle(`**${user.coins}** ${guild.coin}`)
             .setColor(Utils.color);
 
-        msg.reply({ embeds: [embed] })
+        search.message({ embeds: [embed], components: [] });
     }
 }

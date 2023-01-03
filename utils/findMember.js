@@ -1,4 +1,4 @@
-const { Message, GuildMember, EmbedBuilder,  } = require('discord.js') // estructuras de algunos datos
+const { Message, GuildMember, EmbedBuilder, } = require('discord.js') // estructuras de algunos datos
 const pageSystem = require('./pageSystem'); // sistema de paginas
 
 /**
@@ -21,7 +21,7 @@ const updateMessage = (message, type) => {
  * @param {Boolean} allowedAuthor - Boolean para verificar si se incluye al autor del mensaje en la busqueda.
  * @returns {{member: GuildMember, message: updateMessage, error: boolean, messageError: string}} la informacion del miembro encontrado o un object si hubo algun error.
  */
-module.exports = async (msg, args, allowedAuthor = false) => {
+module.exports = async (msg, args, allowedAuthor = false, includeBots = false) => {
     let member = msg.mentions.members.first() || msg.guild.members.cache.get(args[0]); // busqueda del miembro por medio de mención o de id
     let message = updateMessage(msg, 'send');
     let error = false;
@@ -37,10 +37,13 @@ module.exports = async (msg, args, allowedAuthor = false) => {
         const name = args.join(' ')?.toLowerCase(); // nombre, tag o apodo de la persona a buscar
 
         // lista de miembros con ese nombre en su apodo o tag
-        const members = msg.guild.members.cache.filter(member => {
+        let members = msg.guild.members.cache.filter(member => {
             return member.user.tag?.toLowerCase().includes(name) || member.nickname?.toLowerCase().includes(name)
         }).map(x => x);
 
+        if (includeBots) {
+            members = members.filter(member => member.id !== client.user.id && !member.user.bot)
+        }
         // se verifica si no hay nombre, miembros con ese nombre o tag o si hay mas de un miembro con el
         if (!name) {
             error = true;

@@ -41,11 +41,11 @@ module.exports = {
         const betCoins = Math.round(formatedCoins);
 
         if (isNaN(betCoins)) {
-            return msg.reply(`Tienes que colocar una cantidad de ${guild.coinName} valida!`)
+            return msg.reply(`Tienes que colocar una cantidad de ${guild.coin} valida!`)
         } else if (user.coins < betCoins) {
-            return msg.reply(`No puedes apostar **más ${guild.coinName}** de las que posees actualmente!`);
+            return msg.reply(`No puedes apostar **más ${guild.coin}** de las que posees actualmente!`);
         } else if (betCoins < 20) {
-            return msg.reply(`No puedes apostar menos de **20 ${guild.coinName}**!`);
+            return msg.reply(`No puedes apostar menos de **20 ${guild.coin}**!`);
         }
 
         Utils.setCooldown('slot', msg.author.id);
@@ -63,7 +63,7 @@ module.exports = {
             { id: 5, image: '🍇', value: 2 },
             { id: 6, image: '🍓', value: 2 },
             { id: 7, image: '🎰', value: 4 },
-            { id: 0, image: guild.coinName, value: 5 }
+            { id: 0, image: guild.coin, value: 5 }
         ];
 
         for (let x = 0; x < 9; x++) {
@@ -108,14 +108,14 @@ module.exports = {
         ];
 
         const embed = new EmbedBuilder()
-            .setAuthor({ name: `Slots`, iconURL: msg.author.avatarURL({ dynamic: true }) })
+            .setAuthor({ name: client.user.username, iconURL: client.user.avatarURL() })
             .setDescription(table.join('\n'))
 
         if (multiplier === 0) {
-            embed.setColor(0xff0000).addFields([{ name: 'Perdiste...', value: `Lastimosamente has perdido **${betCoins}** ${guild.coinName}` }]);
+            embed.setColor(0xff0000).addFields([{ name: 'Perdiste...', value: `Lastimosamente has perdido **${betCoins}** ${guild.coin}` }]);
             Utils.removeCoins(msg.author.id, msg.guild.id, betCoins);
         } else {
-            embed.setColor(0x00ff00).addFields([{ name: 'Ganaste!!', value: `Has ganado **${Math.floor(betCoins * multiplier)}** ${guild.coinName}` }]);
+            embed.setColor(0x00ff00).addFields([{ name: 'Ganaste!!', value: `Has ganado **${Math.floor(betCoins * multiplier)}** ${guild.coin}` }]);
             Utils.addCoins(msg.author.id, msg.guild.id, Math.floor(betCoins * multiplier));
         }
 

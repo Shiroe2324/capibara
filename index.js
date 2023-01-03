@@ -22,6 +22,11 @@ client.once('ready', async () => {
 client.on(Events.MessageCreate, async (msg) => {
     const guild = await Utils.guildFetch(msg.guild.id); // base de datos del servidor
 
+    if (Utils.emoji(guild.coin, client).type === 'guild' && !Utils.emoji(guild.coin, client).existInBot) {
+        guild.coin = process.env['COIN_NAME'];
+        await guild.save();
+    }
+
     // filtro de mensajes
     if (msg.author.bot) return;
     if (!msg.content.startsWith(guild.prefix)) return;

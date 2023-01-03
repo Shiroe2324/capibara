@@ -64,11 +64,11 @@ module.exports = {
         const betCoins = Math.round(formatedCoins);
 
         if (isNaN(betCoins)) {
-            return msg.reply(`Tienes que colocar una cantidad de ${guild.coinName} valida!`)
+            return msg.reply(`Tienes que colocar una cantidad de ${guild.coin} valida!`)
         } else if (user.coins < betCoins) {
-            return msg.reply(`No puedes apostar **más ${guild.coinName}** de las que posees actualmente!`);
+            return msg.reply(`No puedes apostar **más ${guild.coin}** de las que posees actualmente!`);
         } else if (betCoins < 20) {
-            return msg.reply(`No puedes apostar menos de **20 ${guild.coinName}**!`);
+            return msg.reply(`No puedes apostar menos de **20 ${guild.coin}**!`);
         }
 
         Utils.activedCommand(msg.author.id, 'add');
@@ -113,9 +113,9 @@ module.exports = {
             .addComponents(button('hit', true), button('stand', true))
 
         const embed = (name, playerTotal, playerHandString, dealerTotal, dealerHandString, color = '#000000') => {
-            return new EmbedBuilder()
-                .setAuthor({ name: `${msg.author.tag} - Blackjack`, iconURL: msg.author.avatarURL({ dynamic: true }) })
-                .addFields([{ name: name, value: `${msg.author.username}: **${playerTotal}**\n${playerHandString.join(' | ')}\n\nDealer: **${dealerTotal}**\n${dealerHandString.join(' | ')}` }])
+            return new EmbedBuilder()            
+                .setAuthor({ name: client.user.username, iconURL: client.user.avatarURL() })
+                .addFields([{ name: name, value: `${msg.author.username}: **${playerTotal}**\n${playerHandString.join(' | ')}\n\n${client.user.username}: **${dealerTotal}**\n${dealerHandString.join(' | ')}` }])
                 .setColor(color);
         };
 
@@ -124,7 +124,7 @@ module.exports = {
             Utils.activedCommand(msg.author.id, 'remove');
             Utils.addCoins(msg.author.id, msg.guild.id, betCoins);
             return msg.channel.send({
-                embeds: [embed(`Blackjack! has ganado ${betCoins}${guild.coinName}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#00ff00')],
+                embeds: [embed(`Blackjack! has ganado ${betCoins}${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#00ff00')],
                 components: [rowDisabled]
             });
         }
@@ -162,7 +162,7 @@ module.exports = {
                     });
                 } else if (playerTotal === 21) {
                     await message.edit({
-                        embeds: [embed(`Blackjack! has ganado ${betCoins}${guild.coinName}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#00ff00')],
+                        embeds: [embed(`Blackjack! has ganado ${betCoins}${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#00ff00')],
                         components: [rowDisabled]
                     });
 
@@ -170,7 +170,7 @@ module.exports = {
                     gameStop()
                 } else {
                     await message.edit({
-                        embeds: [embed(`Fracasaste! has perdido ${betCoins}${guild.coinName}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#ff0000')],
+                        embeds: [embed(`Fracasaste! has perdido ${betCoins}${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#ff0000')],
                         components: [rowDisabled]
                     });
 
@@ -189,13 +189,13 @@ module.exports = {
 
                 if (dealerTotal > 21 || dealerTotal < playerTotal) {
                     await message.edit({
-                        embeds: [embed(`Ganaste! has ganado ${betCoins}${guild.coinName}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#00ff00')],
+                        embeds: [embed(`Ganaste! has ganado ${betCoins}${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#00ff00')],
                         components: [rowDisabled]
                     });
                     Utils.addCoins(msg.author.id, msg.guild.id, betCoins);
                 } else if (dealerTotal > playerTotal) {
                     await message.edit({
-                        embeds: [embed(`Fracasaste! has perdido ${betCoins}${guild.coinName}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#ff0000')],
+                        embeds: [embed(`Fracasaste! has perdido ${betCoins}${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#ff0000')],
                         components: [rowDisabled]
                     });
                     Utils.removeCoins(msg.author.id, msg.guild.id, betCoins);
@@ -211,7 +211,7 @@ module.exports = {
         const collectorEnd = (collected, reason) => {
             if (reason === 'time') {
                 message.edit({
-                    embeds: [embed(`Se acabó el tiempo! has perdido ${betCoins}${guild.coinName}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#ff0000')],
+                    embeds: [embed(`Se acabó el tiempo! has perdido ${betCoins}${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#ff0000')],
                     components: [rowDisabled]
                 });
                 Utils.removeCoins(msg.author.id, msg.guild.id, betCoins);

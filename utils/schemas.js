@@ -25,7 +25,7 @@ const GuildSchema = new mongoose.Schema({
     id: { type: String }, // id del servidor
     date: { type: Date }, // fecha de creación de la base de datos
     prefix: { type: String, default: process.env['PREFIX'] }, // prefix del servidor
-    coinName: { type: String, default: process.env['COIN_NAME'] }, // nombre de la moneda del servidor
+    coin: { type: String, default: process.env['COIN_NAME'] }, // nombre de la moneda del servidor
 });
 
 module.exports = {

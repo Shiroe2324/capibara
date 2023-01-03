@@ -38,15 +38,15 @@ module.exports = {
         const guild = await Utils.guildFetch(msg.guild.id);
         const userSide = args[0]?.replace(/^(h|head)$/i, 'head').replace(/^(t|tails)$/i, 'tails');
         const user = await Utils.userFetch(msg.author.id, msg.guild.id);
-        const formatedCoins = await Utils.setCoinsFormat(user, args[1]); 
+        const formatedCoins = await Utils.setCoinsFormat(user, args[1]);
         const betCoins = Math.round(formatedCoins);
 
         if (isNaN(betCoins)) {
-            return msg.reply(`Tienes que colocar una cantidad de ${guild.coinName} valida!`)
+            return msg.reply(`Tienes que colocar una cantidad de ${guild.coin} valida!`)
         } else if (user.coins < betCoins) {
-            return msg.reply(`No puedes apostar **más ${guild.coinName}** de las que posees actualmente!`);
+            return msg.reply(`No puedes apostar **más ${guild.coin}** de las que posees actualmente!`);
         } else if (betCoins < 20) {
-            return msg.reply(`No puedes apostar menos de **20 ${guild.coinName}**!`);
+            return msg.reply(`No puedes apostar menos de **20 ${guild.coin}**!`);
         } else if (userSide !== 'head' && userSide !== 'tails') {
             return msg.reply(`Tienes que colocar uno de los dos lados de la moneda **[h/t]** o **[head/tails]**!`);
         }
@@ -57,14 +57,14 @@ module.exports = {
 
 
         const embed = new EmbedBuilder()
-            .setAuthor({ name: msg.author.tag, iconURL: msg.author.avatarURL({ dynamic: true }) })
+            .setAuthor({ name: client.user.username, iconURL: client.user.avatarURL() })
             .setDescription(`en la moneda Salió **${side}**`)
 
         if (side === userSide) {
-            embed.setColor(0x00ff00).addFields([{ name: 'Ganaste!!', value: `Has ganado **${betCoins}** ${guild.coinName}` }]);
+            embed.setColor(0x00ff00).addFields([{ name: 'Ganaste!!', value: `Has ganado **${betCoins}** ${guild.coin}` }]);
             Utils.addCoins(msg.author.id, msg.guild.id, betCoins);
         } else {
-            embed.setColor(0xff0000).addFields([{ name: 'Perdiste...', value: `Lastimosamente has perdido **${betCoins}** ${guild.coinName}` }]);
+            embed.setColor(0xff0000).addFields([{ name: 'Perdiste...', value: `Lastimosamente has perdido **${betCoins}** ${guild.coin}` }]);
             Utils.removeCoins(msg.author.id, msg.guild.id, betCoins);
         }
 

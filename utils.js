@@ -2,6 +2,7 @@ module.exports = {
     activedCommand: require('./utils/activedCommand'),
     addCoins: require('./utils/addCoins'),
     addXp: require('./utils/addXp'),
+    emoji: require('./utils/emoji'),
     findMember: require('./utils/findMember'),
     guildFetch: require('./utils/guildFetch'),
     pageSystem: require('./utils/pageSystem'),

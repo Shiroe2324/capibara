@@ -1,4 +1,4 @@
-const { PermissionFlagsBits, Message, Client, ActionRowBuilder, StringSelectMenuBuilder, ComponentType } = require('discord.js');
+const { PermissionFlagsBits, Message, Client, ActionRowBuilder, StringSelectMenuBuilder, ComponentType, EmbedBuilder } = require('discord.js');
 const Utils = require('../../utils');
 
 /**
@@ -41,11 +41,11 @@ module.exports = {
         const betCoins = Math.round(formatedCoins);
 
         if (isNaN(betCoins)) {
-            return msg.reply(`Tienes que colocar una cantidad de ${guild.coinName} valida!`)
+            return msg.reply(`Tienes que colocar una cantidad de ${guild.coin} valida!`)
         } else if (user.coins < betCoins) {
-            return msg.reply(`No puedes apostar **más ${guild.coinName}** de las que posees actualmente!`);
+            return msg.reply(`No puedes apostar **más ${guild.coin}** de las que posees actualmente!`);
         } else if (betCoins < 20) {
-            return msg.reply(`No puedes apostar menos de **20 ${guild.coinName}**!`);
+            return msg.reply(`No puedes apostar menos de **20 ${guild.coin}**!`);
         }
 
         let boxes = [{ number: 0, color: 'green' }];
@@ -54,6 +54,10 @@ module.exports = {
         }
 
         const selectedBox = Utils.random(boxes);
+
+        const selectEmbed = new EmbedBuilder()
+            .setColor(Utils.color)
+            .setAuthor({ name: client.user.username, iconURL: client.user.avatarURL() })
 
         const row = new ActionRowBuilder()
             .addComponents(

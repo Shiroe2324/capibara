@@ -68,7 +68,7 @@ module.exports = {
 
             const commandEmbed = new EmbedBuilder()
                 .setAuthor({ name: command.name, iconURL: client.user.avatarURL() })
-                .setDescription(command.description.split('{coins}').join(guild.coinName))
+                .setDescription(command.description.split('{coins}').join(guild.coin))
                 .addFields(fields)
                 .setFooter({ text: 'Sintaxis: (opcional) [requerido]' })
                 .setColor(Utils.color)
@@ -95,7 +95,7 @@ module.exports = {
 
         const economyEmbed = new EmbedBuilder()
             .setAuthor({ name: 'Economía', iconURL: client.user.avatarURL() })
-            .setDescription(`Estos son los comandos de \`Economia\`.\nPuedes usarlos para ganar o administrar tus **${guild.coinName}**.\n\nPuedes ver información mas detallada de un comando con \`${guild.prefix}help (comando)\``)
+            .setDescription(`Estos son los comandos de \`Economia\`.\nPuedes usarlos para ganar o administrar tus **${guild.coin}**.\n\nPuedes ver información mas detallada de un comando con \`${guild.prefix}help (comando)\``)
             .setColor(Utils.color)
             .addFields([{ name: 'Comandos', value: setBlockFormat(economyCommands) }]);
 

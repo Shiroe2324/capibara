@@ -41,10 +41,10 @@ module.exports = {
         const money = Utils.random(400) + 100;
 
         const texts = [
-            `**${msg.author.username}** trabajaste bañando capibaras y ganaste **${money}** ${guild.coinName}`,
-            `**${msg.author.username}** trabajaste dandole de comer a los capibaras y ganaste **${money}** ${guild.coinName}`,
-            `**${msg.author.username}** trabajaste limpiando el parque de los carpinchos y ganaste **${money}** ${guild.coinName}`,
-            `**${msg.author.username}** jugaste con los carpinchos y el cuidador te dió **${money}** ${guild.coinName} como agradecimiento`
+            `**${msg.author.username}** trabajaste bañando capibaras y ganaste **${money}** ${guild.coin}`,
+            `**${msg.author.username}** trabajaste dandole de comer a los capibaras y ganaste **${money}** ${guild.coin}`,
+            `**${msg.author.username}** trabajaste limpiando el parque de los carpinchos y ganaste **${money}** ${guild.coin}`,
+            `**${msg.author.username}** jugaste con los carpinchos y el cuidador te dió **${money}** ${guild.coin} como agradecimiento`
         ];
 
         Utils.addCoins(msg.author.id, msg.guild.id, money); 

@@ -1,5 +1,4 @@
 const { PermissionFlagsBits, Message, Client, EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle, ComponentType } = require('discord.js');
-const { Interface } = require('node:readline/promises');
 const Utils = require('../../utils');
 const wait = require('node:timers/promises').setTimeout;
 
@@ -48,11 +47,11 @@ module.exports = {
         } else if (oponent && oponent.user.bot) {
             return msg.reply('No puedes jugar contra bots!');
         } else if (isNaN(betCoins)) {
-            return msg.reply(`Tienes que colocar una cantidad de ${guild.coinName} valida!`)
+            return msg.reply(`Tienes que colocar una cantidad de ${guild.coin} valida!`)
         } else if (user.coins < betCoins) {
-            return msg.reply(`No puedes apostar **más ${guild.coinName}** de las que posees actualmente!`);
+            return msg.reply(`No puedes apostar **más ${guild.coin}** de las que posees actualmente!`);
         } else if (betCoins < 20) {
-            return msg.reply(`No puedes apostar menos de **20 ${guild.coinName}**!`);
+            return msg.reply(`No puedes apostar menos de **20 ${guild.coin}**!`);
         }
 
         const button = (id, disabled = false, style = ButtonStyle.Secondary) => {
@@ -94,10 +93,10 @@ module.exports = {
 
                 if (winner.id === client.user.id) {
                     embed.setAuthor({ name: `El ganador es ${client.user.username}!!`, iconURL: client.user.avatarURL() })
-                        .setDescription(`lastimosamente has perdido **${betCoins}** ${guild.coinName}...`)
+                        .setDescription(`lastimosamente has perdido **${betCoins}** ${guild.coin}...`)
                 } else {
                     embed.setAuthor({ name: `El ganador es ${msg.author.tag}!!`, iconURL: msg.author.avatarURL({ dynamic: true }) })
-                        .setDescription(`Has ganado **${betCoins}** ${guild.coinName}!!`)
+                        .setDescription(`Has ganado **${betCoins}** ${guild.coin}!!`)
                 }
 
                 return embed;
@@ -126,8 +125,8 @@ module.exports = {
                         gameCollector.stop('cancel');
                         await interaction.update({ content: 'La partida se ha cancelado!', embeds: [], components: [] });
                     } else {
-                        exitCollector.resetTimer({ time: 5000 });
-                        await interaction.update({ embeds: [alertEmbed], components: [alertRow] });
+                        exitCollector.resetTimer({ time: 30000 });
+                        await interaction.update({ content: '', embeds: [alertEmbed], components: [alertRow] });
                     }
                 }
 
@@ -177,6 +176,7 @@ module.exports = {
 
             exitCollector.on('end', async (collected, reason) => {
                 if (reason === 'time') {
+                    exitCollector.resetTimer({ time: 180000 });
                     await message.edit({ content: 'Se reanuda la partida ya que no se eligió una opción.', embeds: [embed(msg.author, userTotal, botTotal)], components: [rowEnabled] });
                 }
             })
@@ -197,7 +197,7 @@ module.exports = {
         } else {
             const oponentDB = await Utils.userFetch(oponent.id, msg.guild.id);
             if (oponentDB.coins < betCoins) {
-                return msg.reply(`No puedes apostar **más ${guild.coinName}** de las que ${oponent.user.username} posee actualmente!`);
+                return msg.reply(`No puedes apostar **más ${guild.coin}** de las que ${oponent.user.username} posee actualmente!`);
             }
 
             Utils.activedCommand(msg.author.id, 'add');
@@ -213,12 +213,12 @@ module.exports = {
             const requestEmbed = new EmbedBuilder()
                 .setAuthor({ name: client.user.tag, iconURL: client.user.avatarURL() })
                 .setColor(Utils.color)
-                .setDescription(`**${msg.author.username}** te desafía a una apuesta de **${betCoins}** ${guild.coinName} en un juego de **dados**!`);
+                .setDescription(`**${msg.author.username}** te desafía a una apuesta de **${betCoins}** ${guild.coin} en un juego de **dados**!`);
 
             const finishEmbed = (winner, loser) => {
                 return new EmbedBuilder()
                     .setAuthor({ name: `El ganador es ${winner.user.tag}!!`, iconURL: winner.user.avatarURL({ dynamic: true }) })
-                    .setDescription(`**${winner.user.username}** has ganado **${betCoins}** ${guild.coinName}!\n\n**${loser.user.username}** has perdido ${betCoins} ${guild.coinName}...`)
+                    .setDescription(`**${winner.user.username}** has ganado **${betCoins}** ${guild.coin}!\n\n**${loser.user.username}** has perdido ${betCoins} ${guild.coin}...`)
                     .setColor(Utils.color);
             }
 
