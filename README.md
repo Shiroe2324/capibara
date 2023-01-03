@@ -12,17 +12,21 @@ actualmente el bot cuenta con los siguientes comandos.
 
 1. **Utilidad**
     * Avatar
-    * emojis
-    * help
-    * Hexcolor
-    * randomcolor
+    * Emojis
+    * Help
+    * HexColor
+    * RandomColor
 2. **Economía**
     * Balance
-    * coinflip
+    * Blackjack
+    * CoinFlip
+    * Dice
+    * Roll
     * Slots
     * Work
 3. **Administración**
-    * setprefix
+    * SetPrefix
+    * SetEmoji
 
 ----------------------------------------------------------------
 
@@ -32,27 +36,31 @@ actualmente el bot cuenta con los siguientes comandos.
 |  COMANDOS | Ver el canal | Enviar mensajes | Enviar Embeds | Enviar Emojis Externos |
 |:---------:|:------------:|:---------------:|:-------------:|:----------------------:|
 |  Avatar   |      ✔️      |       ✔️       |      ✔️       |           ❌           |
-|  emojis   |      ✔️      |       ✔️       |      ✔️       |           ❌           |
-|   help    |      ✔️      |       ✔️       |      ✔️       |           ✔️           |
-| Hexcolor  |      ✔️      |       ✔️       |      ✔️       |           ❌           |
-|randomcolor|      ✔️      |       ✔️       |      ✔️       |           ❌           |
+|  Emojis   |      ✔️      |       ✔️       |      ✔️       |           ❌           |
+|   Help    |      ✔️      |       ✔️       |      ✔️       |           ✔️           |
+| HexColor  |      ✔️      |       ✔️       |      ✔️       |           ❌           |
+|RandomColor|      ✔️      |       ✔️       |      ✔️       |           ❌           |
 
 #### Economía
 |  COMANDOS | Ver el canal | Enviar mensajes | Enviar Embeds | Enviar Emojis Externos |
 |:---------:|:------------:|:---------------:|:-------------:|:----------------------:|
-| Balance   |      ✔️      |       ✔️       |      ✔️       |           ✔️           |
-| coinflip  |      ✔️      |       ✔️       |      ✔️       |           ✔️           |
-|  Slots    |      ✔️      |       ✔️       |      ✔️       |           ✔️           |
+|  Balance  |      ✔️      |       ✔️       |      ✔️       |           ✔️           |
+| Blackjack |      ✔️      |       ✔️       |      ✔️       |           ✔️           |
+| CoinFlip  |      ✔️      |       ✔️       |      ✔️       |           ✔️           |
+|   Dice    |      ✔️      |       ✔️       |      ✔️       |           ✔️           |
+|   Slot    |      ✔️      |       ✔️       |      ✔️       |           ✔️           |
+|   Slots   |      ✔️      |       ✔️       |      ✔️       |           ✔️           |
 |   Work    |      ✔️      |       ✔️       |      ❌       |           ✔️           |
 
 #### Administración
 |  COMANDOS | Ver el canal | Enviar mensajes | Enviar Embeds | Enviar Emojis Externos |
 |:---------:|:------------:|:---------------:|:-------------:|:----------------------:|
-| setprefix |      ✔️      |       ✔️       |      ❌       |           ❌           |
-
+| SetPrefix |      ✔️      |       ✔️       |      ❌        |           ❌           |
+| SetEmoji  |      ✔️      |       ✔️       |      ❌        |           ✔️           |
 ----------------------------------------------------------------
 
 ### Permisos del usuario para los comandos
 |  COMANDOS | Administrador |
 |:---------:|:-------------:|
-| setprefix |      ✔️       |
+| SetPrefix |      ✔️       |
+| SetEmoji  |      ✔️       |
