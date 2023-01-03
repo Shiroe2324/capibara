@@ -13,9 +13,13 @@ client.editsnipes = new Collection(); // lista para guardar los mensajes editado
 client.commands = new Collection(); // lista de comandos para el handler
 handler(client) // ejecución del sistema handler
 
+process.on('unhandledRejection', (error) => {
+    console.error(error);
+});
+
 // evento cuando el bot está listo
 client.once('ready', async () => {
-    console.log('ready')
+    console.log('ready');
 });
 
 // Evento cuando se genera un nuevo mensaje
