@@ -12,10 +12,12 @@ actualmente el bot cuenta con los siguientes comandos.
 
 1. **Utilidad**
     * Avatar
+    * EditSnipe
     * Emojis
     * Help
     * HexColor
     * RandomColor
+    * Snipe
 2. **Economía**
     * Balance
     * Blackjack
@@ -36,10 +38,12 @@ actualmente el bot cuenta con los siguientes comandos.
 |  COMANDOS | Ver el canal | Enviar mensajes | Enviar Embeds | Enviar Emojis Externos |
 |:---------:|:------------:|:---------------:|:-------------:|:----------------------:|
 |  Avatar   |      ✔️      |       ✔️       |      ✔️       |           ❌           |
+| EditSnipe |      ✔️      |       ✔️       |      ✔️       |           ✔️           |
 |  Emojis   |      ✔️      |       ✔️       |      ✔️       |           ❌           |
 |   Help    |      ✔️      |       ✔️       |      ✔️       |           ✔️           |
 | HexColor  |      ✔️      |       ✔️       |      ✔️       |           ❌           |
 |RandomColor|      ✔️      |       ✔️       |      ✔️       |           ❌           |
+|   Snipe   |      ✔️      |       ✔️       |      ✔️       |           ✔️           |
 
 #### Economía
 |  COMANDOS | Ver el canal | Enviar mensajes | Enviar Embeds | Enviar Emojis Externos |
