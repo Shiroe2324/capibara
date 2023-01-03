@@ -1,4 +1,4 @@
-const { Message, GuildMember, EmbedBuilder, } = require('discord.js') // estructuras de algunos datos
+const { Message, GuildMember, EmbedBuilder,  } = require('discord.js') // estructuras de algunos datos
 const pageSystem = require('./pageSystem'); // sistema de paginas
 
 /**
@@ -42,8 +42,9 @@ module.exports = async (msg, args, allowedAuthor = false, includeBots = false) =
         }).map(x => x);
 
         if (includeBots) {
-            members = members.filter(member => member.id !== client.user.id && !member.user.bot)
+            member = members.filter(member => member.id !== process.env['BOT_ID'] && !member.bot)
         }
+
         // se verifica si no hay nombre, miembros con ese nombre o tag o si hay mas de un miembro con el
         if (!name) {
             error = true;

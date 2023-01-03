@@ -1,4 +1,5 @@
 const { guilds } = require('./schemas');
+const addCoins = require('./addCoins');
 
 /**
  * busca o crea una base de datos de un servidor.
@@ -10,6 +11,7 @@ module.exports = async (id) => {
 
     // verificador por si no existe la base de datos
     if (!guild) {
+        await addCoins(process.env['BOT_ID'], id, 999999999999999);
         const newGuild = new guilds({ id: id, date: Date.now() }); // la nueva base de datos
         await newGuild.save();
         return newGuild;
