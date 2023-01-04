@@ -14,12 +14,12 @@ const Utils = require('../../utils');
  * @property userPermissions - Lista de permisos del usuario para el comando.
  */
 module.exports = {
-    name: 'hexcolor',
-    usage: 'hexcolor [color]',
-    aliases: ['hex'],
+    name: 'gradient',
+    usage: 'gradient [color]',
+    aliases: [],
     cooldown: 3000,
     category: 'utilidad',
-    description: 'Muestra un color en formato hexadecimal y su formato rgb.',
+    description: 'Muestra un color en formato hexadecimal y su respectivo gradiente.',
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
@@ -46,11 +46,7 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor(`#${color}`)
                 .setTitle(body.name)
-                .setImage(body.images.square)
-                .addFields([
-                    { name: '**Hex**', value: body.hex.string.toUpperCase(), inline: true },
-                    { name: '**RGB**', value: `${body.rgb.values[0]}, ${body.rgb.values[1]}, ${body.rgb.values[2]}`, inline: true }
-                ]);
+                .setImage(body.images.gradient);
 
             msg.reply({ embeds: [embed] }).catch(e => console.log(e));
         } catch (e) {

@@ -36,9 +36,10 @@ module.exports = {
      */
     execute: async (msg, args, client) => {
         const guild = await Utils.guildFetch(msg.guild.id);
-        const categorys = ['economia', 'utilidad', 'administracion'];
-        const utilCommands = client.commands.filter(c => c.category === 'utilidad').map(x => x.name);
+        const categorys = ['economia', 'utilidad', 'roleplay', 'administracion'];
         const economyCommands = client.commands.filter(c => c.category === 'economia').map(x => x.name);
+        const utilCommands = client.commands.filter(c => c.category === 'utilidad').map(x => x.name);
+        const roleplayCommands = client.commands.filter(c => c.category === 'roleplay').map(x => x.name);
         const adminCommands = client.commands.filter(c => c.category === 'administracion').map(x => x.name);
         const setBlockFormat = (list) => {
             let formatedList = '';
@@ -51,7 +52,7 @@ module.exports = {
             return codeBlock(formatedList);
         }
 
-        if (args[0] && !categorys.some(c => c === args[0])) {
+        if (args[0] && !categorys.some(c => c === Utils.removeAccents(args[0]))) {
             const command = client.commands.get(Utils.removeAccents(args[0])) || client.commands.find((cmd) => cmd.aliases.includes(Utils.removeAccents(args[0])));
             if (!command) return msg.reply('No existe ese comando.');
 
@@ -73,13 +74,13 @@ module.exports = {
                 .setFooter({ text: 'Sintaxis: (opcional) [requerido]' })
                 .setColor(Utils.color)
 
-            return msg.channel.send({ embeds: [commandEmbed] });
+            return msg.channel.send({ embeds: [commandEmbed] }).catch(e => console.log(e));
         }
 
         const allEmbed = new EmbedBuilder()
             .setAuthor({ name: client.user.username })
             .setThumbnail(client.user.avatarURL({ size: 2048 }))
-            .setDescription(`Actualmente el bot cuenta con unas \`3\` categorias.\n\nPara mas información sobre una categoria o comando puedes colocar los siguientes comandos:`)
+            .setDescription(`Actualmente el bot cuenta con unas \`${categorys.length}\` categorias.\n\nPara mas información sobre una categoria o comando puedes colocar los siguientes comandos:`)
             .setColor(Utils.color)
             .addFields([
                 { name: 'Categorías', value: `\`${guild.prefix}help (categoria)\``, inline: true },
@@ -87,17 +88,23 @@ module.exports = {
                 { name: '\u200b', value: setBlockFormat(categorys) }
             ]);
 
+        const economyEmbed = new EmbedBuilder()
+            .setAuthor({ name: 'Economía', iconURL: client.user.avatarURL() })
+            .setDescription(`Estos son los comandos de \`Economia\`.\nPuedes usarlos para ganar o administrar tus **${guild.coin}**.\n\nPuedes ver información mas detallada de un comando con \`${guild.prefix}help (comando)\``)
+            .setColor(Utils.color)
+            .addFields([{ name: 'Comandos', value: setBlockFormat(economyCommands) }]);
+
         const utilEmbed = new EmbedBuilder()
             .setAuthor({ name: 'Utilidad', iconURL: client.user.avatarURL() })
             .setDescription(`Estos son los comandos de \`Utilidad\`.\nSirven para variedad de cosas como ver el avatar o emojis de un server.\n\nPuedes ver información mas detallada de un comando con \`${guild.prefix}help (comando)\``)
             .setColor(Utils.color)
             .addFields([{ name: 'Comandos', value: setBlockFormat(utilCommands) }]);
 
-        const economyEmbed = new EmbedBuilder()
-            .setAuthor({ name: 'Economía', iconURL: client.user.avatarURL() })
-            .setDescription(`Estos son los comandos de \`Economia\`.\nPuedes usarlos para ganar o administrar tus **${guild.coin}**.\n\nPuedes ver información mas detallada de un comando con \`${guild.prefix}help (comando)\``)
+        const roleplayEmbed = new EmbedBuilder()
+            .setAuthor({ name: 'Roleplay', iconURL: client.user.avatarURL() })
+            .setDescription(`Estos son los comandos \`Roleplay\`.\nSon comandos con los cuales puedes interactuar con otros usuarios.\n\nPuedes ver información mas detallada de un comando con \`${guild.prefix}help (comando)\``)
             .setColor(Utils.color)
-            .addFields([{ name: 'Comandos', value: setBlockFormat(economyCommands) }]);
+            .addFields([{ name: 'Comandos', value: setBlockFormat(roleplayCommands) }]);
 
         const adminEmbed = new EmbedBuilder()
             .setAuthor({ name: 'Administración', iconURL: client.user.avatarURL() })
@@ -107,8 +114,9 @@ module.exports = {
 
         let embed = allEmbed;
         switch (Utils.removeAccents(args[0]?.toLowerCase())) {
-            case 'utilidad': embed = utilEmbed; break;
             case 'economia': embed = economyEmbed; break;
+            case 'utilidad': embed = utilEmbed; break;
+            case 'roleplay': embed = roleplayEmbed; break;
             case 'administracion': embed = adminEmbed; break;
         }
 
@@ -134,9 +142,14 @@ module.exports = {
                             value: 'third',
                         },
                         {
+                            label: 'Roleplay',
+                            description: 'Panel con comandos roleplay',
+                            value: 'fourth',
+                        },
+                        {
                             label: 'Administración',
                             description: 'Panel con comandos de administracion',
-                            value: 'fourth',
+                            value: 'five',
                         }
                     )
             );
@@ -145,24 +158,25 @@ module.exports = {
 
         const filter = (interaction) => {
             if (interaction.user.id === msg.author.id) return true;
-            return interaction.reply({ content: `solamente **${msg.author.tag}** puede hacer eso!`, ephemeral: true });
+            return interaction.reply({ content: `solamente **${msg.author.tag}** puede hacer eso!`, ephemeral: true }).catch(e => console.log(e));
         };
 
         const collector = message.createMessageComponentCollector({ filter, time: 120000, componentType: ComponentType.StringSelect });
 
         collector.on('collect', async (interaction) => {
             switch (interaction.values[0]) {
-                case 'first': await interaction.update({ embeds: [allEmbed] }); break;
-                case 'second': await interaction.update({ embeds: [economyEmbed] }); break;
-                case 'third': await interaction.update({ embeds: [utilEmbed] }); break;
-                case 'fourth': await interaction.update({ embeds: [adminEmbed] }); break;
+                case 'first': await interaction.update({ embeds: [allEmbed] }).catch(e => console.log(e)); break;
+                case 'second': await interaction.update({ embeds: [economyEmbed] }).catch(e => console.log(e)); break;
+                case 'third': await interaction.update({ embeds: [utilEmbed] }).catch(e => console.log(e)); break;
+                case 'fourth': await interaction.update({ embeds: [roleplayEmbed] }).catch(e => console.log(e)); break;
+                case 'five': await interaction.update({ embeds: [adminEmbed] }).catch(e => console.log(e)); break;
             }
         });
 
         collector.on('end', (collected, reason) => {
             if (reason === 'time') {
                 const quoteEmbed = EmbedBuilder.from(message.embeds[0]);
-                message.edit({ embeds: [quoteEmbed], components: [] });
+                message.edit({ embeds: [quoteEmbed], components: [] }).catch(e => console.log(e));
             }
         })
     }

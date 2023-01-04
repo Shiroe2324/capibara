@@ -39,7 +39,7 @@ module.exports = {
         const search = await Utils.findMember(msg, args, true, true);
         Utils.activedCommand(msg.author.id, 'remove');
 
-        if (search.error) return search.message({ content: search.messageError, embeds: [], components: [] });
+        if (search.error) return search.message({ content: search.messageError, embeds: [], components: [] }).catch(e => console.log(e));
 
         Utils.setCooldown('balance', msg.author.id);
 
@@ -51,6 +51,6 @@ module.exports = {
             .setTitle(`**${user.coins}** ${guild.coin}`)
             .setColor(Utils.color);
 
-        search.message({ embeds: [embed], components: [] });
+        search.message({ embeds: [embed], components: [] }).catch(e => console.log(e));
     }
 }

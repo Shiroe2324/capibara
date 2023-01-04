@@ -50,6 +50,6 @@ module.exports = {
         Utils.addCoins(msg.author.id, msg.guild.id, money); 
         const message = Utils.random(texts);
 
-        msg.channel.send(message)
+        msg.reply(message).catch(e => console.log(e));
     }
 }

@@ -19,7 +19,7 @@ module.exports = {
     aliases: ['randcolor'],
     cooldown: 3000,
     category: 'utilidad',
-    description: 'Genera un color aleatorio en formato.',
+    description: 'Genera un color aleatorio en formato hexadecial y muestra su formato rgb.',
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
@@ -54,7 +54,7 @@ module.exports = {
                     { name: '**RGB**', value: `${body.rgb.values[0]}, ${body.rgb.values[1]}, ${body.rgb.values[2]}`, inline: true }
                 ]);
 
-            msg.reply({ embeds: [embed] });
+            msg.reply({ embeds: [embed] }).catch(e => console.log(e));
         } catch (e) {
             msg.reply(`Sucedió un error al buscar el color: ${e}`);
         }

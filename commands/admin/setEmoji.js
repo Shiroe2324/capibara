@@ -39,24 +39,24 @@ module.exports = {
     execute: async (msg, args, client) => {
         const guild = await Utils.guildFetch(msg.guild.id);
 
-        if (!args[0]) return msg.reply('Tienes que colocar un emoji!');
+        if (!args[0]) return msg.reply('Tienes que colocar un emoji!').catch(e => console.log(e));
 
         if (args[0] === 'default') {
             if (guild.coin === process.env['COIN_NAME']) return msg.reply('Ya se está usando el emoji predeterminado!');
             guild.coin = process.env['COIN_NAME'];
             await guild.save();
-            return msg.reply('Se ha restablecido el emoji predeterminado.');
+            return msg.reply('Se ha restablecido el emoji predeterminado.').catch(e => console.log(e));
         }
 
         const emoji = Utils.emoji(guild.coin, client);
 
-        if (!emoji.isEmoji) return msg.reply('Tienes que especificar un emoji válido!');
-        if (emoji.type === 'guild' && !emoji.existInBot) return msg.reply('Tienes que colocar un emoji predeterminado o que esté en un servidor donde yo esté!');
-        if (args[0] === guild.coin) return msg.reply('Ya se está usando ese emoji!');
+        if (!emoji.isEmoji) return msg.reply('Tienes que especificar un emoji válido!').catch(e => console.log(e));
+        if (emoji.type === 'guild' && !emoji.existInBot) return msg.reply('Tienes que colocar un emoji predeterminado o que esté en un servidor donde yo esté!').catch(e => console.log(e));
+        if (args[0] === guild.coin) return msg.reply('Ya se está usando ese emoji!').catch(e => console.log(e));
 
         guild.coin = args[0];
         await guild.save();
 
-        msg.reply(`Se ha actualizado el emoji de moneda a ${args[0]}.`);
+        msg.reply(`Se ha actualizado el emoji de moneda a ${args[0]}.`).catch(e => console.log(e));
     }
 }

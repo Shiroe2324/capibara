@@ -2,8 +2,7 @@ require('dotenv').config();
 require('http').createServer((req, res) => res.end('hello world')).listen(); // servidor http para el mantenimiento del bot
 
 // ————————————————————— INICIO DEL BOT ————————————————————— //
-
-const { Client, Collection, Events, PermissionFlagsBits, Message } = require('discord.js');
+const { Client, Collection, Events, PermissionFlagsBits, ChannelType, ActivityType, IntentsBitField } = require('discord.js');
 const handler = require('./handler'); // archivo de los comandos handler
 const Utils = require('./utils'); // funciones de ayuda para programar
 const client = new Client({ intents: 3276799 }); // client del bot (usuario de discord del bot)
@@ -19,6 +18,7 @@ process.on('unhandledRejection', (error) => {
 
 // evento cuando el bot está listo
 client.once('ready', async () => {
+    client.user.setActivity('Torneo de capibaras', { type: ActivityType.Competing });
     console.log('ready');
 });
 
@@ -34,6 +34,7 @@ client.on(Events.MessageCreate, async (msg) => {
     // filtro de mensajes
     if (msg.author.bot) return;
     if (!msg.content.startsWith(guild.prefix)) return;
+    if (msg.channel.type !== ChannelType.GuildText) return;
     if (!msg.channel.permissionsFor(client.user).has(PermissionFlagsBits.SendMessages)) return;
 
     // nombre del comando ejecutado y sus argumentos
@@ -57,26 +58,26 @@ client.on(Events.MessageCreate, async (msg) => {
 
     // verificador por si el usuario se encuentra con un comando activado
     if (Utils.activedCommand(msg.author.id)) {
-        return msg.reply('Primero tienes que terminar tu comando anterior!');
+        return msg.reply('Primero tienes que terminar tu comando anterior!').catch(e => console.log(e));
     }
 
     // verificador de los permisos del bot en el canal
     if (!msg.channel.permissionsFor(client.user).has(command.botPermissions)) {
         const missingPermissions = msg.channel.permissionsFor(client.user).missing(command.botPermissions).map(permission => `\`${Utils.Permissions[permission]}\``);
-        return msg.reply(`No puedo ejecutar ese comando, me hacen falta los siguientes permisos: ${missingPermissions.join(', ')}`)
+        return msg.reply(`No puedo ejecutar ese comando, me hacen falta los siguientes permisos: ${missingPermissions.join(', ')}`).catch(e => console.log(e));
     }
 
     // verificador de los permisos del usuario en el canal
     if (!msg.channel.permissionsFor(msg.author).has(command.userPermissions)) {
         const missingPermissions = msg.channel.permissionsFor(msg.author).missing(command.userPermissions).map(permission => `\`${Utils.Permissions[permission]}\``);
-        return msg.reply(`No puedes ejecutar ese comando, te hacen falta los siguientes permisos: ${missingPermissions.join(', ')}`)
+        return msg.reply(`No puedes ejecutar ese comando, te hacen falta los siguientes permisos: ${missingPermissions.join(', ')}`).catch(e => console.log(e));
     }
 
     const userCooldown = user.cooldowns.get(command.name); // se obtiene el cooldown del usuario
 
     // se verifica si tiene cooldown en el comando, y si el tiempo actual es menor al tiempo restante
     if (userCooldown && (userCooldown + command.cooldown) > Date.now()) {
-        return msg.reply(`Todavia no puedes ejecutar ese comando, tienes que esperar **${Utils.setTimeFormat((userCooldown + command.cooldown) + 1000)}** 🕗 más.`)
+        return msg.reply(`Todavia no puedes ejecutar ese comando, tienes que esperar **${Utils.setTimeFormat((userCooldown + command.cooldown) + 1000)}** 🕗 más.`).catch(e => console.log(e));
     }
 
     // ejecución del comando

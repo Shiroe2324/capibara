@@ -35,7 +35,7 @@ module.exports = async (msg, embed, size, time, disabled = false) => {
     const message = await msg.channel.send({
         embeds: [embed(0)],
         components: size <= 10 ? [] : [row(backOff, forward)],
-    })
+    }).catch(e => console.log(e));
 
     if (size <= 10) return message; // se verifica si la cantidad de objetos dentro del embed es menor o igual a 10
 

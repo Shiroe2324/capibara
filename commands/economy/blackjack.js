@@ -64,11 +64,11 @@ module.exports = {
         const betCoins = Math.round(formatedCoins);
 
         if (isNaN(betCoins)) {
-            return msg.reply(`Tienes que colocar una cantidad de ${guild.coin} valida!`)
+            return msg.reply(`Tienes que colocar una cantidad de ${guild.coin} valida!`).catch(e => console.log(e));
         } else if (user.coins < betCoins) {
-            return msg.reply(`No puedes apostar **más ${guild.coin}** de las que posees actualmente!`);
+            return msg.reply(`No puedes apostar **más ${guild.coin}** de las que posees actualmente!`).catch(e => console.log(e));
         } else if (betCoins < 20) {
-            return msg.reply(`No puedes apostar menos de **20 ${guild.coin}**!`);
+            return msg.reply(`No puedes apostar menos de **20 ${guild.coin}**!`).catch(e => console.log(e));
         }
 
         Utils.activedCommand(msg.author.id, 'add');
@@ -139,7 +139,7 @@ module.exports = {
 
         filter = (interaction) => {
             if (interaction.user.id === msg.author.id) return true;
-            return interaction.reply({ content: `solamente **${msg.author.tag}** puede hacer eso!`, ephemeral: true });
+            return interaction.reply({ content: `solamente **${msg.author.tag}** puede hacer eso!`, ephemeral: true }).catch(e => console.log(e));
         };
         const componentCollector = message.createMessageComponentCollector({ filter, time: 120000, componentType: ComponentType.Button });
 
@@ -159,12 +159,12 @@ module.exports = {
                 if (playerTotal < 21) {
                     await message.edit({
                         embeds: [embed('Escribe `hit` para agarrar otra carta o `stand` para pasar.', playerTotal, playerHandString, dealerTotal, dealerHandString)]
-                    });
+                    }).catch(e => console.log(e));
                 } else if (playerTotal === 21) {
                     await message.edit({
                         embeds: [embed(`Blackjack! has ganado ${betCoins}${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#00ff00')],
                         components: [rowDisabled]
-                    });
+                    }).catch(e => console.log(e));
 
                     Utils.addCoins(msg.author.id, msg.guild.id, betCoins);
                     gameStop()
@@ -172,7 +172,7 @@ module.exports = {
                     await message.edit({
                         embeds: [embed(`Fracasaste! has perdido ${betCoins}${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#ff0000')],
                         components: [rowDisabled]
-                    });
+                    }).catch(e => console.log(e));
 
                     Utils.removeCoins(msg.author.id, msg.guild.id, betCoins);
                     gameStop()
@@ -191,19 +191,19 @@ module.exports = {
                     await message.edit({
                         embeds: [embed(`Ganaste! has ganado ${betCoins}${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#00ff00')],
                         components: [rowDisabled]
-                    });
+                    }).catch(e => console.log(e));
                     Utils.addCoins(msg.author.id, msg.guild.id, betCoins);
                 } else if (dealerTotal > playerTotal) {
                     await message.edit({
                         embeds: [embed(`Fracasaste! has perdido ${betCoins}${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#ff0000')],
                         components: [rowDisabled]
-                    });
+                    }).catch(e => console.log(e));
                     Utils.removeCoins(msg.author.id, msg.guild.id, betCoins);
                 } else {
                     await message.edit({
                         embeds: [embed('Es un empate! No has ganado ni perdido monedas', playerTotal, playerHandString, dealerTotal, dealerHandString, '#ffffff')],
                         components: [rowDisabled]
-                    });
+                    }).catch(e => console.log(e));
                 }
             }
         }
@@ -213,7 +213,7 @@ module.exports = {
                 message.edit({
                     embeds: [embed(`Se acabó el tiempo! has perdido ${betCoins}${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#ff0000')],
                     components: [rowDisabled]
-                });
+                }).catch(e => console.log(e));
                 Utils.removeCoins(msg.author.id, msg.guild.id, betCoins);
                 Utils.setCooldown('blackjack', msg.author.id);
                 Utils.activedCommand(msg.author.id, 'remove');

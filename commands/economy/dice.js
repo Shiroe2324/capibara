@@ -41,11 +41,11 @@ module.exports = {
         const betCoins = Math.round(formatedCoins);
 
         if (isNaN(betCoins)) {
-            return msg.reply(`Tienes que colocar una cantidad de ${guild.coin} valida!`)
+            return msg.reply(`Tienes que colocar una cantidad de ${guild.coin} valida!`).catch(e => console.log(e));
         } else if (user.coins < betCoins) {
-            return msg.reply(`No puedes apostar **más ${guild.coin}** de las que posees actualmente!`);
+            return msg.reply(`No puedes apostar **más ${guild.coin}** de las que posees actualmente!`).catch(e => console.log(e));
         } else if (betCoins < 20) {
-            return msg.reply(`No puedes apostar menos de **20 ${guild.coin}**!`);
+            return msg.reply(`No puedes apostar menos de **20 ${guild.coin}**!`).catch(e => console.log(e));
         }
 
         Utils.setCooldown('dice', msg.author.id);
@@ -77,10 +77,10 @@ module.exports = {
 
         if (multiplier !== 0) {
             Utils.addCoins(msg.author.id, msg.guild.id, parseInt(betCoins * multiplier));
-            msg.channel.send({ embeds: [winnerEmbed] });
+            msg.reply({ embeds: [winnerEmbed] }).catch(e => console.log(e));
         } else {
             Utils.removeCoins(msg.author.id, msg.guild.id, betCoins);
-            msg.channel.send({ embeds: [loserEmbed] });
+            msg.reply({ embeds: [loserEmbed] }).catch(e => console.log(e));
         }
     }
 }

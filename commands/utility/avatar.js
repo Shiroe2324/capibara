@@ -38,10 +38,10 @@ module.exports = {
         const search = await Utils.findMember(msg, args, true);
         Utils.activedCommand(msg.author.id, 'remove');
 
-        if (search.error) return search.message({ content: search.messageError, embeds: [], components: [] });
+        if (search.error) return search.message({ content: search.messageError, embeds: [], components: [] }).catch(e => console.log(e));
 
-        if (search.member.id === msg.author.id && !search.member.user.avatarURL()) return search.message({ content: 'No tienes avatar!', embeds: [], components: [] });
-        if (!search.member.user.avatarURL()) return search.message({ content: 'El usuario mencionado no tiene avatar!', embeds: [], components: [] });
+        if (search.member.id === msg.author.id && !search.member.user.avatarURL()) return search.message({ content: 'No tienes avatar!', embeds: [], components: [] }).catch(e => console.log(e));
+        if (!search.member.user.avatarURL()) return search.message({ content: 'El usuario mencionado no tiene avatar!', embeds: [], components: [] }).catch(e => console.log(e));
         
         Utils.setCooldown('avatar', msg.author.id);
 
@@ -53,7 +53,7 @@ module.exports = {
             .setColor(Utils.color)
 
         if (!search.member.avatarURL()) {
-            search.message({ embeds: [embed(search.member.user.avatarURL({ size: 2048, dynamic: true }))], components: [] });
+            search.message({ embeds: [embed(search.member.user.avatarURL({ size: 2048, dynamic: true }))], components: [] }).catch(e => console.log(e));
         } else {
             const button = (id, label, emoji, disable = false) => {
                 return new ActionRowBuilder().addComponents(
@@ -76,7 +76,7 @@ module.exports = {
 
             const filter = (interaction) => {
                 if (interaction.user.id === msg.author.id) return true;
-                return interaction.reply({ content: `solamente **${msg.author.tag}** puede hacer eso!`, ephemeral: true });
+                return interaction.reply({ content: `solamente **${msg.author.tag}** puede hacer eso!`, ephemeral: true }).catch(e => console.log(e));
             };
 
             const collector = buttonMessage.createMessageComponentCollector({ filter, time: 60000, componentType: ComponentType.Button });
@@ -93,7 +93,7 @@ module.exports = {
                     component = [localButton]
                 }
 
-                await interaction.update({ embeds: [embed(avatar)], components: component });
+                await interaction.update({ embeds: [embed(avatar)], components: component }).catch(e => console.log(e));
             });
 
             collector.on('end', async (collected) => {
@@ -102,7 +102,7 @@ module.exports = {
                     button('global', 'ver avatar global', '🌏', true) :
                     button('local', 'ver avatar local', '🌇', true);
 
-                buttonMessage.edit({ embeds: [quoteEmbed], components: [disabledButton] }); 
+                buttonMessage.edit({ embeds: [quoteEmbed], components: [disabledButton] }).catch(e => console.log(e)); 
             })
         }
     }

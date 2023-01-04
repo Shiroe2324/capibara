@@ -38,7 +38,7 @@ module.exports = {
 
         const emojis = msg.guild.emojis.cache.map(emoji => `${emoji} - \`${emoji}\` (**[Link](${emoji.url})**)`); // la lista de emojis del servidor
 
-        if (emojis.length === 0) return msg.reply('El servidor no cuenta con emojis.');
+        if (emojis.length === 0) return msg.reply('El servidor no cuenta con emojis.').catch(e => console.log(e));
 
         const embed = (index) => {
             const current = emojis.slice(index, index + 10);

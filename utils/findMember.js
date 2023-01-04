@@ -1,16 +1,18 @@
-const { Message, GuildMember, EmbedBuilder,  } = require('discord.js') // estructuras de algunos datos
+const { Message, GuildMember, EmbedBuilder, GuildChannel } = require('discord.js') // estructuras de algunos datos
 const pageSystem = require('./pageSystem'); // sistema de paginas
+const { edit } = Message;
+const { send } = GuildChannel;
 
 /**
  * funcion que verifica que mensaje se está usando.
  * @param {Message} message - El mensaje usado.
  * @param {string} type - El tipo de actualización a hacer.
- * @returns {function(MessageCreateOptions)} Edita o envia el mensaje usado.
+ * @returns {edit|send} Edita o envia el mensaje usado.
  */
 const updateMessage = (message, type) => {
     switch (type) {
-        case 'edit': return (data) => message.edit(data);
-        case 'send': return (data) => message.channel.send(data);
+        case 'edit': return (data) => message.edit(data).catch(e => console.log(e));;
+        case 'send': return (data) => message.channel.send(data).catch(e => console.log(e));;
     }
 }
 

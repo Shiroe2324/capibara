@@ -37,11 +37,11 @@ module.exports = {
         const guild = await Utils.guildFetch(msg.guild.id);
 
         if (!args[0]) {
-            return msg.channel.send('El prefix debe tener al menos 1 caracter.');    
+            return msg.channel.send('El prefix debe tener al menos 1 caracter.').catch(e => console.log(e));
         } else if (args[0].length > 16) {
-            return msg.channel.send('El prefix debe tener menos de 16 caracteres.');    
+            return msg.channel.send('El prefix debe tener menos de 16 caracteres.').catch(e => console.log(e));    
         } else if (guild.prefix === args[0]) {
-            return msg.channel.send('El prefix colocado es el actual prefix del servidor.'); 
+            return msg.channel.send('El prefix colocado es el actual prefix del servidor.').catch(e => console.log(e)); 
         }
         
         Utils.setCooldown('emojis', msg.author.id);
@@ -49,6 +49,6 @@ module.exports = {
         guild.prefix = args[0];
         await guild.save(); 
 
-        msg.reply(`El prefix se ha actualizado correctamente a \`${args[0]}\`.`);
+        msg.reply(`El prefix se ha actualizado correctamente a \`${args[0]}\`.`).catch(e => console.log(e));
     }
 }

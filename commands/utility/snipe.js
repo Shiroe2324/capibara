@@ -18,7 +18,7 @@ module.exports = {
     aliases: [],
     cooldown: 10000,
     category: 'utilidad',
-    description: 'Muestra el ultimo mensaje eliminado del canal actual o seleccionado.\nSe puede seleccionar un canal con mencion, id, o simplemente no colocar nada y se selecciona automáticamente el canal actual.',
+    description: 'Muestra el ultimo mensaje de un canal especifico o al canal donde se ejecutó el comando.\nSe puede seleccionar un canal con mencion, id, o simplemente no colocar nada y se selecciona automáticamente el canal actual.',
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
@@ -37,7 +37,7 @@ module.exports = {
         const channel = msg.mentions.channels.first() || msg.guild.channels.cache.get(args[0]) || msg.channel;
         const message = client.snipes.get(channel.id);
 
-        if (!message) return msg.reply(`No se ha borrado ningún mensaje recientemente en ${channel}.`);
+        if (!message) return msg.reply(`No se ha borrado ningún mensaje recientemente en ${channel}.`).catch(e => console.log(e));
 
         const embed = new EmbedBuilder()
             .setAuthor({ name: message.data.author.tag })
@@ -46,6 +46,6 @@ module.exports = {
             .setTimestamp(message.time)
             .setColor(Utils.color);
 
-        msg.channel.send({ embeds: [embed] })
+        msg.channel.send({ embeds: [embed] }).catch(e => console.log(e));
     }
 }

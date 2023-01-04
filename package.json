@@ -6,9 +6,6 @@
     "scripts": {
         "start": "node ."
     },
-    "engines": {
-        "node": "18.12.1"
-    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Shiroe2324/capibara.git"
@@ -25,6 +22,7 @@
         "discord.js": "^14.7.1",
         "dotenv": "^16.0.3",
         "mongoose": "^6.7.5",
+        "nekos.life": "^3.0.0",
         "node-fetch": "^3.2.6",
         "superagent": "^8.0.6"
     },

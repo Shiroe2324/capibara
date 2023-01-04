@@ -19,7 +19,7 @@ module.exports = {
     aliases: ['rolls'],
     cooldown: 10000,
     category: 'economia',
-    description: 'Lanza un dado imaginario de 100 caras.\nSe juega junto a otro jugador, el cual tendran que apostar una cantidad de monedas, se lanzará varias veces, siempre como maximo el numero obtenido anteriormente\nGana el primero que llegue a 1.',
+    description: 'Lanza un dado imaginario de 100 caras.\nSe juega junto a otro jugador o en solitario, en donde tendran que apostar una cantidad de monedas, se lanzará varias veces, siempre como maximo el numero obtenido anteriormente\nGana el primero que llegue a 1.',
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
@@ -64,7 +64,6 @@ module.exports = {
 
         if (!oponent) {
             Utils.activedCommand(msg.author.id, 'add');
-            Utils.removeCoins(msg.author.id, msg.guild.id, betCoins);
 
             const rowEnabled = new ActionRowBuilder()
                 .addComponents(button('roll'), button('exit', false, ButtonStyle.Danger));
@@ -131,6 +130,7 @@ module.exports = {
                 }
 
                 if (interaction.customId === 'si') {
+                    Utils.removeCoins(msg.author.id, msg.guild.id, betCoins);
                     Utils.activedCommand(msg.author.id, 'remove');
                     Utils.setCooldown('roll', msg.author.id);
                     exitCollector.stop('cancel');
@@ -153,7 +153,7 @@ module.exports = {
                         Utils.activedCommand(msg.author.id, 'remove');
                         Utils.setCooldown('roll', msg.author.id);
                         gameCollector.stop('user win');
-                        exitCollector.stop('bot win');
+                        exitCollector.stop('user win');
                         return await interaction.update({ content: '', embeds: [finishEmbed(msg.author)], components: [rowDisabled] });
                     }
 
@@ -163,6 +163,7 @@ module.exports = {
                     botTotal = Utils.random(botTotal);
 
                     if (botTotal === 1) {
+                        Utils.removeCoins(msg.author.id, msg.guild.id, betCoins);
                         Utils.activedCommand(msg.author.id, 'remove');
                         Utils.setCooldown('roll', msg.author.id);
                         gameCollector.stop('bot win');
@@ -190,6 +191,7 @@ module.exports = {
                         Utils.addCoins(msg.author.id, msg.guild.id, betCoins);
                         return await message.edit({ content: 'Se acabó la partida, como no se jugó se devolverán las monedas apostadas.', embeds: [], components: [] });
                     } else {
+                        Utils.removeCoins(msg.author.id, msg.guild.id, betCoins);
                         return await message.edit({ content: 'Se acabó la partida, como la partida estaba iniciada perdiste las monedas apostadas.', embeds: [], components: [] });
                     }
                 }
@@ -251,8 +253,6 @@ module.exports = {
                 if (interaction.customId === 'aceptar') {
                     if (interaction.user.id !== oponent.id) return interaction.reply({ content: `Solamente **${oponent.user.tag}** puede hacer eso!`, ephemeral: true });
                     await interaction.update({ content: '', embeds: [embed(turn, 100, 100)], components: [rowEnabled] });
-                    Utils.removeCoins(msg.author.id, msg.guild.id, betCoins);
-                    Utils.removeCoins(oponent.id, msg.guild.id, betCoins);
                     requestCollector.stop('accept');
                     gameCollector.resetTimer();
                 } else if (interaction.customId === 'rechazar') {
@@ -280,6 +280,7 @@ module.exports = {
                     if (userTotal === 1) {
                         gameCollector.stop('user win');
                         Utils.addCoins(msg.author.id, msg.guild.id, betCoins * 2);
+                        Utils.removeCoins(oponent.id, msg.guild.id, betCoins);
                         Utils.activedCommand(msg.author.id, 'remove');
                         Utils.activedCommand(oponent.id, 'remove');
                         Utils.setCooldown('roll', msg.author.id);
@@ -289,6 +290,7 @@ module.exports = {
                     if (oponentTotal === 1) {
                         gameCollector.stop('oponent win');
                         Utils.addCoins(oponent.id, msg.guild.id, betCoins * 2);
+                        Utils.removeCoins(msg.author.id, msg.guild.id, betCoins);
                         Utils.activedCommand(msg.author.id, 'remove');
                         Utils.activedCommand(oponent.id, 'remove');
                         Utils.setCooldown('roll', msg.author.id);

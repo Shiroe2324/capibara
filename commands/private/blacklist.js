@@ -31,12 +31,12 @@ module.exports = {
      */
     execute: async (msg, args, client) => {
         const user = client.users.fetch(args[0]);
-        if (!user) return msg.reply('El usuario no existe.');
+        if (!user) return msg.reply('El usuario no existe.').catch(e => console.log(e));
      
         const userdb = await Utils.user(args[0], 'global');
 
         userdb.blacklist = true;
         await userdb.save();
-        msg.reply('El usuario se ha añadido a la blacklist.');
+        msg.reply('El usuario se ha añadido a la blacklist.').catch(e => console.log(e));
     }
 }

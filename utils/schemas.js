@@ -6,6 +6,8 @@ const UserSchema = new mongoose.Schema({
     Type: { type: String, default: 'globalUser' }, // tipo de base de datos
     user: { type: String }, // id del usuario
     date: { type: Date }, // fecha de creación de la base de datos
+    hugs: { type: Number, default: 0 }, // cantidad de abrazos
+    pats: { type: Number, default: 0 }, // cantidad de caricias
     cooldowns: { type: Map, default: new Map() }, // cooldowns de los comandos del usuario
     blacklist: { type: Boolean, default: false }, // si el usuario esta bloqueado del bot
 });
