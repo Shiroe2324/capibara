@@ -9,13 +9,17 @@ const { Message } = require('discord.js');
  */
 
 module.exports = async (msg, data) => {
+    let message;
+
     try {
         if (typeof data === 'object') {
-            return msg.reply({ ...data, allowedMentions: { repliedUser: false } });
+            message = msg.reply({ ...data, allowedMentions: { repliedUser: false } });
         } else {
-            return msg.reply({ content: data, allowedMentions: { repliedUser: false } });
+            message = msg.reply({ content: data, allowedMentions: { repliedUser: false } });
         }
     } catch (err) {
-        return msg.channel.send(data)
+        message = msg.channel.send(data);
     }
+
+    return message;
 }
