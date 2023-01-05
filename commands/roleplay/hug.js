@@ -1,4 +1,4 @@
-const { PermissionFlagsBits, Message, Client } = require('discord.js');
+const { PermissionFlagsBits, Message, Client, EmbedBuilder } = require('discord.js');
 const Utils = require('../../utils');
 const nekoClient = require('nekos.life');
 const neko = new nekoClient();
