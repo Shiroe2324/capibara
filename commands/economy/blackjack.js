@@ -120,7 +120,7 @@ module.exports = {
         };
 
         if (playerTotal === 21) {
-            Utils.setCooldown('blackjack', msg.author.id);
+            Utils.setCooldown('blackjack', msg.author.id, msg.guildId);
             Utils.activedCommand(msg.author.id, 'remove');
             Utils.addCoins(msg.author.id, msg.guildId, betCoins);
             return Utils.send(msg, {
@@ -144,7 +144,7 @@ module.exports = {
         const componentCollector = message.createMessageComponentCollector({ filter, time: 120000, componentType: ComponentType.Button });
 
         const gameStop = () => {
-            Utils.setCooldown('blackjack', msg.author.id);
+            Utils.setCooldown('blackjack', msg.author.id, msg.guildId);
             Utils.activedCommand(msg.author.id, 'remove');
             messageCollector.stop();
             componentCollector.stop();
@@ -215,7 +215,7 @@ module.exports = {
                     components: [rowDisabled]
                 })
                 Utils.removeCoins(msg.author.id, msg.guildId, betCoins);
-                Utils.setCooldown('blackjack', msg.author.id);
+                Utils.setCooldown('blackjack', msg.author.id, msg.guildId);
                 Utils.activedCommand(msg.author.id, 'remove');
             }
         }
