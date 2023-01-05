@@ -51,7 +51,7 @@ module.exports = {
             return Utils.send(msg, `Tienes que colocar uno de los dos lados de la moneda **[h/t]** o **[head/tails]**!`)
         }
 
-        Utils.setCooldown('coinflip', msg.author.id);
+        Utils.setCooldown('coinflip', msg.author.id, msg.guildId);
 
         const side = Utils.random(['head', 'tails']);
 
