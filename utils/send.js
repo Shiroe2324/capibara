@@ -13,12 +13,12 @@ module.exports = async (msg, data) => {
 
     try {
         if (typeof data === 'object') {
-            message = msg.reply({ ...data, allowedMentions: { repliedUser: false } });
+            message = await msg.reply({ ...data, allowedMentions: { repliedUser: false } });
         } else {
-            message = msg.reply({ content: data, allowedMentions: { repliedUser: false } });
+            message = await msg.reply({ content: data, allowedMentions: { repliedUser: false } });
         }
     } catch (err) {
-        message = msg.channel.send(data);
+        message = await msg.channel.send(data);
     }
 
     return message;
