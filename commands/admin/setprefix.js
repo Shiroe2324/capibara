@@ -44,7 +44,7 @@ module.exports = {
             return Utils.send(msg, 'El prefix colocado es el actual prefix del servidor.') 
         }
         
-        Utils.setCooldown('emojis', msg.author.id);
+        Utils.setCooldown('emojis', msg.author.id, msg.guildId);
 
         guild.prefix = args[0];
         await guild.save(); 
