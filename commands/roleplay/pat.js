@@ -43,7 +43,7 @@ module.exports = {
         if (search.error) return search.message({ content: search.messageError, embeds: [], components: [] })
         if (search.member.id === msg.author.id) return search.message({ content: 'No te puedes acariciar a ti mismo!', embeds: [], components: [] })
 
-        Utils.setCooldown('pat', msg.author.id);
+        Utils.setCooldown('pat', msg.author.id, msg.guildId);
 
         const image = await neko.pat();
 
