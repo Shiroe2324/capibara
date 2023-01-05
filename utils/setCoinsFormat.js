@@ -1,29 +1,25 @@
 const { guildUser } = require('./schemas');
 
 /**
- * quita los formatos a una cadena o numero de monedas.
- * @param {guildUser} user - la base de datos del usuario para conseguir sus monedas.
- * @param {string|number} coins - la cadena o numero de monedas a formatear.
- * @returns {number} el numero de monedas ya formateado.
+ * removes the formats to a string or number of coins.
+ * @param {guildUser} user - the user database to get their coins.
+ * @param {string|number} coins - the string or number of coins to format.
+ * @returns {number} the number of coins already formatted.
  */
 module.exports = (user, coins) => {
-    if (typeof Number(coins) === 'number' && !isNaN(coins)) return coins; // si es solamente un numero sin formato, se retorna el propio numero
-
-    //se verifica si se necesitan todas las monedas, la mitad, solo una cuarta parte
+    if (typeof Number(coins) === 'number' && !isNaN(coins)) return coins; 
+    
     switch (coins) {
         case 'all': return user.coins;
         case 'half': return user.coins / 2;
         case 'quarter': return user.coins / 4;
     }
 
-    /* se verifica por medio de una RexExp si la cadena cumple con los requisitos, ejemplos: ['19m', '9.6b', '1k', '999q']
-    en caso contrario se retorna NaN */
     if (!/^([0-9]+[.])?[0-9]+[kmbtq]$/i.test(coins)) return NaN;
 
-    const formatedCoins = parseFloat(coins); // se quitan las letras y se pasa al tipo FloatingNumber 
-    const format = coins.substring(coins.length - 1); // se selecciona el tipo de formato usado
+    const formatedCoins = parseFloat(coins);
+    const format = coins.substring(coins.length - 1);
 
-    // se verifica que formato se está usando, y lo devuelve en su valor exacto (mil, millon, billon, trillon, quatrillon)
     switch (format) {
         case 'k': return formatedCoins * 1000;
         case 'm': return formatedCoins * 1000000;

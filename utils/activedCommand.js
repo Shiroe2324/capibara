@@ -1,10 +1,10 @@
 const members = new Map();
 
 /**
- * Añade un miembro a una lista para evitar que use comandos.
- * @param {string} member el miembro a añadir o eliminar
- * @param {string} type el tipo de miembro a añadir o eliminar (add|remove).
- * @returns {boolean} un verificador que indica si el miembro fue añadido o no.
+ * add a member to the list of members that have a actived command.
+ * @param {string} member the member to add.
+ * @param {string} type the type of action to perform (add|remove).
+ * @returns {boolean} a boolean that say if the members list has the member.
  */
 
 module.exports = (member, type) => {

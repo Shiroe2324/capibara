@@ -4,15 +4,15 @@ const { inspect } = require('util');
 const Utils = require('../../utils');
 
 /**
- * @property name - El nombre del comando.
- * @property usage - La sintaxis en que se usa el comando.
- * @property aliases - Los aliases del comando.
- * @property cooldowns - el tiempo de cooldown del comando
- * @property category - El nombre de la categoría del comando.
- * @property description - La descripcion del comando.
- * @property onlyCreator - Verificador si el comando es solo para el creador del bot.
- * @property botPermissions - Lista de permisos del bot para el comando.
- * @property userPermissions - Lista de permisos del usuario para el comando.
+ * @property name - The name of the command.
+ * @property usage - The syntax in which the command is used.
+ * @property aliases - The aliases of the command.
+ * @property cooldown - the cooldown time of the command
+ * @property category - The name of the command category.
+ * @property description - The description of the command.
+ * @property onlyCreator - Check if the command is only for the creator of the bot.
+ * @property botPermissions - List of bot permissions for the command.
+ * @property userPermissions - List of user permissions for the command.
  */
 module.exports = {
     name: 'eval',
@@ -22,18 +22,21 @@ module.exports = {
     category: 'privada',
     description: 'Evalua un codigo colocado y retorna dicho codigo',
     onlyCreator: true,
-    botPermissions: [],
+    botPermissions: [
+        PermissionFlagsBits.ViewChannel,
+        PermissionFlagsBits.SendMessages
+    ],
     userPermissions: [],
 
     /**
-     * funcion con el codigo a ejecutar del comando.
-     * @param {Message} msg - El mensaje enviado por el usuario.
-     * @param {string[]} args - Los argumentos del mensaje enviado por el usuario.
-     * @param {Client} client - El cliente del bot.
+     * function with the code to execute the command.
+     * @param {Message} msg - The message sent by the user.
+     * @param {string[]} args - The arguments of the message sent by the user.
+     * @param {Client} client - The bot's client.
      */
     execute: async (msg, args, client) => {
         const code = args.join(" ");
-        if (!code) return msg.channel.send("???");
+        if (!code) return Utils.send(msg, "???");
 
         const command = async (name, arg) => {
             const cmd = client.commands.get(name) || client.commands.find((c) => c.aliases.includes(name));
@@ -47,11 +50,11 @@ module.exports = {
 
             const results = Utils.separateString(1990, result);
             for (const x of results) {
-                msg.channel.send(codeBlock('js', x));
+                Utils.send(msg, codeBlock('js', x));
             }
             
         } catch (err) {
-            msg.channel.send(codeBlock('js', err));
+            Utils.send(msg, codeBlock('js', err));
         }
     }
 }

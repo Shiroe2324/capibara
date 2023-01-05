@@ -25,15 +25,15 @@ const getHandValue = (hand) => {
 }
 
 /**
- * @property name - El nombre del comando.
- * @property usage - La sintaxis en que se usa el comando.
- * @property aliases - Los aliases del comando.
- * @property cooldowns - el tiempo de cooldown del comando
- * @property category - El nombre de la categoría del comando.
- * @property description - La descripcion del comando.
- * @property onlyCreator - Verificador si el comando es solo para el creador del bot.
- * @property botPermissions - Lista de permisos del bot para el comando.
- * @property userPermissions - Lista de permisos del usuario para el comando.
+ * @property name - The name of the command.
+ * @property usage - The syntax in which the command is used.
+ * @property aliases - The aliases of the command.
+ * @property cooldown - the cooldown time of the command
+ * @property category - The name of the command category.
+ * @property description - The description of the command.
+ * @property onlyCreator - Check if the command is only for the creator of the bot.
+ * @property botPermissions - List of bot permissions for the command.
+ * @property userPermissions - List of user permissions for the command.
  */
 module.exports = {
     name: 'blackjack',
@@ -52,23 +52,23 @@ module.exports = {
     userPermissions: [],
 
     /**
-     * funcion con el codigo a ejecutar del comando.
-     * @param {Message} msg - El mensaje enviado por el usuario.
-     * @param {string[]} args - Los argumentos del mensaje enviado por el usuario.
-     * @param {Client} client - El cliente del bot.
+     * function with the code to execute the command.
+     * @param {Message} msg - The message sent by the user.
+     * @param {string[]} args - The arguments of the message sent by the user.
+     * @param {Client} client - The bot's client.
      */
     execute: async (msg, args, client) => {
-        const guild = await Utils.guildFetch(msg.guild.id);
-        const user = await Utils.userFetch(msg.author.id, msg.guild.id);
+        const guild = await Utils.guildFetch(msg.guildId);
+        const user = await Utils.userFetch(msg.author.id, msg.guildId);
         const formatedCoins = await Utils.setCoinsFormat(user, args[0]);
         const betCoins = Math.round(formatedCoins);
 
         if (isNaN(betCoins)) {
-            return msg.reply(`Tienes que colocar una cantidad de ${guild.coin} valida!`).catch(e => console.log(e));
+            return Utils.send(msg, `Tienes que colocar una cantidad de ${guild.coin} valida!`)
         } else if (user.coins < betCoins) {
-            return msg.reply(`No puedes apostar **más ${guild.coin}** de las que posees actualmente!`).catch(e => console.log(e));
+            return Utils.send(msg, `No puedes apostar **más ${guild.coin}** de las que posees actualmente!`)
         } else if (betCoins < 20) {
-            return msg.reply(`No puedes apostar menos de **20 ${guild.coin}**!`).catch(e => console.log(e));
+            return Utils.send(msg, `No puedes apostar menos de **20 ${guild.coin}**!`)
         }
 
         Utils.activedCommand(msg.author.id, 'add');
@@ -122,14 +122,14 @@ module.exports = {
         if (playerTotal === 21) {
             Utils.setCooldown('blackjack', msg.author.id);
             Utils.activedCommand(msg.author.id, 'remove');
-            Utils.addCoins(msg.author.id, msg.guild.id, betCoins);
-            return msg.channel.send({
+            Utils.addCoins(msg.author.id, msg.guildId, betCoins);
+            return Utils.send(msg, {
                 embeds: [embed(`Blackjack! has ganado ${betCoins}${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#00ff00')],
                 components: [rowDisabled]
             });
         }
 
-        const message = await msg.channel.send({
+        const message = await Utils.send(msg, {
             embeds: [embed('Escribe `hit` para agarrar otra carta o `stand` para pasar.', playerTotal, playerHandString, dealerTotal, dealerHandString)],
             components: [rowEnabled]
         });
@@ -139,7 +139,7 @@ module.exports = {
 
         filter = (interaction) => {
             if (interaction.user.id === msg.author.id) return true;
-            return interaction.reply({ content: `solamente **${msg.author.tag}** puede hacer eso!`, ephemeral: true }).catch(e => console.log(e));
+            return interaction.reply({ content: `solamente **${msg.author.tag}** puede hacer eso!`, ephemeral: true })
         };
         const componentCollector = message.createMessageComponentCollector({ filter, time: 120000, componentType: ComponentType.Button });
 
@@ -159,22 +159,22 @@ module.exports = {
                 if (playerTotal < 21) {
                     await message.edit({
                         embeds: [embed('Escribe `hit` para agarrar otra carta o `stand` para pasar.', playerTotal, playerHandString, dealerTotal, dealerHandString)]
-                    }).catch(e => console.log(e));
+                    })
                 } else if (playerTotal === 21) {
                     await message.edit({
                         embeds: [embed(`Blackjack! has ganado ${betCoins}${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#00ff00')],
                         components: [rowDisabled]
-                    }).catch(e => console.log(e));
+                    })
 
-                    Utils.addCoins(msg.author.id, msg.guild.id, betCoins);
+                    Utils.addCoins(msg.author.id, msg.guildId, betCoins);
                     gameStop()
                 } else {
                     await message.edit({
                         embeds: [embed(`Fracasaste! has perdido ${betCoins}${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#ff0000')],
                         components: [rowDisabled]
-                    }).catch(e => console.log(e));
+                    })
 
-                    Utils.removeCoins(msg.author.id, msg.guild.id, betCoins);
+                    Utils.removeCoins(msg.author.id, msg.guildId, betCoins);
                     gameStop()
                 }
             } else if (content === 'stand') {
@@ -191,19 +191,19 @@ module.exports = {
                     await message.edit({
                         embeds: [embed(`Ganaste! has ganado ${betCoins}${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#00ff00')],
                         components: [rowDisabled]
-                    }).catch(e => console.log(e));
-                    Utils.addCoins(msg.author.id, msg.guild.id, betCoins);
+                    })
+                    Utils.addCoins(msg.author.id, msg.guildId, betCoins);
                 } else if (dealerTotal > playerTotal) {
                     await message.edit({
                         embeds: [embed(`Fracasaste! has perdido ${betCoins}${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#ff0000')],
                         components: [rowDisabled]
-                    }).catch(e => console.log(e));
-                    Utils.removeCoins(msg.author.id, msg.guild.id, betCoins);
+                    })
+                    Utils.removeCoins(msg.author.id, msg.guildId, betCoins);
                 } else {
                     await message.edit({
-                        embeds: [embed('Es un empate! No has ganado ni perdido monedas', playerTotal, playerHandString, dealerTotal, dealerHandString, '#ffffff')],
+                        embeds: [embed('Es un empate! No has ganado ni perdido monedas', playerTotal, playerHandString, dealerTotal, dealerHandString, '#aaaaaa')],
                         components: [rowDisabled]
-                    }).catch(e => console.log(e));
+                    })
                 }
             }
         }
@@ -213,8 +213,8 @@ module.exports = {
                 message.edit({
                     embeds: [embed(`Se acabó el tiempo! has perdido ${betCoins}${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#ff0000')],
                     components: [rowDisabled]
-                }).catch(e => console.log(e));
-                Utils.removeCoins(msg.author.id, msg.guild.id, betCoins);
+                })
+                Utils.removeCoins(msg.author.id, msg.guildId, betCoins);
                 Utils.setCooldown('blackjack', msg.author.id);
                 Utils.activedCommand(msg.author.id, 'remove');
             }

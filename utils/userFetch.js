@@ -1,10 +1,10 @@
 const { globalUser, guildUser } = require('./schemas');
 
 /**
- * busca crea una base de datos de un usuario.
- * @param {string} userId - la id del usuario.
- * @param {string} guildId - la id del servidor, o global.
- * @returns {globalUser|false} el usuario buscado o creado.
+ * search or create a database of a user.
+ * @param {string} userId - id of the member.
+ * @param {string} guildId - id of the guild or 'global'.
+ * @returns {globalUser} the searched or created user.
  */
 module.exports = async (userId, guildId) => {
     if (guildId === 'global') {

@@ -9,6 +9,7 @@ module.exports = {
     random: require('./utils/random'),
     removeAccents: require('./utils/removeAccents'),
     removeCoins: require('./utils/removeCoins'),
+    send: require('./utils/send'),
     separateString: require('./utils/separateString'),
     setCoinsFormat: require('./utils/setCoinsFormat'),
     setCooldown: require('./utils/setCooldown'),
@@ -17,13 +18,13 @@ module.exports = {
     userFetch: require('./utils/userFetch'),
     weightedRandom: require('./utils/weightedRandom'),
 
-    /**schemas de las bases de datos de mongoDB del bot*/
+    /**schemeas of mongodb*/
     schemas: require('./utils/schemas'),
 
-    /**color universal del bot*/
+    /**universal bot color*/
     color: process.env['COLOR'],
     
-    /**permisos en español de los servidores de discord*/
+    /**Discord permission on spanish*/
     Permissions: {
         CreateInstantInvite: "Crear Invitaciones Instantaneas",
         KickMembers: "Expulsar Miembros",

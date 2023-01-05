@@ -2,15 +2,15 @@ const { EmbedBuilder, PermissionFlagsBits, Message, Client } = require('discord.
 const Utils = require('../../utils');
 
 /**
- * @property name - El nombre del comando.
- * @property usage - La sintaxis en que se usa el comando.
- * @property aliases - Los aliases del comando.
- * @property cooldowns - el tiempo de cooldown del comando
- * @property category - El nombre de la categoría del comando.
- * @property description - La descripcion del comando.
- * @property onlyCreator - Verificador si el comando es solo para el creador del bot.
- * @property botPermissions - Lista de permisos del bot para el comando.
- * @property userPermissions - Lista de permisos del usuario para el comando.
+ * @property name - The name of the command.
+ * @property usage - The syntax in which the command is used.
+ * @property aliases - The aliases of the command.
+ * @property cooldown - the cooldown time of the command
+ * @property category - The name of the command category.
+ * @property description - The description of the command.
+ * @property onlyCreator - Check if the command is only for the creator of the bot.
+ * @property botPermissions - List of bot permissions for the command.
+ * @property userPermissions - List of user permissions for the command.
  */
 module.exports = {
     name: 'balance',
@@ -29,28 +29,28 @@ module.exports = {
     userPermissions: [],
 
     /**
-     * funcion con el codigo a ejecutar del comando.
-     * @param {Message} msg - El mensaje enviado por el usuario.
-     * @param {string[]} args - Los argumentos del mensaje enviado por el usuario.
-     * @param {Client} client - El cliente del bot.
+     * function with the code to execute the command.
+     * @param {Message} msg - The message sent by the user.
+     * @param {string[]} args - The arguments of the message sent by the user.
+     * @param {Client} client - The bot's client.
      */
     execute: async (msg, args, client) => {
         Utils.activedCommand(msg.author.id, 'add');
         const search = await Utils.findMember(msg, args, true, true);
         Utils.activedCommand(msg.author.id, 'remove');
 
-        if (search.error) return search.message({ content: search.messageError, embeds: [], components: [] }).catch(e => console.log(e));
+        if (search.error) return search.message({ content: search.messageError, embeds: [], components: [] })
 
-        Utils.setCooldown('balance', msg.author.id);
+        Utils.setCooldown('balance', msg.author.id, msg.guildId);
 
-        const user = await Utils.userFetch(search.member.id, msg.guild.id);
-        const guild = await Utils.guildFetch(msg.guild.id);
+        const user = await Utils.userFetch(search.member.id, msg.guildId);
+        const guild = await Utils.guildFetch(msg.guildId);
 
         const embed = new EmbedBuilder()
             .setAuthor({ name: `Balance de ${search.member.user.tag}`, iconURL: search.member.user.avatarURL({ dynamic: true }) }, msg.author.displayName)
             .setTitle(`**${user.coins}** ${guild.coin}`)
             .setColor(Utils.color);
 
-        search.message({ embeds: [embed], components: [] }).catch(e => console.log(e));
+        search.message({ embeds: [embed], components: [] })
     }
 }

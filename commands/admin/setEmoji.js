@@ -2,15 +2,15 @@ const { PermissionFlagsBits, Message, Client, emoji } = require('discord.js');
 const Utils = require('../../utils');
 
 /**
- * @property name - El nombre del comando.
- * @property usage - La sintaxis en que se usa el comando.
- * @property aliases - Los aliases del comando.
- * @property cooldowns - el tiempo de cooldown del comando
- * @property category - El nombre de la categoría del comando.
- * @property description - La descripcion del comando.
- * @property onlyCreator - Verificador si el comando es solo para el creador del bot.
- * @property botPermissions - Lista de permisos del bot para el comando.
- * @property userPermissions - Lista de permisos del usuario para el comando.
+ * @property name - The name of the command.
+ * @property usage - The syntax in which the command is used.
+ * @property aliases - The aliases of the command.
+ * @property cooldown - the cooldown time of the command
+ * @property category - The name of the command category.
+ * @property description - The description of the command.
+ * @property onlyCreator - Check if the command is only for the creator of the bot.
+ * @property botPermissions - List of bot permissions for the command.
+ * @property userPermissions - List of user permissions for the command.
  */
 module.exports = {
     name: 'setemoji',
@@ -31,32 +31,33 @@ module.exports = {
     ],
 
     /**
-     * funcion con el codigo a ejecutar del comando.
-     * @param {Message} msg - El mensaje enviado por el usuario.
-     * @param {string[]} args - Los argumentos del mensaje enviado por el usuario.
-     * @param {Client} client - El cliente del bot.
+     * function with the code to execute the command.
+     * @param {Message} msg - The message sent by the user.
+     * @param {string[]} args - The arguments of the message sent by the user.
+     * @param {Client} client - The bot's client.
      */
     execute: async (msg, args, client) => {
-        const guild = await Utils.guildFetch(msg.guild.id);
+        const guild = await Utils.guildFetch(msg.guildId);
 
-        if (!args[0]) return msg.reply('Tienes que colocar un emoji!').catch(e => console.log(e));
+        if (!args[0]) return Utils.send(msg, 'Tienes que colocar un emoji!')
 
         if (args[0] === 'default') {
-            if (guild.coin === process.env['COIN_NAME']) return msg.reply('Ya se está usando el emoji predeterminado!');
+            if (guild.coin === process.env['COIN_NAME']) return Utils.send(msg, 'Ya se está usando el emoji predeterminado!');
             guild.coin = process.env['COIN_NAME'];
             await guild.save();
-            return msg.reply('Se ha restablecido el emoji predeterminado.').catch(e => console.log(e));
+            return Utils.send(msg, 'Se ha restablecido el emoji predeterminado.')
         }
 
         const emoji = Utils.emoji(guild.coin, client);
 
-        if (!emoji.isEmoji) return msg.reply('Tienes que especificar un emoji válido!').catch(e => console.log(e));
-        if (emoji.type === 'guild' && !emoji.existInBot) return msg.reply('Tienes que colocar un emoji predeterminado o que esté en un servidor donde yo esté!').catch(e => console.log(e));
-        if (args[0] === guild.coin) return msg.reply('Ya se está usando ese emoji!').catch(e => console.log(e));
+        if (!emoji.isEmoji) return Utils.send(msg, 'Tienes que especificar un emoji válido!')
+        if (emoji.type === 'guild' && !emoji.existInBot) return Utils.send(msg, 'Tienes que colocar un emoji predeterminado o que esté en un servidor donde yo esté!')
+        if (args[0] === guild.coin) return Utils.send(msg, 'Ya se está usando ese emoji!')
 
+        Utils.setCooldown('setemoji', msg.author.id, msg.guildId);
         guild.coin = args[0];
         await guild.save();
 
-        msg.reply(`Se ha actualizado el emoji de moneda a ${args[0]}.`).catch(e => console.log(e));
+        Utils.send(msg, `Se ha actualizado el emoji de moneda a ${args[0]}.`)
     }
 }

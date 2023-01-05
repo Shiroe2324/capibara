@@ -2,15 +2,15 @@ const { PermissionFlagsBits, Message, Client } = require('discord.js');
 const Utils = require('../../utils');
 
 /**
- * @property name - El nombre del comando.
- * @property usage - La sintaxis en que se usa el comando.
- * @property aliases - Los aliases del comando.
- * @property cooldowns - el tiempo de cooldown del comando
- * @property category - El nombre de la categoría del comando.
- * @property description - La descripcion del comando.
- * @property onlyCreator - Verificador si el comando es solo para el creador del bot.
- * @property botPermissions - Lista de permisos del bot para el comando.
- * @property userPermissions - Lista de permisos del usuario para el comando.
+ * @property name - The name of the command.
+ * @property usage - The syntax in which the command is used.
+ * @property aliases - The aliases of the command.
+ * @property cooldown - the cooldown time of the command
+ * @property category - The name of the command category.
+ * @property description - The description of the command.
+ * @property onlyCreator - Check if the command is only for the creator of the bot.
+ * @property botPermissions - List of bot permissions for the command.
+ * @property userPermissions - List of user permissions for the command.
  */
 module.exports = {
     name: 'work',
@@ -29,15 +29,15 @@ module.exports = {
     userPermissions: [],
 
     /**
-     * funcion con el codigo a ejecutar del comando.
-     * @param {Message} msg - El mensaje enviado por el usuario.
-     * @param {string[]} args - Los argumentos del mensaje enviado por el usuario.
-     * @param {Client} client - El cliente del bot.
+     * function with the code to execute the command.
+     * @param {Message} msg - The message sent by the user.
+     * @param {string[]} args - The arguments of the message sent by the user.
+     * @param {Client} client - The bot's client.
      */
     execute: async (msg, args, client) => {
-        Utils.setCooldown('work', msg.author.id);
+        Utils.setCooldown('work', msg.author.id, msg.guildId);
 
-        const guild = await Utils.guildFetch(msg.guild.id);
+        const guild = await Utils.guildFetch(msg.guildId);
         const money = Utils.random(400) + 100;
 
         const texts = [
@@ -47,9 +47,9 @@ module.exports = {
             `**${msg.author.username}** jugaste con los carpinchos y el cuidador te dió **${money}** ${guild.coin} como agradecimiento`
         ];
 
-        Utils.addCoins(msg.author.id, msg.guild.id, money); 
+        Utils.addCoins(msg.author.id, msg.guildId, money); 
         const message = Utils.random(texts);
 
-        msg.reply(message).catch(e => console.log(e));
+        Utils.send(msg, message)
     }
 }

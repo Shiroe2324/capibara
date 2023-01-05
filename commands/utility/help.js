@@ -2,15 +2,15 @@ const { codeBlock, EmbedBuilder, PermissionFlagsBits, Message, Client, Permissio
 const Utils = require('../../utils');
 
 /**
- * @property name - El nombre del comando.
- * @property usage - La sintaxis en que se usa el comando.
- * @property aliases - Los aliases del comando.
- * @property cooldowns - el tiempo de cooldown del comando
- * @property category - El nombre de la categoría del comando.
- * @property description - La descripcion del comando.
- * @property onlyCreator - Verificador si el comando es solo para el creador del bot.
- * @property botPermissions - Lista de permisos del bot para el comando.
- * @property userPermissions - Lista de permisos del usuario para el comando.
+ * @property name - The name of the command.
+ * @property usage - The syntax in which the command is used.
+ * @property aliases - The aliases of the command.
+ * @property cooldown - the cooldown time of the command
+ * @property category - The name of the command category.
+ * @property description - The description of the command.
+ * @property onlyCreator - Check if the command is only for the creator of the bot.
+ * @property botPermissions - List of bot permissions for the command.
+ * @property userPermissions - List of user permissions for the command.
  */
 module.exports = {
     name: 'help',
@@ -29,13 +29,13 @@ module.exports = {
     userPermissions: [],
 
     /**
-     * funcion con el codigo a ejecutar del comando.
-     * @param {Message} msg - El mensaje enviado por el usuario.
-     * @param {string[]} args - Los argumentos del mensaje enviado por el usuario.
-     * @param {Client} client - El cliente del bot.
+     * function with the code to execute the command.
+     * @param {Message} msg - The message sent by the user.
+     * @param {string[]} args - The arguments of the message sent by the user.
+     * @param {Client} client - The bot's client.
      */
     execute: async (msg, args, client) => {
-        const guild = await Utils.guildFetch(msg.guild.id);
+        const guild = await Utils.guildFetch(msg.guildId);
         const categorys = ['economia', 'utilidad', 'roleplay', 'administracion'];
         const economyCommands = client.commands.filter(c => c.category === 'economia').map(x => x.name);
         const utilCommands = client.commands.filter(c => c.category === 'utilidad').map(x => x.name);
@@ -54,12 +54,13 @@ module.exports = {
 
         if (args[0] && !categorys.some(c => c === Utils.removeAccents(args[0]))) {
             const command = client.commands.get(Utils.removeAccents(args[0])) || client.commands.find((cmd) => cmd.aliases.includes(Utils.removeAccents(args[0])));
-            if (!command) return msg.reply('No existe ese comando.');
+            if (!command) return Utils.send(msg, 'No existe ese comando.');
 
             let fields = [{ name: 'Uso', value: `\`${guild.prefix}${command.usage}\`` }];
-
+            
+            if (command.onlyCreator) fields.push({ name: 'Comando Privado', value: 'Este comando solo puede ser ejecutado por el creador del bot.' });
             if (command.aliases.length !== 0) fields.push({ name: 'Aliases', value: command.aliases.join(', ') });
-            if (command.cooldown !== 0) fields.push({ name: 'Cooldown', value: Utils.setTimeFormat(Date.now() + command.cooldown + 700) });
+            if (command.cooldown !== 0) fields.push({ name: 'Cooldown', value: Utils.setTimeFormat(command.cooldown) });
 
             const botPermissions = new PermissionsBitField(command.botPermissions).toArray().map(permission => Utils.Permissions[permission]);
             const userPermissions = new PermissionsBitField(command.userPermissions).toArray().map(permission => Utils.Permissions[permission]);
@@ -74,7 +75,7 @@ module.exports = {
                 .setFooter({ text: 'Sintaxis: (opcional) [requerido]' })
                 .setColor(Utils.color)
 
-            return msg.channel.send({ embeds: [commandEmbed] }).catch(e => console.log(e));
+            return Utils.send(msg, { embeds: [commandEmbed] })
         }
 
         const allEmbed = new EmbedBuilder()
@@ -154,29 +155,29 @@ module.exports = {
                     )
             );
 
-        const message = await msg.channel.send({ embeds: [embed], components: [row] });
+        const message = await Utils.send(msg, { embeds: [embed], components: [row] });
 
         const filter = (interaction) => {
             if (interaction.user.id === msg.author.id) return true;
-            return interaction.reply({ content: `solamente **${msg.author.tag}** puede hacer eso!`, ephemeral: true }).catch(e => console.log(e));
+            return interaction.reply({ content: `solamente **${msg.author.tag}** puede hacer eso!`, ephemeral: true })
         };
 
         const collector = message.createMessageComponentCollector({ filter, time: 120000, componentType: ComponentType.StringSelect });
 
         collector.on('collect', async (interaction) => {
             switch (interaction.values[0]) {
-                case 'first': await interaction.update({ embeds: [allEmbed] }).catch(e => console.log(e)); break;
-                case 'second': await interaction.update({ embeds: [economyEmbed] }).catch(e => console.log(e)); break;
-                case 'third': await interaction.update({ embeds: [utilEmbed] }).catch(e => console.log(e)); break;
-                case 'fourth': await interaction.update({ embeds: [roleplayEmbed] }).catch(e => console.log(e)); break;
-                case 'five': await interaction.update({ embeds: [adminEmbed] }).catch(e => console.log(e)); break;
+                case 'first': await interaction.update({ embeds: [allEmbed] }); break;
+                case 'second': await interaction.update({ embeds: [economyEmbed] }); break;
+                case 'third': await interaction.update({ embeds: [utilEmbed] }); break;
+                case 'fourth': await interaction.update({ embeds: [roleplayEmbed] }); break;
+                case 'five': await interaction.update({ embeds: [adminEmbed] }); break;
             }
         });
 
         collector.on('end', (collected, reason) => {
             if (reason === 'time') {
                 const quoteEmbed = EmbedBuilder.from(message.embeds[0]);
-                message.edit({ embeds: [quoteEmbed], components: [] }).catch(e => console.log(e));
+                message.edit({ embeds: [quoteEmbed], components: [] })
             }
         })
     }

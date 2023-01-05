@@ -2,17 +2,16 @@ const { guilds } = require('./schemas');
 const addCoins = require('./addCoins');
 
 /**
- * busca o crea una base de datos de un servidor.
- * @param {string} id - la id del servidor.
- * @returns {guilds} el servidor buscado o creado.
+ * search or create a database of a guild.
+ * @param {string} id - id of the guild
+ * @returns {guilds} the guild created or searched.
  */
 module.exports = async (id) => {
-    const guild = await guilds.findOne({ id: id }); // base de datos del servidor
+    const guild = await guilds.findOne({ id: id });
 
-    // verificador por si no existe la base de datos
     if (!guild) {
-        await addCoins(process.env['BOT_ID'], id, 999999999999999);
-        const newGuild = new guilds({ id: id, date: Date.now() }); // la nueva base de datos
+        await addCoins(process.env['BOT_ID'], id, Infinity);
+        const newGuild = new guilds({ id: id, date: Date.now() });
         await newGuild.save();
         return newGuild;
     } else {

@@ -2,15 +2,15 @@ const userFetch = require('./userFetch');
 const { guildUser } = require('./schemas');
 
 /**
- * remueve coins a un usuario en un servidor.
- * @param {string} userId - la id del usuario.
- * @param {string} guildId - la id del servidor.
- * @param {number} coins - las monedas a retirar.
- * @returns {guildUser} el usuario a quien se le quitó las coins.
+ * remove coins to a guild member.
+ * @param {string} userId - id of the member.
+ * @param {string} guildId - id of the guild.
+ * @param {number} coins - coind to remove.
+ * @returns {guildUser} the member who remove coin.
  */
 module.exports = async (userId, guildId, coins) => {
-    const user = await userFetch(userId, guildId); // base de datos del usuario en el servidor
-    user.coins -= coins; // coins removidas
-    await user.save(); // se guarda la base de datos
-    return user; // y se retonan los datos del usuario
+    const user = await userFetch(userId, guildId);
+    user.coins -= coins;
+    await user.save();
+    return user;
 }

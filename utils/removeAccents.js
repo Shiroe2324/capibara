@@ -1,7 +1,7 @@
 /**
- * Funcion que quita tildes o acentos a un string.
- * @param {string} str - el string a quitar los acentos.
- * @returns {string} el string sin tildes o acentos.
+ * Function that removes accents from a string.
+ * @param {string} str - the string to remove the accents.
+ * @returns {string} the string without tildes the accents.
  */
 module.exports = (str) => {
     if (!str) return '';

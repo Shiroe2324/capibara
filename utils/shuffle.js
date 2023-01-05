@@ -1,7 +1,7 @@
 /**
- * Desordena un array.
- * @param {array} array - el array a desordenar.
- * @returns {array} el array desordenado.
+ * Suffle an array.
+ * @param {array} array - the array to suffle.
+ * @returns {array} the array shuffled.
  */
 module.exports = (array) => {
     for (let i = array.length - 1; i > 0; i--) {

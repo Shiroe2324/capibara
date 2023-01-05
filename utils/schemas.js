@@ -1,37 +1,40 @@
-const mongoose = require('mongoose'); // librería para ejecutar MongoDB
-mongoose.connect(process.env['MONGODB_URI']) // conexión con la base de datos de MongoDB
+const mongoose = require('mongoose'); // mongoose library
+mongoose.connect(process.env['MONGODB_URI']) // mongoDB conection
+mongoose.set('strictQuery', false); // set strict query to false
 
-// esquema de mongodb de la informacion de los usuarios
-const UserSchema = new mongoose.Schema({
-    Type: { type: String, default: 'globalUser' }, // tipo de base de datos
-    user: { type: String }, // id del usuario
-    date: { type: Date }, // fecha de creación de la base de datos
-    hugs: { type: Number, default: 0 }, // cantidad de abrazos
-    pats: { type: Number, default: 0 }, // cantidad de caricias
-    cooldowns: { type: Map, default: new Map() }, // cooldowns de los comandos del usuario
-    blacklist: { type: Boolean, default: false }, // si el usuario esta bloqueado del bot
+// mongoose schema with globalUser options
+const GlobalUserSchema = new mongoose.Schema({
+    Type: { type: String, default: 'globalUser' }, // type of database
+    user: { type: String }, // user id
+    date: { type: Date }, // creation date of dabatase
+    hugs: { type: Number, default: 0 }, // number of hugs
+    pats: { type: Number, default: 0 }, // number of pats
+    blacklist: { type: Boolean, default: false }, // user blacklist boolean
 });
 
+// mongoose schema with guildUser options
 const GuildUserSchema = new mongoose.Schema({
-    Type: { type: String, default: 'guildUser' }, // tipo de base de datos
-    user: { type: String }, // id del usuario
-    guild: { type: String }, // id del servidor, o si es base global
-    date: { type: Date }, // fecha de creación de la base de datos
-    coins: { type: Number, default: 0 }, // monedas del usuario
-    xp: { type: Number, default: 0 }, // xp del usuario
-    level: { type: Number, default: 0 },  // nivel del usuario
+    Type: { type: String, default: 'guildUser' }, // type of database
+    user: { type: String }, // user id
+    guild: { type: String }, // guild id
+    date: { type: Date }, // created date of database
+    cooldowns: { type: Map, default: new Map() }, // user commands cooldowns
+    coins: { type: Number, default: 0 }, // user coins
+    xp: { type: Number, default: 0 }, // user xp
+    level: { type: Number, default: 0 }, // user level
 });
 
+// mongoose schema with guild options
 const GuildSchema = new mongoose.Schema({
-    Type: { type: String, default: 'guild' }, // tipo de base de datos
-    id: { type: String }, // id del servidor
-    date: { type: Date }, // fecha de creación de la base de datos
-    prefix: { type: String, default: process.env['PREFIX'] }, // prefix del servidor
-    coin: { type: String, default: process.env['COIN_NAME'] }, // nombre de la moneda del servidor
+    Type: { type: String, default: 'guild' }, // type of database
+    id: { type: String }, // guild id
+    date: { type: Date }, // creation date of database
+    prefix: { type: String, default: process.env['PREFIX'] }, // server prefix
+    coin: { type: String, default: process.env['COIN_NAME'] }, // server coin name
 });
 
 module.exports = {
-    globalUser: mongoose.model('globalUser', UserSchema), // modelo del UserSchema
-    guildUser: mongoose.model('guildUser', GuildUserSchema), // modelo del GuildUserSchema
-    guilds: mongoose.model('guild', GuildSchema) // modelo del GuildSchema
+    globalUser: mongoose.model('globalUser', GlobalUserSchema), // UserSchema model
+    guildUser: mongoose.model('guildUser', GuildUserSchema), // GuildUserSchema model
+    guilds: mongoose.model('guild', GuildSchema) // GuildSchema model
 } 

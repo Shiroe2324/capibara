@@ -2,15 +2,15 @@ const { PermissionFlagsBits, Message, Client, EmbedBuilder } = require('discord.
 const Utils = require('../../utils');
 
 /**
- * @property name - El nombre del comando.
- * @property usage - La sintaxis en que se usa el comando.
- * @property aliases - Los aliases del comando.
- * @property cooldowns - el tiempo de cooldown del comando
- * @property category - El nombre de la categoría del comando.
- * @property description - La descripcion del comando.
- * @property onlyCreator - Verificador si el comando es solo para el creador del bot.
- * @property botPermissions - Lista de permisos del bot para el comando.
- * @property userPermissions - Lista de permisos del usuario para el comando.
+ * @property name - The name of the command.
+ * @property usage - The syntax in which the command is used.
+ * @property aliases - The aliases of the command.
+ * @property cooldown - the cooldown time of the command
+ * @property category - The name of the command category.
+ * @property description - The description of the command.
+ * @property onlyCreator - Check if the command is only for the creator of the bot.
+ * @property botPermissions - List of bot permissions for the command.
+ * @property userPermissions - List of user permissions for the command.
  */
 module.exports = {
     name: 'dice',
@@ -18,7 +18,7 @@ module.exports = {
     aliases: [],
     cooldown: 10000,
     category: 'economia',
-    description: 'Lanza un dado de 6 caras.\nSe gana si la cara en la que cae es 4, 5 o 6.\nSi la cara es 4 se ganar la mitad de lo apostado, si la cara es 5 se gana lo apostado, si la cara es 6 se gana el doble de lo apostado.',
+    description: 'Lanza un dado de 6 caras.\nSe gana si la cara en la que cae es 5 o 6.\nSi la cara es 5 se gana lo apostado, si la cara es 6 se gana el doble de lo apostado.',
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
@@ -29,23 +29,23 @@ module.exports = {
     userPermissions: [],
 
     /**
-     * funcion con el codigo a ejecutar del comando.
-     * @param {Message} msg - El mensaje enviado por el usuario.
-     * @param {string[]} args - Los argumentos del mensaje enviado por el usuario.
-     * @param {Client} client - El cliente del bot.
+     * function with the code to execute the command.
+     * @param {Message} msg - The message sent by the user.
+     * @param {string[]} args - The arguments of the message sent by the user.
+     * @param {Client} client - The bot's client.
      */
     execute: async (msg, args, client) => {
-        const guild = await Utils.guildFetch(msg.guild.id);
-        const user = await Utils.userFetch(msg.author.id, msg.guild.id);
+        const guild = await Utils.guildFetch(msg.guildId);
+        const user = await Utils.userFetch(msg.author.id, msg.guildId);
         const formatedCoins = await Utils.setCoinsFormat(user, args[0]);
         const betCoins = Math.round(formatedCoins);
 
         if (isNaN(betCoins)) {
-            return msg.reply(`Tienes que colocar una cantidad de ${guild.coin} valida!`).catch(e => console.log(e));
+            return Utils.send(msg, `Tienes que colocar una cantidad de ${guild.coin} valida!`)
         } else if (user.coins < betCoins) {
-            return msg.reply(`No puedes apostar **más ${guild.coin}** de las que posees actualmente!`).catch(e => console.log(e));
+            return Utils.send(msg, `No puedes apostar **más ${guild.coin}** de las que posees actualmente!`)
         } else if (betCoins < 20) {
-            return msg.reply(`No puedes apostar menos de **20 ${guild.coin}**!`).catch(e => console.log(e));
+            return Utils.send(msg, `No puedes apostar menos de **20 ${guild.coin}**!`)
         }
 
         Utils.setCooldown('dice', msg.author.id);
@@ -60,7 +60,6 @@ module.exports = {
         switch (dice) {
             case 6: multiplier = 2; break;
             case 5: multiplier = 1; break;
-            case 4: multiplier = 0.5; break;
         }
 
         const winnerEmbed = new EmbedBuilder()
@@ -76,11 +75,11 @@ module.exports = {
             .addFields([{ name: `🎲 - ${dice}`, value: `Has Perdido ${betCoins} ${guild.coin} ...` }]);
 
         if (multiplier !== 0) {
-            Utils.addCoins(msg.author.id, msg.guild.id, parseInt(betCoins * multiplier));
-            msg.reply({ embeds: [winnerEmbed] }).catch(e => console.log(e));
+            Utils.addCoins(msg.author.id, msg.guildId, parseInt(betCoins * multiplier));
+            Utils.send(msg, { embeds: [winnerEmbed] })
         } else {
-            Utils.removeCoins(msg.author.id, msg.guild.id, betCoins);
-            msg.reply({ embeds: [loserEmbed] }).catch(e => console.log(e));
+            Utils.removeCoins(msg.author.id, msg.guildId, betCoins);
+            Utils.send(msg, { embeds: [loserEmbed] })
         }
     }
 }

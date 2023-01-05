@@ -4,10 +4,9 @@
  * @returns {string} un texto con la fecha formateada.
  */
 module.exports = (time) => {
-    let text = ''; // texto de la fecha formateada
-    const date = new Date(Math.abs(Date.now() - time)); // fecha formateada
+    let text = [];
+    const date = new Date(Math.abs(time));
 
-    // tiempos de la fecha dada (años, meses, dias, horas, minutos, segundos)
     const times = [
         { value: date.getUTCFullYear() - 1970, suffix: date.getUTCFullYear() - 1970 <= 1 ? 'año' : 'años' },
         { value: date.getUTCMonth(), suffix: date.getUTCMonth() <= 1 ? 'mes' : 'meses' },
@@ -17,12 +16,22 @@ module.exports = (time) => {
         { value: date.getUTCSeconds(), suffix: date.getUTCSeconds() <= 1 ? 'segundo' : 'segundos' }
     ];
 
-    // un ciclo que itera cada tiempo de la fecha dada, si es mayor que 0, agrega el tiempo al texto
     for (let x = 0; x < times.length; x++) {
         if (times[x].value > 0) {
-            text += `${times[x].value} ${times[x].suffix} `;
+            text.push(`${times[x].value} ${times[x].suffix}`);
         }
     }
 
-    return text.trim(); // se devuelve la fecha formateada sin espacios al final
+    text.forEach((t) => {
+        if (text.length === 1 || text.indexOf(t) === text.length - 1) return;
+
+        if (text.indexOf(t) === text.length - 2) {
+            text[text.length - 2] = `${t} y `;
+        } else {
+            text[text.indexOf(t)] = `${t}, `;
+        }
+
+    });
+
+    return text.join('').trim();
 }

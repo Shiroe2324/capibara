@@ -1,44 +1,40 @@
-const { Message, GuildMember, EmbedBuilder, GuildChannel } = require('discord.js') // estructuras de algunos datos
-const pageSystem = require('./pageSystem'); // sistema de paginas
-const { edit } = Message;
-const { send } = GuildChannel;
+const { Message, GuildMember, EmbedBuilder, GuildChannel } = require('discord.js');
+const pageSystem = require('./pageSystem');
+const send = require('./send');
 
 /**
- * funcion que verifica que mensaje se está usando.
- * @param {Message} message - El mensaje usado.
- * @param {string} type - El tipo de actualización a hacer.
- * @returns {edit|send} Edita o envia el mensaje usado.
+ * function that checks which message is being used.
+ * @param {Message} message - The message used.
+ * @param {string} type - The type of update to do.
+ * @returns {Message} Edit or send the used message.
  */
 const updateMessage = (message, type) => {
     switch (type) {
-        case 'edit': return (data) => message.edit(data).catch(e => console.log(e));;
-        case 'send': return (data) => message.channel.send(data).catch(e => console.log(e));;
+        case 'edit': return (data) => message.edit(data);
+        case 'send': return (data) => send(message, data);
     }
 }
 
 /**
- * Funcion que ejecuta una busqueda de los miembros de un server con los datos dados.
- * @param {Message} msg - El mensaje enviado.
- * @param {string[]} args - Los argumentos del mensaje.
- * @param {Boolean} allowedAuthor - Boolean para verificar si se incluye al autor del mensaje en la busqueda.
- * @returns {{member: GuildMember, message: updateMessage, error: boolean, messageError: string}} la informacion del miembro encontrado o un object si hubo algun error.
+ * Ffunction that performs a search for the members of a server with the given data.
+ * @param {Message} msg - The message sent.
+ * @param {string[]} args - The message arguments.
+ * @param {Boolean} allowedAuthor - Boolean to check if the author of the message is included in the search.
+ * @returns {{member: GuildMember, message: updateMessage, error: boolean, messageError: string}} the information of the member found or an object if there was an error.
  */
 module.exports = async (msg, args, allowedAuthor = false, includeBots = false) => {
-    let member = msg.mentions.members.first() || msg.guild.members.cache.get(args[0]); // busqueda del miembro por medio de mención o de id
+    let member = msg.mentions.members.first() || msg.guild.members.cache.get(args[0]);
     let message = updateMessage(msg, 'send');
     let error = false;
     let messageError = '';
 
-    // verificador si se incluye el autor en la busqueda, si está activado y no coloca ningún argumento, devuelve al autor del mensaje
     if (allowedAuthor && !args[0]) {
         member = msg.member;
     }
 
-    // se verifica si no hay mención
     if (!member) {
-        const name = args.join(' ')?.toLowerCase(); // nombre, tag o apodo de la persona a buscar
+        const name = args.join(' ')?.toLowerCase(); 
 
-        // lista de miembros con ese nombre en su apodo o tag
         let members = msg.guild.members.cache.filter(member => {
             return member.user.tag?.toLowerCase().includes(name) || member.nickname?.toLowerCase().includes(name)
         }).map(x => x);
@@ -47,7 +43,6 @@ module.exports = async (msg, args, allowedAuthor = false, includeBots = false) =
             member = members.filter(member => member.id !== process.env['BOT_ID'] && !member.bot)
         }
 
-        // se verifica si no hay nombre, miembros con ese nombre o tag o si hay mas de un miembro con el
         if (!name) {
             error = true;
             messageError = 'Tienes que mencionar a una persona';
@@ -57,7 +52,6 @@ module.exports = async (msg, args, allowedAuthor = false, includeBots = false) =
         } else if (members.length === 1) {
             member = members[0];
         } else {
-            // embed interactivo con paginas
             const embed = (index) => {
                 const current = members.map((m, i) => `**${i + 1}.** ${m.user.tag} --- **[**${m.id}**]**`).slice(index, index + 10); // la lista de miembros con ese nombre
                 return new EmbedBuilder()
@@ -68,20 +62,17 @@ module.exports = async (msg, args, allowedAuthor = false, includeBots = false) =
                     .setFooter({ text: 'Coloca el numero que está al lado del nombre para elegir a esa persona\nTambien puedes colocar cancel para cancelar' });
             }
 
-            // filtro de mensajes
             const filter = (interaction) => {
                 const selected = parseInt(interaction.content);
                 return interaction.content === 'cancel' || interaction.author.id === msg.author.id && !isNaN(selected) && selected > 0 && selected <= members.length;
             }
 
-            // embed con las paginas
             const pages = await pageSystem(msg, embed, members.length, 40000);
 
             try {
-                const collected = await msg.channel.awaitMessages({ filter, max: 1, time: 40000, errors: ['time'] }); // recolector de mensajes
-                const selected = parseInt(collected.first().content) - 1; // el mensaje convertido en entero
+                const collected = await msg.channel.awaitMessages({ filter, max: 1, time: 40000, errors: ['time'] }); 
+                const selected = parseInt(collected.first().content) - 1; 
 
-                // se verifica si se canceló la busqueda o se selecciona el usuario en dicha posición
                 if (collected.first().content === 'cancel') {
                     error = true;
                     messageError = 'Se canceló la elección de usuario';
@@ -90,7 +81,7 @@ module.exports = async (msg, args, allowedAuthor = false, includeBots = false) =
                     member = members[selected];
                     message = updateMessage(pages, 'edit');
                 }
-            } catch (err) { // si no se selecciona nada
+            } catch (err) {
                 error = true;
                 messageError = 'No se eligió ninguna opción...';
                 message = updateMessage(pages, 'edit');
@@ -98,6 +89,5 @@ module.exports = async (msg, args, allowedAuthor = false, includeBots = false) =
         }
     }
 
-    // se retorna un object con el miembro, el mensaje, si hay error y el mensaje de error
     return { member, message, error, messageError }
 }

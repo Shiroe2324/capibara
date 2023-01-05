@@ -2,15 +2,15 @@ const { PermissionFlagsBits, Message, Client, ChannelType } = require('discord.j
 const Utils = require('../../utils');
 
 /**
- * @property name - El nombre del comando.
- * @property usage - La sintaxis en que se usa el comando.
- * @property aliases - Los aliases del comando.
- * @property cooldowns - el tiempo de cooldown del comando
- * @property category - El nombre de la categoría del comando.
- * @property description - La descripcion del comando.
- * @property onlyCreator - Verificador si el comando es solo para el creador del bot.
- * @property botPermissions - Lista de permisos del bot para el comando.
- * @property userPermissions - Lista de permisos del usuario para el comando.
+ * @property name - The name of the command.
+ * @property usage - The syntax in which the command is used.
+ * @property aliases - The aliases of the command.
+ * @property cooldown - the cooldown time of the command
+ * @property category - The name of the command category.
+ * @property description - The description of the command.
+ * @property onlyCreator - Check if the command is only for the creator of the bot.
+ * @property botPermissions - List of bot permissions for the command.
+ * @property userPermissions - List of user permissions for the command.
  */
 module.exports = {
     name: 'say',
@@ -27,10 +27,10 @@ module.exports = {
     userPermissions: [],
 
     /**
-     * funcion con el codigo a ejecutar del comando.
-     * @param {Message} msg - El mensaje enviado por el usuario.
-     * @param {string[]} args - Los argumentos del mensaje enviado por el usuario.
-     * @param {Client} client - El cliente del bot.
+     * function with the code to execute the command.
+     * @param {Message} msg - The message sent by the user.
+     * @param {string[]} args - The arguments of the message sent by the user.
+     * @param {Client} client - The bot's client.
      */
     execute: async (msg, args, client) => {
         let channel = msg.mentions.channels.first() || msg.guild.channels.cache.get(args[0]);
@@ -41,10 +41,10 @@ module.exports = {
             message = args.join(' ');
         }
 
-        if (channel.type !== ChannelType.GuildText) return msg.reply('Tienes que mencionar un canal de texto!');
-        if (!client.channels.cache.has(channel.id) || !channel.permissionsFor(client.user).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages])) return msg.reply('No puedo enviar mensajes a ese canal!');
-        if (!channel.members.has(msg.author.id) || !channel.permissionsFor(msg.author).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages])) return msg.reply('No puedes enviar mensajes a ese canal!');
-        if (!message) return msg.reply('No puedes enviar un mensaje vacio!');
+        if (channel.type !== ChannelType.GuildText) return Utils.send(msg, 'Tienes que mencionar un canal de texto!');
+        if (!client.channels.cache.has(channel.id) || !channel.permissionsFor(client.user).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages])) return Utils.send(msg, 'No puedo enviar mensajes a ese canal!');
+        if (!channel.members.has(msg.author.id) || !channel.permissionsFor(msg.author).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages])) return Utils.send(msg, 'No puedes enviar mensajes a ese canal!');
+        if (!message) return Utils.send(msg, 'No puedes enviar un mensaje vacio!');
 
         msg.delete();
 
