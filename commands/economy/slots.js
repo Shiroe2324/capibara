@@ -48,7 +48,7 @@ module.exports = {
             return Utils.send(msg, `No puedes apostar menos de **20 ${guild.coin}**!`)
         }
 
-        Utils.setCooldown('slot', msg.author.id);
+        Utils.setCooldown('slot', msg.author.id, msg.guildId);
 
         let multiplier = 0;
         const deck = [];
