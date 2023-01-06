@@ -35,7 +35,7 @@ module.exports = {
      * @param {Client} client - The bot's client.
      */
     execute: async (msg, args, client) => {
-        Utils.setCooldown('randomcolor', msg.author.id);
+        Utils.setCooldown('randomcolor', msg.author.id, msg.guildId);
 
         try {
             let color = '';
