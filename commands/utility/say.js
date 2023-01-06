@@ -22,7 +22,8 @@ module.exports = {
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
-        PermissionFlagsBits.SendMessages
+        PermissionFlagsBits.SendMessages,
+        PermissionFlagsBits.ManageMessages
     ],
     userPermissions: [],
 
