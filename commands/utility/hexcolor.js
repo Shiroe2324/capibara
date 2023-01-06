@@ -37,7 +37,7 @@ module.exports = {
     execute: async (msg, args, client) => {
         if (!/^#?[0-9a-f]{6}$/i.test(args[0])) return Utils.send(msg, 'Tienes que colocar un color en formato hex válido!')
 
-        Utils.setCooldown('hexcolor', msg.author.id);
+        Utils.setCooldown('hexcolor', msg.author.id, msg.guildId);
 
         try {
             const color = args[0].toLowerCase().replace('#', ''); 
