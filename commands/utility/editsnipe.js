@@ -39,6 +39,8 @@ module.exports = {
 
         if (!message) return Utils.send(msg, `No se ha editado ningún mensaje recientemente en ${channel}.`)
 
+        Utils.setCooldown('editsnipe', msg.author.id, msg.guildId);
+        
         const oldMessageEmbed = new EmbedBuilder()
             .setAuthor({ name: message.old.author.tag, iconURL: message.old.author.avatarURL({ dynamic: true }) })
             .setTitle('Antiguo mensaje')
