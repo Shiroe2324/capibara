@@ -65,7 +65,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setAuthor({ name: `${msg.author.username} abrazó a ${search.member.user.username}.` })
-            .setDescription(`**${search.member.user.username}** ha recibido **${user.pats}** ${hugAmount} en total.`)
+            .setDescription(`**${search.member.user.username}** ha recibido **${user.hugs}** ${hugAmount} en total.`)
             .setImage(image.url)
             .setColor(Utils.color);
 
