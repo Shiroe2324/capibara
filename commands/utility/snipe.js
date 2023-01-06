@@ -39,7 +39,7 @@ module.exports = {
 
         if (!message) return Utils.send(msg, `No se ha borrado ningún mensaje recientemente en ${channel}.`)
 
-        Utils.setCooldowm('snipe', msg.author.id, msg.guildId);
+        Utils.setCooldown('snipe', msg.author.id, msg.guildId);
         
         const embed = new EmbedBuilder()
             .setAuthor({ name: message.data.author.tag })
