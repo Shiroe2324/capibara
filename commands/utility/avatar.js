@@ -43,7 +43,7 @@ module.exports = {
         if (search.member.id === msg.author.id && !search.member.user.avatarURL()) return search.message({ content: 'No tienes avatar!', embeds: [], components: [] })
         if (!search.member.user.avatarURL()) return search.message({ content: 'El usuario mencionado no tiene avatar!', embeds: [], components: [] })
         
-        Utils.setCooldown('avatar', msg.author.id);
+        Utils.setCooldown('avatar', msg.author.id, msg.guildId);
 
         const embed = (avatar) => new EmbedBuilder()
             .setAuthor({ name: `Avatar de ${search.member.user.tag}`, iconURL: avatar })
