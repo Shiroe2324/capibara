@@ -1,6 +1,6 @@
 const { Message, GuildMember, EmbedBuilder, GuildChannel } = require('discord.js');
 const pageSystem = require('./pageSystem');
-const removeAccents = require('./utils/removeAccents');
+const removeAccents = require('./removeAccents');
 const send = require('./send');
 
 /**
