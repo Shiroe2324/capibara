@@ -56,6 +56,8 @@ module.exports = {
             const command = client.commands.get(Utils.removeAccents(args[0])) || client.commands.find((cmd) => cmd.aliases.includes(Utils.removeAccents(args[0])));
             if (!command) return Utils.send(msg, 'No existe ese comando.');
 
+            Utils.setCooldowm('help', msg.author.id, msg.guildId);
+            
             let fields = [{ name: 'Uso', value: `\`${guild.prefix}${command.usage}\`` }];
             
             if (command.onlyCreator) fields.push({ name: 'Comando Privado', value: 'Este comando solo puede ser ejecutado por el creador del bot.' });
@@ -77,6 +79,8 @@ module.exports = {
 
             return Utils.send(msg, { embeds: [commandEmbed] })
         }
+        
+        Utils.setCooldowm('help', msg.author.id, msg.guildId);
 
         const allEmbed = new EmbedBuilder()
             .setAuthor({ name: client.user.username })
