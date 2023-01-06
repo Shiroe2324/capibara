@@ -56,7 +56,7 @@ module.exports = {
             const command = client.commands.get(Utils.removeAccents(args[0])) || client.commands.find((cmd) => cmd.aliases.includes(Utils.removeAccents(args[0])));
             if (!command) return Utils.send(msg, 'No existe ese comando.');
 
-            Utils.setCooldowm('help', msg.author.id, msg.guildId);
+            Utils.setCooldown('help', msg.author.id, msg.guildId);
             
             let fields = [{ name: 'Uso', value: `\`${guild.prefix}${command.usage}\`` }];
             
@@ -80,7 +80,7 @@ module.exports = {
             return Utils.send(msg, { embeds: [commandEmbed] })
         }
         
-        Utils.setCooldowm('help', msg.author.id, msg.guildId);
+        Utils.setCooldown('help', msg.author.id, msg.guildId);
 
         const allEmbed = new EmbedBuilder()
             .setAuthor({ name: client.user.username })
