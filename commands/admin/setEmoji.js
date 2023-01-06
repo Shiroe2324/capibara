@@ -48,7 +48,7 @@ module.exports = {
             return Utils.send(msg, 'Se ha restablecido el emoji predeterminado.')
         }
 
-        const emoji = Utils.emoji(guild.coin, client);
+        const emoji = Utils.emoji(args[0], client);
 
         if (!emoji.isEmoji) return Utils.send(msg, 'Tienes que especificar un emoji válido!')
         if (emoji.type === 'guild' && !emoji.existInBot) return Utils.send(msg, 'Tienes que colocar un emoji predeterminado o que esté en un servidor donde yo esté!')
