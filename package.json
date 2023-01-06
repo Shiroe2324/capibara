@@ -21,6 +21,7 @@
         "@types/node": "^18.0.6",
         "discord.js": "^14.7.1",
         "dotenv": "^16.0.3",
+        "mathjs": "^11.5.0",
         "mongoose": "^6.7.5",
         "nekos.life": "^3.0.0",
         "node-fetch": "^3.2.6",
