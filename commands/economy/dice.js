@@ -48,7 +48,7 @@ module.exports = {
             return Utils.send(msg, `No puedes apostar menos de **20 ${guild.coin}**!`)
         }
 
-        Utils.setCooldown('dice', msg.author.id);
+        Utils.setCooldown('dice', msg.author.id, msg.guildId);
 
         const dice = Utils.random(6)
         const diceResult = [];
