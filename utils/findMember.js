@@ -1,5 +1,6 @@
 const { Message, GuildMember, EmbedBuilder, GuildChannel } = require('discord.js');
 const pageSystem = require('./pageSystem');
+const removeAccents = require('./utils/removeAccents');
 const send = require('./send');
 
 /**
@@ -33,10 +34,10 @@ module.exports = async (msg, args, allowedAuthor = false, includeBots = false) =
     }
 
     if (!member) {
-        const name = args.join(' ')?.toLowerCase(); 
+        const name = removeAccents(args.join(' ')).toLowerCase(); 
 
         let members = msg.guild.members.cache.filter(member => {
-            return member.user.tag?.toLowerCase().includes(name) || member.nickname?.toLowerCase().includes(name)
+            return removeAccents(member.user.tag).toLowerCase().includes(name) || removeAccents(member.nickname).toLowerCase().includes(name);
         }).map(x => x);
 
         if (includeBots) {
