@@ -119,7 +119,7 @@ module.exports = {
                     if (userTotal === 100) {
                         Utils.addCoins(msg.author.id, msg.guildId, betCoins);
                         Utils.activedCommand(msg.author.id, 'remove');
-                        Utils.setCooldown('roll', msg.author.id);
+                        Utils.setCooldown('roll', msg.author.id, msg.guildId);
                         exitCollector.stop('cancel');
                         gameCollector.stop('cancel');
                         await interaction.update({ content: 'La partida se ha cancelado!', embeds: [], components: [] });
@@ -132,7 +132,7 @@ module.exports = {
                 if (interaction.customId === 'si') {
                     Utils.removeCoins(msg.author.id, msg.guildId, betCoins);
                     Utils.activedCommand(msg.author.id, 'remove');
-                    Utils.setCooldown('roll', msg.author.id);
+                    Utils.setCooldown('roll', msg.author.id, msg.guildId);
                     exitCollector.stop('cancel');
                     gameCollector.stop('cancel');
                     await interaction.update({ content: 'La partida se ha cancelado! como la partida estaba en juego, se han perdido las monedas apostadas.', embeds: [], components: [] });
@@ -151,7 +151,7 @@ module.exports = {
                     if (userTotal === 1) {
                         Utils.addCoins(msg.author.id, msg.guildId, betCoins * 2);
                         Utils.activedCommand(msg.author.id, 'remove');
-                        Utils.setCooldown('roll', msg.author.id);
+                        Utils.setCooldown('roll', msg.author.id, msg.guildId);
                         gameCollector.stop('user win');
                         exitCollector.stop('user win');
                         return await interaction.update({ content: '', embeds: [finishEmbed(msg.author)], components: [rowDisabled] });
@@ -165,7 +165,7 @@ module.exports = {
                     if (botTotal === 1) {
                         Utils.removeCoins(msg.author.id, msg.guildId, betCoins);
                         Utils.activedCommand(msg.author.id, 'remove');
-                        Utils.setCooldown('roll', msg.author.id);
+                        Utils.setCooldown('roll', msg.author.id, msg.guildId);
                         gameCollector.stop('bot win');
                         exitCollector.stop('bot win');
                         return await message.edit({ content: '', embeds: [finishEmbed(client.user)], components: [rowDisabled] });
@@ -185,7 +185,7 @@ module.exports = {
             gameCollector.on('end', async (collected, reason) => {
                 if (reason === 'time') {
                     Utils.activedCommand(msg.author.id, 'remove');
-                    Utils.setCooldown('roll', msg.author.id);
+                    Utils.setCooldown('roll', msg.author.id, msg.guildId);
                     exitCollector.stop('end');
                     if (userTotal === 100) {
                         Utils.addCoins(msg.author.id, msg.guildId, betCoins);
@@ -260,7 +260,7 @@ module.exports = {
                     await interaction.update({ content: 'La apuesta a sido rechazada...', embeds: [], components: [] });
                     Utils.activedCommand(msg.author.id, 'remove');
                     Utils.activedCommand(oponent.id, 'remove');
-                    Utils.setCooldown('roll', msg.author.id);
+                    Utils.setCooldown('roll', msg.author.id, msg.guildId);
                     requestCollector.stop('decline');
                     gameCollector.stop('decline')
                 }
@@ -283,8 +283,8 @@ module.exports = {
                         Utils.removeCoins(oponent.id, msg.guildId, betCoins);
                         Utils.activedCommand(msg.author.id, 'remove');
                         Utils.activedCommand(oponent.id, 'remove');
-                        Utils.setCooldown('roll', msg.author.id);
-                        Utils.setCooldown('roll', oponent.id);
+                        Utils.setCooldown('roll', msg.author.id, msg.guildId);
+                        Utils.setCooldown('roll', oponent.id, msg.guildId);
                         return await interaction.update({ embeds: [finishEmbed(msg.member, oponent)], components: [rowDisabled] });
                     }
                     if (oponentTotal === 1) {
@@ -293,8 +293,8 @@ module.exports = {
                         Utils.removeCoins(msg.author.id, msg.guildId, betCoins);
                         Utils.activedCommand(msg.author.id, 'remove');
                         Utils.activedCommand(oponent.id, 'remove');
-                        Utils.setCooldown('roll', msg.author.id);
-                        Utils.setCooldown('roll', oponent.id);
+                        Utils.setCooldown('roll', msg.author.id, msg.guildId);
+                        Utils.setCooldown('roll', oponent.id, msg.guildId);
                         return await interaction.update({ embeds: [finishEmbed(oponent, msg.member)], components: [rowDisabled] });
                     }
 
@@ -308,9 +308,9 @@ module.exports = {
                     Utils.activedCommand(oponent.id, 'remove');
                     Utils.addCoins(msg.author.id, msg.guildId, betCoins);
                     Utils.addCoins(oponent.id, msg.guildId, betCoins);
-                    Utils.setCooldown('roll', msg.author.id);
-                    Utils.setCooldown('roll', oponent.id);
-                    return message.edit({ content: `Se acabó el tiempo de juego! se le devolveran las monedas apostadas a ambos jugadores.`, embeds: [], components: [] });
+                    Utils.setCooldown('roll', msg.author.id, msg.guildId);
+                    Utils.setCooldown('roll', oponent.id, msg.guildId);
+                    return message.edit({ content: 'Se acabó el tiempo de juego! se le devolveran las monedas apostadas a ambos jugadores.', embeds: [], components: [] });
                 }
             });
 
@@ -319,7 +319,7 @@ module.exports = {
                     gameCollector.stop('timeout');
                     Utils.activedCommand(msg.author.id, 'remove');
                     Utils.activedCommand(oponent.id, 'remove');
-                    Utils.setCooldown('roll', msg.author.id);
+                    Utils.setCooldown('roll', msg.author.id, msg.guildId);
                     return message.edit({ content: `Se canceló la apuesta ya que **${oponent.user.tag}** no respondió...`, embeds: [], components: [] });
                 }
             });
