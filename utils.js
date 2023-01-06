@@ -39,7 +39,7 @@ module.exports = {
         ViewChannel: "Ver Canales",
         SendMessages: "Enviar Mensajes",
         SendTTSMessages: "Enviar Mensajes TTS",
-        ManageMessages: "Administrar Canales",
+        ManageMessages: "Administrar Mensajes",
         EmbedLinks: "insetar Enlaces",
         AttachFiles: "Enviar Archivos",
         ReadMessageHistory: "Leer el Historial de Mensajes",
