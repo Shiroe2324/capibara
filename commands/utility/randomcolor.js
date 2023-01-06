@@ -39,7 +39,7 @@ module.exports = {
 
         try {
             let color = '';
-            while (color.length <= 6) {
+            while (color.length < 6) {
                 color += `${Utils.random(16).toString(16)}`;
             };
 
