@@ -46,6 +46,8 @@ module.exports = {
         if (!channel.members.has(msg.author.id) || !channel.permissionsFor(msg.author).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages])) return Utils.send(msg, 'No puedes enviar mensajes a ese canal!');
         if (!message) return Utils.send(msg, 'No puedes enviar un mensaje vacio!');
 
+        Utils.setCooldowm('say', msg.author.id, msg.guildId);
+        
         msg.delete();
 
         channel.send({ 
