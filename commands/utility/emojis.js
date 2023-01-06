@@ -34,7 +34,7 @@ module.exports = {
      * @param {Client} client - The bot's client.
      */
     execute: async (msg, args, client) => {
-        Utils.setCooldown('emojis', msg.author.id);
+        Utils.setCooldown('emojis', msg.author.id, msg.guildId);
 
         const emojis = msg.guild.emojis.cache.map(emoji => `${emoji} - \`${emoji}\` (**[Link](${emoji.url})**)`); // la lista de emojis del servidor
 
