@@ -60,9 +60,23 @@ module.exports = {
 
             Utils.setCooldown('help', msg.author.id, msg.guildId);
             
+            const formatters = [
+                { name: 'coins', value: guild.coin },
+                { name: 'dailyValue', value: guild.dailyValue },
+                { name: 'minimumBet', value: guild.minimumBet },
+                { name: 'minWorkValue', value: guild.workValue.min },
+                { name: 'maxWorkValue', value: guild.workValue.max }
+            ];
+
+            let description = command.description.join('\n');
+
+            for (const format of formatters) {
+                description = description.split(`{${format.name}}`).join(format.value);
+            }
+
             let fields = [
                 { name: 'Uso', value: `\`${guild.prefix}${command.usage}\``, inline: true },
-                { name: 'Ejemplos', value: command.examples.map(example => `${guild.prefix}${example}`).join('\n'), inline: true },
+                { name: command.examples.length === 1 ? 'Ejemplo': 'Ejemplos', value: command.examples.map(example => `${guild.prefix}${example}`).join('\n'), inline: true },
             ];
             
             if (command.onlyCreator) fields.push({ name: 'Comando Privado', value: 'Este comando solo puede ser ejecutado por el creador del bot.' });
@@ -77,7 +91,7 @@ module.exports = {
 
             const commandEmbed = new EmbedBuilder()
                 .setAuthor({ name: command.name, iconURL: client.user.avatarURL() })
-                .setDescription(command.description.join('\n').split('{coins}').join(guild.coin))
+                .setDescription(description)
                 .addFields(fields)
                 .setFooter({ text: 'Sintaxis: (opcional) [requerido]' })
                 .setColor(Utils.color)

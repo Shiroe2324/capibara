@@ -49,6 +49,15 @@ module.exports = {
 
         const image = await neko.pat();
 
+        if (search.member.id === client.user.id) {
+            const embed = new EmbedBuilder()
+                .setAuthor({ name: `*Acaricia a ${msg.author.username}* :3` })
+                .setImage(image.url)
+                .setColor(Utils.color);
+
+            return search.message({ embeds: [embed], components: [] })
+        }
+
         if (search.member.user.bot) {
             const embed = new EmbedBuilder()
                 .setAuthor({ name: `${msg.author.username} acarició la cabeza de ${search.member.user.username}.` })

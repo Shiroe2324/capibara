@@ -20,13 +20,15 @@ module.exports = {
     aliases: [],
     cooldown: 300000,
     category: 'economia',
-    description: ['Consigues {coins} haciendo trabajos junto con capibaras.'],
+    description: [
+        'Consigues {coins} haciendo trabajos junto a capibaras.',
+        'El minimo de {coins} que puedes conseguir en este servidor es de **{minWorkValue}** y el maximo es de **{maxWorkValue}**.'
+    ],
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
-        PermissionFlagsBits.UseExternalEmojis,
         PermissionFlagsBits.SendMessages,
-        PermissionFlagsBits.EmbedLinks
+        PermissionFlagsBits.UseExternalEmojis
     ],
     userPermissions: [],
 
@@ -40,18 +42,22 @@ module.exports = {
         Utils.setCooldown('work', msg.author.id, msg.guildId);
 
         const guild = await Utils.guildFetch(msg.guildId);
-        const money = Utils.random(400) + 100;
+        const max = guild.workValue.max;
+        const min = guild.workValue.min;
+        const money = (max === min ? 0 : Utils.random(max - min)) + guild.workValue.min;
 
         const texts = [
             `**${msg.author.username}** trabajaste bañando capibaras y ganaste **${money}** ${guild.coin}`,
             `**${msg.author.username}** trabajaste dandole de comer a los capibaras y ganaste **${money}** ${guild.coin}`,
             `**${msg.author.username}** trabajaste limpiando el parque de los carpinchos y ganaste **${money}** ${guild.coin}`,
+            `**${msg.author.username}** trabajaste sacando a pasear a los capibaras y ganaste **${money}** ${guild.coin}`,
+            `**${msg.author.username}** trabajaste vendiendo productos de capibaras y ganaste **${money}** ${guild.coin}`,
             `**${msg.author.username}** jugaste con los carpinchos y el cuidador te dió **${money}** ${guild.coin} como agradecimiento`
         ];
 
         Utils.addCoins(msg.author.id, msg.guildId, money); 
         const message = Utils.random(texts);
 
-        Utils.send(msg, message)
+        Utils.send(msg, message);
     }
 }

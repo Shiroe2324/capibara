@@ -9,7 +9,7 @@ const GlobalUserSchema = new mongoose.Schema({
     date: { type: Date }, // creation date of dabatase
     hugs: { type: Number, default: 0 }, // number of hugs
     pats: { type: Number, default: 0 }, // number of pats
-    kisses: { type: Map, default: new Map() },
+    kisses: { type: Map, default: new Map() }, // kisses  with all users
     blacklist: { type: Boolean, default: false }, // user blacklist boolean
 });
 
@@ -30,8 +30,11 @@ const GuildSchema = new mongoose.Schema({
     Type: { type: String, default: 'guild' }, // type of database
     id: { type: String }, // guild id
     date: { type: Date }, // creation date of database
-    prefix: { type: String, default: process.env['PREFIX'] }, // server prefix
-    coin: { type: String, default: process.env['COIN_NAME'] }, // server coin name
+    prefix: { type: String, default: process.env['PREFIX'] }, // guild prefix
+    minimumBet: { type: Number, default: 20 }, // guild minimum bet 
+    workValue: { type: Object, default: { min: 100, max: 500 }}, // guild work minimum al maximum value
+    dailyValue: { type: Number, default: 10000 }, // guild daily value
+    coin: { type: String, default: process.env['COIN_NAME'] }, // guild coin name
 });
 
 module.exports = {

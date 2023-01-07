@@ -1,4 +1,4 @@
-const { PermissionFlagsBits, Message, Client } = require('discord.js');
+const { PermissionFlagsBits, Message, Client, EmbedBuilder } = require('discord.js');
 const Utils = require('../../utils');
 const nekoClient = require('nekos.life');
 const neko = new nekoClient();
@@ -47,7 +47,9 @@ module.exports = {
 
         Utils.setCooldown('kiss', msg.author.id, msg.guildId);
         
-        const image = await neko.hug();
+        const image = await neko.kiss();
+
+        if (search.member.id === client.user.id) return search.message({ content: 'A mi no me puedes besar! >:C', embeds: [], components: [] })
 
         if (search.member.user.bot) {
             const embed = new EmbedBuilder()
@@ -58,16 +60,29 @@ module.exports = {
             return search.message({ embeds: [embed], components: [] })
         }
 
-        const user = await Utils.userFetch(search.member.id, 'global');
+        Utils.setCooldown('kiss', search.member.id, msg.guildId);
 
-        user.hugs += 1;
-        user.save();
+        const author = await Utils.userFetch(msg.author.id, 'global');
+        const mention = await Utils.userFetch(search.member.id, 'global');
+        const authorKisses = author.kisses.get(search.member.id);
+        const mentionKisses = mention.kisses.get(msg.author.id);
 
-        const hugAmount = user.pats === 1 ? 'abrazo' : 'abrazos';
+        if (!authorKisses && !mentionKisses) {
+            author.kisses.set(search.member.id, 1);
+            mention.kisses.set(msg.author.id, 1);
+        } else {
+            author.kisses.set(search.member.id, authorKisses + 1);
+            mention.kisses.set(msg.author.id, mentionKisses + 1);
+        }
+
+        author.save();
+        mention.save();
+
+        const kissAmount = author.kisses.get(search.member.id) === 1 ? 'vez' : 'veces';
 
         const embed = new EmbedBuilder()
-            .setAuthor({ name: `${msg.author.username} abrazó a ${search.member.user.username}.` })
-            .setDescription(`**${search.member.user.username}** ha recibido **${user.hugs}** ${hugAmount} en total.`)
+            .setAuthor({ name: `${msg.author.username} besó a ${search.member.user.username}.` })
+            .setDescription(`**${msg.author.username}** y **${search.member.user.username}** se han besado **${author.kisses.get(search.member.id)}** ${kissAmount} en total.`)
             .setImage(image.url)
             .setColor(Utils.color);
 

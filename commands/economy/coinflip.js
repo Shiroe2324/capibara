@@ -40,15 +40,15 @@ module.exports = {
         const guild = await Utils.guildFetch(msg.guildId);
         const userSide = args[0]?.replace(/^(h|head)$/i, 'head').replace(/^(t|tails)$/i, 'tails');
         const user = await Utils.userFetch(msg.author.id, msg.guildId);
-        const formatedCoins = await Utils.setCoinsFormat(user, args[1]);
+        const formatedCoins = await Utils.setCoinsFormat(args[1], user);
         const betCoins = Math.round(formatedCoins);
 
         if (isNaN(betCoins)) {
             return Utils.send(msg, `Tienes que colocar una cantidad de ${guild.coin} valida!`)
         } else if (user.coins < betCoins) {
             return Utils.send(msg, `No puedes apostar **más ${guild.coin}** de las que posees actualmente!`)
-        } else if (betCoins < 20) {
-            return Utils.send(msg, `No puedes apostar menos de **20 ${guild.coin}**!`)
+        } else if (betCoins < guild.minimumBet) {
+            return Utils.send(msg, `No puedes apostar menos de **${guild.minimumBet} ${guild.coin}**!`)
         } else if (userSide !== 'head' && userSide !== 'tails') {
             return Utils.send(msg, `Tienes que colocar uno de los dos lados de la moneda **[h/t]** o **[head/tails]**!`)
         }

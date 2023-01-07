@@ -6,13 +6,15 @@ const { guildUser } = require('./schemas');
  * @param {string|number} coins - the string or number of coins to format.
  * @returns {number} the number of coins already formatted.
  */
-module.exports = (user, coins) => {
+module.exports = (coins, user) => {
     if (typeof Number(coins) === 'number' && !isNaN(coins)) return coins; 
     
-    switch (coins) {
-        case 'all': return user.coins;
-        case 'half': return user.coins / 2;
-        case 'quarter': return user.coins / 4;
+    if (Boolean(user)) {
+        switch (coins) {
+            case 'all': return user.coins;
+            case 'half': return user.coins / 2;
+            case 'quarter': return user.coins / 4;
+        }
     }
 
     if (!/^([0-9]+[.])?[0-9]+[kmbtq]$/i.test(coins)) return NaN;

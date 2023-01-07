@@ -31,9 +31,7 @@ module.exports = {
         PermissionFlagsBits.EmbedLinks,
         PermissionFlagsBits.UseExternalEmojis
     ],
-    userPermissions: [
-        PermissionFlagsBits.Administrator,
-    ],
+    userPermissions: [PermissionFlagsBits.Administrator],
 
     /**
      * function with the code to execute the command.

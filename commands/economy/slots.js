@@ -41,15 +41,15 @@ module.exports = {
     execute: async (msg, args, client) => {
         const guild = await Utils.guildFetch(msg.guildId);
         const user = await Utils.userFetch(msg.author.id, msg.guildId);
-        const formatedCoins = await Utils.setCoinsFormat(user, args[0]);
+        const formatedCoins = await Utils.setCoinsFormat(args[0], user);
         const betCoins = Math.round(formatedCoins);
 
         if (isNaN(betCoins)) {
             return Utils.send(msg, `Tienes que colocar una cantidad de ${guild.coin} valida!`)
         } else if (user.coins < betCoins) {
             return Utils.send(msg, `No puedes apostar **más ${guild.coin}** de las que posees actualmente!`)
-        } else if (betCoins < 20) {
-            return Utils.send(msg, `No puedes apostar menos de **20 ${guild.coin}**!`)
+        } else if (betCoins < guild.minimumBet) {
+            return Utils.send(msg, `No puedes apostar menos de **${guild.minimumBet} ${guild.coin}**!`)
         }
 
         Utils.setCooldown('slot', msg.author.id, msg.guildId);
