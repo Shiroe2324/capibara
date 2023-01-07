@@ -1,4 +1,4 @@
-const { PermissionFlagsBits, Message, Client, EmbedBuilder } = require('discord.js');
+const { PermissionFlagsBits, Message, Client } = require('discord.js');
 const Utils = require('../../utils');
 const nekoClient = require('nekos.life');
 const neko = new nekoClient();
@@ -16,18 +16,18 @@ const neko = new nekoClient();
  * @property userPermissions - List of user permissions for the command.
  */
 module.exports = {
-    name: 'pat',
-    usage: 'pat [usuario]',
-    examples: ['pat @shiro'],
+    name: 'kiss',
+    usage: 'kiss [usuario]',
+    examples: ['kiss @shiro'],
     aliases: [],
     cooldown: 4000,
     category: 'roleplay',
-    description: ['Acaricia la cabeza de un usuario.'],
+    description: ['Besa a otro usuario.'],
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
         PermissionFlagsBits.SendMessages,
-        PermissionFlagsBits.EmbedLinks,
+        PermissionFlagsBits.EmbedLinks
     ],
     userPermissions: [],
 
@@ -43,15 +43,15 @@ module.exports = {
         Utils.activedCommand(msg.author.id, 'remove');
 
         if (search.error) return search.message({ content: search.messageError, embeds: [], components: [] })
-        if (search.member.id === msg.author.id) return search.message({ content: 'No te puedes acariciar a ti mismo!', embeds: [], components: [] })
+        if (search.member.id === msg.author.id) return search.message({ content: 'No te puedes besar a ti mismo!', embeds: [], components: [] })
 
-        Utils.setCooldown('pat', msg.author.id, msg.guildId);
-
-        const image = await neko.pat();
+        Utils.setCooldown('kiss', msg.author.id, msg.guildId);
+        
+        const image = await neko.hug();
 
         if (search.member.user.bot) {
             const embed = new EmbedBuilder()
-                .setAuthor({ name: `${msg.author.username} acarició la cabeza de ${search.member.user.username}.` })
+                .setAuthor({ name: `${msg.author.username} besó a ${search.member.user.username}.` })
                 .setImage(image.url)
                 .setColor(Utils.color);
 
@@ -60,14 +60,14 @@ module.exports = {
 
         const user = await Utils.userFetch(search.member.id, 'global');
 
-        user.pats += 1;
+        user.hugs += 1;
         user.save();
 
-        const patAmount = user.pats === 1 ? 'caricia' : 'caricias';
+        const hugAmount = user.pats === 1 ? 'abrazo' : 'abrazos';
 
         const embed = new EmbedBuilder()
-            .setAuthor({ name: `${msg.author.username} acarició la cabeza de ${search.member.user.username}.` })
-            .setDescription(`**${search.member.user.username}** ha recibido **${user.pats}** ${patAmount} en total.`)
+            .setAuthor({ name: `${msg.author.username} abrazó a ${search.member.user.username}.` })
+            .setDescription(`**${search.member.user.username}** ha recibido **${user.hugs}** ${hugAmount} en total.`)
             .setImage(image.url)
             .setColor(Utils.color);
 

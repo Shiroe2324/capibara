@@ -5,6 +5,7 @@ const Utils = require('../../utils');
 /**
  * @property name - The name of the command.
  * @property usage - The syntax in which the command is used.
+ * @property examples - Examples of how to use the command.
  * @property aliases - The aliases of the command.
  * @property cooldown - the cooldown time of the command
  * @property category - The name of the command category.
@@ -16,10 +17,11 @@ const Utils = require('../../utils');
 module.exports = {
     name: 'randomcolor',
     usage: 'randomcolor',
+    examples: ['randomcolor'],
     aliases: ['randcolor'],
     cooldown: 3000,
     category: 'utilidad',
-    description: 'Genera un color aleatorio en formato hexadecial y muestra su formato rgb.',
+    description: ['Genera un color aleatorio en formato hexadecial y muestra su formato rgb.'],
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,

@@ -4,6 +4,7 @@ const Utils = require('../../utils');
 /**
  * @property name - The name of the command.
  * @property usage - The syntax in which the command is used.
+ * @property examples - Examples of how to use the command.
  * @property aliases - The aliases of the command.
  * @property cooldown - the cooldown time of the command
  * @property category - The name of the command category.
@@ -15,10 +16,15 @@ const Utils = require('../../utils');
 module.exports = {
     name: 'dice',
     usage: 'dice [cantidad]',
+    examples: ['dice 1k', 'dice 200'],
     aliases: [],
     cooldown: 10000,
     category: 'economia',
-    description: 'Lanza un dado de 6 caras.\nSe gana si la cara en la que cae es 5 o 6.\nSi la cara es 5 se gana lo apostado, si la cara es 6 se gana el doble de lo apostado.',
+    description: [
+        'Lanza un dado de 6 caras.',
+        'Se gana si la cara en la que cae es 5 o 6.',
+        'Si la cara es 5 se gana lo apostado, si la cara es 6 se gana el doble de lo apostado.'
+    ],
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,

@@ -6,6 +6,7 @@ const neko = new nekoClient();
 /**
  * @property name - The name of the command.
  * @property usage - The syntax in which the command is used.
+ * @property examples - Examples of how to use the command.
  * @property aliases - The aliases of the command.
  * @property cooldown - the cooldown time of the command
  * @property category - The name of the command category.
@@ -17,10 +18,11 @@ const neko = new nekoClient();
 module.exports = {
     name: 'hug',
     usage: 'hug [usuario]',
+    examples: ['hug @shiro'],
     aliases: [],
     cooldown: 4000,
     category: 'roleplay',
-    description: 'Abraza a otro usuario',
+    description: ['Abraza a otro usuario'],
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
@@ -69,6 +71,6 @@ module.exports = {
             .setImage(image.url)
             .setColor(Utils.color);
 
-        return search.message({ embeds: [embed], components: [] })
+        return search.message({ embeds: [embed], components: [] });
     }
 }

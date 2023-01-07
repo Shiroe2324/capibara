@@ -4,6 +4,7 @@ const Utils = require('../../utils');
 /**
  * @property name - The name of the command.
  * @property usage - The syntax in which the command is used.
+ * @property examples - Examples of how to use the command.
  * @property aliases - The aliases of the command.
  * @property cooldown - the cooldown time of the command
  * @property category - The name of the command category.
@@ -15,10 +16,14 @@ const Utils = require('../../utils');
 module.exports = {
     name: 'setemoji',
     usage: 'setemoji [emoji|default]',
+    examples: ['setemoji default', 'setemoji <:capicoin:1057747950027165727>'],
     aliases: [],
     cooldown: 10000,
     category: 'administracion',
-    description: 'Especifica que emoji se debe de usar como moneda en el servidor.\nSe puede colocar "default" para reestablecer al emoji predeterminado.',
+    description: [
+        'Especifica que emoji se debe de usar como moneda en el servidor.',
+        'Se puede colocar "default" para reestablecer al emoji predeterminado.'
+    ],
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,

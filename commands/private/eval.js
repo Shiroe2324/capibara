@@ -6,6 +6,7 @@ const Utils = require('../../utils');
 /**
  * @property name - The name of the command.
  * @property usage - The syntax in which the command is used.
+ * @property examples - Examples of how to use the command.
  * @property aliases - The aliases of the command.
  * @property cooldown - the cooldown time of the command
  * @property category - The name of the command category.
@@ -17,10 +18,11 @@ const Utils = require('../../utils');
 module.exports = {
     name: 'eval',
     usage: 'eval [code]',
+    examples: ['eval ["a", "e", "i"].length'],
     aliases: ['e'],
     cooldown: 0,
     category: 'privada',
-    description: 'Evalua un codigo colocado y retorna dicho codigo',
+    description: ['Evalua un codigo colocado y retorna dicho codigo'],
     onlyCreator: true,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,

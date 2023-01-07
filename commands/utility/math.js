@@ -1,9 +1,11 @@
-const { PermissionFlagsBits, Message, Client, EmbedBuilder } = require('discord.js');
+const { PermissionFlagsBits, Message, Client, EmbedBuilder, codeBlock } = require('discord.js');
 const Utils = require('../../utils');
+const calculator = require('mathjs');
 
 /**
  * @property name - The name of the command.
  * @property usage - The syntax in which the command is used.
+ * @property examples - Examples of how to use the command.
  * @property aliases - The aliases of the command.
  * @property cooldown - the cooldown time of the command
  * @property category - The name of the command category.
@@ -15,10 +17,14 @@ const Utils = require('../../utils');
 module.exports = {
     name: 'math',
     usage: 'math [expresión]',
+    examples: ['math 7+9+62*3', 'math derivative("sqrt(\'x\')", "x")', 'math cbrt(27)', 'math 9^2'],
     aliases: ['calc', 'c'],
     cooldown: 2000,
     category: 'utilidad',
-    description: 'Calcula una expresión matemática y devuelve su resultado',
+    description: [
+        'Calcula una expresión matemática y devuelve su resultado.',
+        'El comando utiliza el metodo `evaluate` de la librería mathjs, para más información de como usarlo visita **[mathjs.org](https://mathjs.org/index.html)**'
+    ],
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
@@ -34,6 +40,23 @@ module.exports = {
      * @param {Client} client - The bot's client.
      */
     execute: async (msg, args, client) => {
-        
+        const expresion = Utils.removeAccents(args.join(' '));
+
+        try {
+            const result = calculator.evaluate(expresion);
+            const embed = new EmbedBuilder()
+                .setAuthor({ name: `${client.user.username} calculator`, iconURL: client.user.avatarURL() })
+                .setDescription(codeBlock('yaml', `${result.toString()} `))
+                .setColor(Utils.color);
+
+            Utils.send(msg, { embeds: [embed] });
+        } catch (err) {
+            const embed = new EmbedBuilder()
+                .setAuthor({ name: `${client.user.username} calculator`, iconURL: client.user.avatarURL() })
+                .setDescription(codeBlock('diff', '- Sucedió un error al calcular la expresión!'))
+                .setColor(Utils.color);
+
+            Utils.send(msg, { embeds: [embed] });
+        }
     }
 }

@@ -27,6 +27,7 @@ const getHandValue = (hand) => {
 /**
  * @property name - The name of the command.
  * @property usage - The syntax in which the command is used.
+ * @property examples - Examples of how to use the command.
  * @property aliases - The aliases of the command.
  * @property cooldown - the cooldown time of the command
  * @property category - The name of the command category.
@@ -38,10 +39,15 @@ const getHandValue = (hand) => {
 module.exports = {
     name: 'blackjack',
     usage: 'blackjack [cantidad]',
+    examples: ['blackjack 1k', 'blackjack 200'],
     aliases: ['bj'],
     cooldown: 10000,
     category: 'economia',
-    description: 'Un juego de Blackjack en solitario contra la maquina!\nlas partidas tienen una duración de 2 minutos como maximo.\nPara mas información sobre como jugar blackjack, puedes visitar [Wikipedia](https://es.wikipedia.org/wiki/Blackjack)',
+    description: [
+        'Un juego de Blackjack en solitario contra la maquina!',
+        'las partidas tienen una duración de 2 minutos como maximo.', 
+        'Para mas información sobre como jugar blackjack, puedes visitar **[Wikipedia](https://es.wikipedia.org/wiki/Blackjack)**'
+    ],
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
@@ -118,6 +124,15 @@ module.exports = {
                 .addFields([{ name: name, value: `${msg.author.username}: **${playerTotal}**\n${playerHandString.join(' | ')}\n\n${client.user.username}: **${dealerTotal}**\n${dealerHandString.join(' | ')}` }])
                 .setColor(color);
         };
+
+        if (playerTotal === 21 && dealerTotal === 21) {
+            Utils.setCooldown('blackjack', msg.author.id, msg.guildId);
+            Utils.activedCommand(msg.author.id, 'remove');
+            return Utils.send(msg, {
+                embeds: [embed('Es un empate! No has ganado ni perdido monedas', playerTotal, playerHandString, dealerTotal, dealerHandString, '#aaaaaa')],
+                components: [rowDisabled]
+            });
+        }
 
         if (playerTotal === 21) {
             Utils.setCooldown('blackjack', msg.author.id, msg.guildId);

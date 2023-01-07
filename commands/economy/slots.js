@@ -15,10 +15,14 @@ const Utils = require('../../utils');
 module.exports = {
     name: 'slot',
     usage: 'slot [cantidad]',
+    examples: ['slot 1k', 'slot 200'],
     aliases: ['slots'],
     cooldown: 10000,
     category: 'economia',
-    description: 'Un tragamonedas el cual se gana si hay una linea vertical, diagonal u horizontal de tres emojis iguales.\nCada emoji tiene su valor, van de 1, 2, 4 y hasta 5 de multiplicador.',
+    description: [
+        'Un tragamonedas el cual se gana si hay una linea vertical, diagonal u horizontal de tres emojis iguales.',
+        'Cada emoji tiene su valor, van de 1, 2, 4 y hasta 5 de multiplicador.'
+    ],
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,

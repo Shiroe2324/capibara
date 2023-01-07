@@ -4,6 +4,7 @@ const Utils = require('../../utils');
 /**
  * @property name - The name of the command.
  * @property usage - The syntax in which the command is used.
+ * @property examples - Examples of how to use the command.
  * @property aliases - The aliases of the command.
  * @property cooldown - the cooldown time of the command
  * @property category - The name of the command category.
@@ -15,10 +16,11 @@ const Utils = require('../../utils');
 module.exports = {
     name: 'help',
     usage: 'help (comando | categoria)',
+    examples: ['help', 'help utilidad', 'help blackjack'],
     aliases: ['h'],
     cooldown: 5000,
     category: 'utilidad',
-    description: 'Muestra infomación sobre un comando o categoria en especifico.',
+    description: ['Muestra infomación sobre un comando o categoria en especifico.'],
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
@@ -53,12 +55,15 @@ module.exports = {
         }
 
         if (args[0] && !categorys.some(c => c === Utils.removeAccents(args[0]))) {
-            const command = client.commands.get(Utils.removeAccents(args[0])) || client.commands.find((cmd) => cmd.aliases.includes(Utils.removeAccents(args[0])));
+            const command = client.commands.get(Utils.removeAccents(args[0]).toLowerCase()) || client.commands.find((cmd) => cmd.aliases.includes(Utils.removeAccents(args[0]).toLowerCase()));
             if (!command) return Utils.send(msg, 'No existe ese comando.');
 
             Utils.setCooldown('help', msg.author.id, msg.guildId);
             
-            let fields = [{ name: 'Uso', value: `\`${guild.prefix}${command.usage}\`` }];
+            let fields = [
+                { name: 'Uso', value: `\`${guild.prefix}${command.usage}\``, inline: true },
+                { name: 'Ejemplos', value: command.examples.map(example => `${guild.prefix}${example}`).join('\n'), inline: true },
+            ];
             
             if (command.onlyCreator) fields.push({ name: 'Comando Privado', value: 'Este comando solo puede ser ejecutado por el creador del bot.' });
             if (command.aliases.length !== 0) fields.push({ name: 'Aliases', value: command.aliases.join(', ') });
@@ -72,7 +77,7 @@ module.exports = {
 
             const commandEmbed = new EmbedBuilder()
                 .setAuthor({ name: command.name, iconURL: client.user.avatarURL() })
-                .setDescription(command.description.split('{coins}').join(guild.coin))
+                .setDescription(command.description.join('\n').split('{coins}').join(guild.coin))
                 .addFields(fields)
                 .setFooter({ text: 'Sintaxis: (opcional) [requerido]' })
                 .setColor(Utils.color)
@@ -163,7 +168,7 @@ module.exports = {
 
         const filter = (interaction) => {
             if (interaction.user.id === msg.author.id) return true;
-            return interaction.reply({ content: `solamente **${msg.author.tag}** puede hacer eso!`, ephemeral: true })
+            return interaction.reply({ content: `solamente **${msg.author.tag}** puede hacer eso!`, ephemeral: true });
         };
 
         const collector = message.createMessageComponentCollector({ filter, time: 120000, componentType: ComponentType.StringSelect });
@@ -183,6 +188,6 @@ module.exports = {
                 const quoteEmbed = EmbedBuilder.from(message.embeds[0]);
                 message.edit({ embeds: [quoteEmbed], components: [] })
             }
-        })
+        });
     }
 }

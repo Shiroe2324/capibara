@@ -4,6 +4,7 @@ const Utils = require('../../utils');
 /**
  * @property name - The name of the command.
  * @property usage - The syntax in which the command is used.
+ * @property examples - Examples of how to use the command.
  * @property aliases - The aliases of the command.
  * @property cooldown - the cooldown time of the command
  * @property category - The name of the command category.
@@ -14,11 +15,12 @@ const Utils = require('../../utils');
  */
 module.exports = {
     name: 'balance',
-    usage: 'balance',
+    usage: 'balance (usuario)',
+    examples: ['balance', 'balance @shiro'],
     aliases: ['bal'],
     cooldown: 5000,
     category: 'economia',
-    description: 'Muestra la cantidad de {coins} que tienes en el servidor.',
+    description: ['Muestra la cantidad de {coins} que tienes en el servidor.'],
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,

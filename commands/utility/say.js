@@ -4,6 +4,7 @@ const Utils = require('../../utils');
 /**
  * @property name - The name of the command.
  * @property usage - The syntax in which the command is used.
+ * @property examples - Examples of how to use the command.
  * @property aliases - The aliases of the command.
  * @property cooldown - the cooldown time of the command
  * @property category - The name of the command category.
@@ -15,10 +16,11 @@ const Utils = require('../../utils');
 module.exports = {
     name: 'say',
     usage: 'say (canal) [mensaje]',
+    example: ['say hello world', 'say #general hello world'],
     aliases: [],
     cooldown: 2000,
     category: 'utilidad',
-    description: 'Envía un mensaje a un canal especifico o al canal donde se ejecutó el comando.',
+    description: ['Envía un mensaje a un canal especifico o al canal donde se ejecutó el comando.'],
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,

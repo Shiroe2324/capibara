@@ -1,6 +1,5 @@
 require('dotenv').config();
 
-
 // ————————————————————— BOT START ————————————————————— //
 const { Client, Collection, Events, PermissionFlagsBits, ChannelType, ActivityType, IntentsBitField } = require('discord.js');
 const http = require('http');
@@ -19,7 +18,7 @@ process.on('unhandledRejection', (error) => {
 
 // event when the bot is ready
 client.once('ready', async () => {
-    client.user.setActivity('Torneo de capibaras', { type: ActivityType.Competing }); // bot discord activity
+    client.user.setActivity('Torneo de capibaras', { type: ActivityType.Competing }); // bot discord activity0
     http.createServer((req, res) => res.end('hello world')).listen(); // http server for bot maintenance
     console.log('ready');
 });

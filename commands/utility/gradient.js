@@ -5,6 +5,7 @@ const Utils = require('../../utils');
 /**
  * @property name - The name of the command.
  * @property usage - The syntax in which the command is used.
+ * @property examples - Examples of how to use the command.
  * @property aliases - The aliases of the command.
  * @property cooldown - the cooldown time of the command
  * @property category - The name of the command category.
@@ -16,10 +17,11 @@ const Utils = require('../../utils');
 module.exports = {
     name: 'gradient',
     usage: 'gradient [color]',
+    examples: ['gradient #D9022B', 'gradient 992117'],
     aliases: [],
     cooldown: 3000,
     category: 'utilidad',
-    description: 'Muestra un color en formato hexadecimal y su respectivo gradiente.',
+    description: ['Muestra un color en formato hexadecimal y su respectivo gradiente.'],
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,

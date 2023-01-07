@@ -9,6 +9,7 @@ const GlobalUserSchema = new mongoose.Schema({
     date: { type: Date }, // creation date of dabatase
     hugs: { type: Number, default: 0 }, // number of hugs
     pats: { type: Number, default: 0 }, // number of pats
+    kisses: { type: Map, default: new Map() },
     blacklist: { type: Boolean, default: false }, // user blacklist boolean
 });
 

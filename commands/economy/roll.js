@@ -5,6 +5,7 @@ const wait = require('node:timers/promises').setTimeout;
 /**
  * @property name - The name of the command.
  * @property usage - The syntax in which the command is used.
+ * @property examples - Examples of how to use the command.
  * @property aliases - The aliases of the command.
  * @property cooldown - the cooldown time of the command
  * @property category - The name of the command category.
@@ -16,10 +17,15 @@ const wait = require('node:timers/promises').setTimeout;
 module.exports = {
     name: 'roll',
     usage: 'roll [cantidad] (oponente)',
+    examples: ['roll 1k', 'roll 222', 'roll 10k @shiro'],
     aliases: ['rolls'],
     cooldown: 10000,
     category: 'economia',
-    description: 'Lanza un dado imaginario de 100 caras.\nSe juega junto a otro jugador o en solitario, en donde tendran que apostar una cantidad de monedas, se lanzará varias veces, siempre como maximo el numero obtenido anteriormente\nGana el primero que llegue a 1.',
+    description: [
+        'Lanza un dado imaginario de 100 caras.',
+        'Se juega junto a otro jugador o en solitario, en donde tendran que apostar una cantidad de monedas, se lanzará varias veces, siempre como maximo el numero obtenido anteriormente',
+        'Gana el primero que llegue a 1.'
+    ],
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,

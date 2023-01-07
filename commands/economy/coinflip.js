@@ -4,6 +4,7 @@ const Utils = require('../../utils');
 /**
  * @property name - The name of the command.
  * @property usage - The syntax in which the command is used.
+ * @property examples - Examples of how to use the command.
  * @property aliases - The aliases of the command.
  * @property cooldown - the cooldown time of the command
  * @property category - The name of the command category.
@@ -15,10 +16,11 @@ const Utils = require('../../utils');
 module.exports = {
     name: 'coinflip',
     usage: 'coinflip [head|tails] [cantidad]',
+    examples: ['coinflip head 1k', 'coinflip tails 100', 'coinflip h 100'],
     aliases: ['cf'],
     cooldown: 5000,
     category: 'economia',
-    description: 'Tira una moneda imaginaria, la cual puede caer en cara o cruz (head o tails).',
+    description: ['Tira una moneda imaginaria, la cual puede caer en cara o cruz (head o tails).'],
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
