@@ -16,18 +16,18 @@ const neko = new nekoClient();
  * @property userPermissions - List of user permissions for the command.
  */
 module.exports = {
-    name: 'kiss',
-    usage: 'kiss [usuario]',
-    examples: ['kiss @shiro'],
+    name: 'cuddle',
+    usage: 'cuddle [usuario]',
+    examples: ['cuddle @shiro'],
     aliases: [],
     cooldown: 4000,
     category: 'roleplay',
-    description: ['Besa a otro usuario.'],
+    description: ['Te acurrucas con un usuario.'],
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
         PermissionFlagsBits.SendMessages,
-        PermissionFlagsBits.EmbedLinks
+        PermissionFlagsBits.EmbedLinks,
     ],
     userPermissions: [],
 
@@ -43,38 +43,20 @@ module.exports = {
         Utils.activedCommand(msg.author.id, 'remove');
 
         if (search.error) return search.message({ content: search.messageError, embeds: [], components: [] });
-        if (search.member.id === msg.author.id) return search.message({ content: 'No te puedes besar a ti mismo!', embeds: [], components: [] });
-        if (search.member.id === client.user.id) return search.message({ content: 'A mi no me puedes besar! >:C', embeds: [], components: [] });
+        if (search.member.id === msg.author.id) return search.message({ content: 'No te puedes acurrucar contigo mismo!', embeds: [], components: [] });
 
-        Utils.setCooldown('kiss', msg.author.id, msg.guildId);
+        Utils.setCooldown('cuddle', msg.author.id, msg.guildId);
 
-        const image = await neko.kiss();
+        const image = await neko.cuddle();
 
         const embed = new EmbedBuilder()
-            .setAuthor({ name: `${msg.author.username} besó a ${search.member.user.username}.` })
             .setImage(image.url)
             .setColor(Utils.color);
 
-        if (!search.member.user.bot) {
-            Utils.setCooldown('kiss', search.member.id, msg.guildId);
-            const author = await Utils.userFetch(msg.author.id, 'global');
-            const mention = await Utils.userFetch(search.member.id, 'global');
-            const authorKisses = author.kisses.get(search.member.id);
-            const mentionKisses = mention.kisses.get(msg.author.id);
-            const kissAmount = author.kisses.get(search.member.id) === 0 ? 'vez' : 'veces';
-
-            if (!authorKisses && !mentionKisses) {
-                author.kisses.set(search.member.id, 1);
-                mention.kisses.set(msg.author.id, 1);
-            } else {
-                author.kisses.set(search.member.id, authorKisses + 1);
-                mention.kisses.set(msg.author.id, mentionKisses + 1);
-            }
-
-            author.save();
-            mention.save();
-
-            embed.setDescription(`**${msg.author.username}** y **${search.member.user.username}** se han besado **${author.kisses.get(search.member.id)}** ${kissAmount} en total.`);
+        if (search.member.id === client.user.id) {
+            embed.setAuthor({ name: `*Se acurruca con ${msg.author.username}* :3` });
+        } else {
+            embed.setAuthor({ name: `${msg.author.username} se acurrucó con ${search.member.user.username}.` });
         }
 
         search.message({ embeds: [embed], components: [] });

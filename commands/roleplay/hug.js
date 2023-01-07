@@ -22,7 +22,7 @@ module.exports = {
     aliases: [],
     cooldown: 4000,
     category: 'roleplay',
-    description: ['Abraza a otro usuario'],
+    description: ['Abraza a otro usuario.'],
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
@@ -42,44 +42,31 @@ module.exports = {
         const search = await Utils.findMember(msg, args);
         Utils.activedCommand(msg.author.id, 'remove');
 
-        if (search.error) return search.message({ content: search.messageError, embeds: [], components: [] })
-        if (search.member.id === msg.author.id) return search.message({ content: 'No te puedes abrazarte a ti mismo!', embeds: [], components: [] })
+        if (search.error) return search.message({ content: search.messageError, embeds: [], components: [] });
+        if (search.member.id === msg.author.id) return search.message({ content: 'No te puedes abrazarte a ti mismo!', embeds: [], components: [] });
 
         Utils.setCooldown('hug', msg.author.id, msg.guildId);
-        
+
         const image = await neko.hug();
 
-        if (search.member.id === client.user.id) {
-            const embed = new EmbedBuilder()
-                .setAuthor({ name: `*Abraza a ${msg.author.username}* :3` })
-                .setImage(image.url)
-                .setColor(Utils.color);
-
-            return search.message({ embeds: [embed], components: [] })
-        }
-
-        if (search.member.user.bot) {
-            const embed = new EmbedBuilder()
-                .setAuthor({ name: `${msg.author.username} abrazó a ${search.member.user.username}.` })
-                .setImage(image.url)
-                .setColor(Utils.color);
-
-            return search.message({ embeds: [embed], components: [] })
-        }
-
-        const user = await Utils.userFetch(search.member.id, 'global');
-
-        user.hugs += 1;
-        user.save();
-
-        const hugAmount = user.pats === 1 ? 'abrazo' : 'abrazos';
-
         const embed = new EmbedBuilder()
-            .setAuthor({ name: `${msg.author.username} abrazó a ${search.member.user.username}.` })
-            .setDescription(`**${search.member.user.username}** ha recibido **${user.hugs}** ${hugAmount} en total.`)
             .setImage(image.url)
             .setColor(Utils.color);
 
-        return search.message({ embeds: [embed], components: [] });
+        if (search.member.id === client.user.id) {
+            embed.setAuthor({ name: `*Abraza a ${msg.author.username}* :3` });
+        } else {
+            embed.setAuthor({ name: `${msg.author.username} abrazó a ${search.member.user.username}.` });
+        }
+
+        if (!search.member.user.bot) {
+            const user = await Utils.userFetch(search.member.id, 'global');
+            const hugAmount = user.hugs === 0 ? 'abrazo' : 'abrazos';
+            user.hugs += 1;
+            user.save();
+            embed.setDescription(`**${search.member.user.username}** ha recibido **${user.hugs}** ${hugAmount} en total.`);
+        }
+
+        search.message({ embeds: [embed], components: [] });
     }
 }
