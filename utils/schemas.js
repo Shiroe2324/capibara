@@ -32,10 +32,12 @@ const GuildSchema = new mongoose.Schema({
     id: { type: String }, // guild id
     date: { type: Date }, // creation date of database
     prefix: { type: String, default: process.env['PREFIX'] }, // guild prefix
+    levelSystem: { type: Boolean, default: false }, // level system Boolean 
     minimumBet: { type: Number, default: 20 }, // guild minimum bet 
     workValue: { type: Object, default: { min: 100, max: 500 }}, // guild work minimum al maximum value
     dailyValue: { type: Number, default: 10000 }, // guild daily value
     coin: { type: String, default: process.env['COIN_NAME'] }, // guild coin name
+    xp: { type: Number, default: 30 } // guild max xp value
 });
 
 module.exports = {

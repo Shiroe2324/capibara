@@ -10,6 +10,7 @@ const client = new Client({ intents: 3276799 }); // bot client
 client.snipes = new Collection(); // collection to save deleted messages
 client.editsnipes = new Collection(); // collection to save edited messages
 client.commands = new Collection(); // colecction of bot commands
+client.categorys = new Collection(); // collection of bot categorys
 handler(client); // system handler execution
 
 process.on('unhandledRejection', (error) => {
@@ -35,8 +36,10 @@ client.on(Events.MessageCreate, async (msg) => {
 
     // message filter
     if (msg.author.bot) return;
-    if (!msg.content.startsWith(guild.prefix)) return;
     if (msg.channel.type !== ChannelType.GuildText) return;
+
+    // command filter
+    if (!msg.content.startsWith(guild.prefix)) return;
     if (!msg.channel.permissionsFor(client.user).has([PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel])) return;
 
     // name of the executed command and its arguments

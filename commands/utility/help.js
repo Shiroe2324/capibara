@@ -38,11 +38,6 @@ module.exports = {
      */
     execute: async (msg, args, client) => {
         const guild = await Utils.guildFetch(msg.guildId);
-        const categorys = ['economia', 'utilidad', 'roleplay', 'administracion'];
-        const economyCommands = client.commands.filter(c => c.category === 'economia').map(x => x.name);
-        const utilCommands = client.commands.filter(c => c.category === 'utilidad').map(x => x.name);
-        const roleplayCommands = client.commands.filter(c => c.category === 'roleplay').map(x => x.name);
-        const adminCommands = client.commands.filter(c => c.category === 'administracion').map(x => x.name);
         const setBlockFormat = (list) => {
             let formatedList = '';
             for (let i of list) {
@@ -53,20 +48,19 @@ module.exports = {
             }
             return codeBlock(formatedList);
         }
+        const formatters = [
+            { name: 'coins', value: guild.coin },
+            { name: 'dailyValue', value: guild.dailyValue },
+            { name: 'minimumBet', value: guild.minimumBet },
+            { name: 'minWorkValue', value: guild.workValue.min },
+            { name: 'maxWorkValue', value: guild.workValue.max }
+        ];
 
-        if (args[0] && !categorys.some(c => c === Utils.removeAccents(args[0]))) {
+        if (args[0] && !client.categorys.some(category => category.id === Utils.removeAccents(args[0]))) {
             const command = client.commands.get(Utils.removeAccents(args[0]).toLowerCase()) || client.commands.find((cmd) => cmd.aliases.includes(Utils.removeAccents(args[0]).toLowerCase()));
             if (!command) return Utils.send(msg, 'No existe ese comando.');
 
             Utils.setCooldown('help', msg.author.id, msg.guildId);
-            
-            const formatters = [
-                { name: 'coins', value: guild.coin },
-                { name: 'dailyValue', value: guild.dailyValue },
-                { name: 'minimumBet', value: guild.minimumBet },
-                { name: 'minWorkValue', value: guild.workValue.min },
-                { name: 'maxWorkValue', value: guild.workValue.max }
-            ];
 
             let description = command.description.join('\n');
 
@@ -76,9 +70,9 @@ module.exports = {
 
             let fields = [
                 { name: 'Uso', value: `\`${guild.prefix}${command.usage}\``, inline: true },
-                { name: command.examples.length === 1 ? 'Ejemplo': 'Ejemplos', value: command.examples.map(example => `${guild.prefix}${example}`).join('\n'), inline: true },
+                { name: command.examples.length === 1 ? 'Ejemplo' : 'Ejemplos', value: command.examples.map(example => `${guild.prefix}${example}`).join('\n'), inline: true },
             ];
-            
+
             if (command.onlyCreator) fields.push({ name: 'Comando Privado', value: 'Este comando solo puede ser ejecutado por el creador del bot.' });
             if (command.aliases.length !== 0) fields.push({ name: 'Aliases', value: command.aliases.join(', ') });
             if (command.cooldown !== 0) fields.push({ name: 'Cooldown', value: Utils.setTimeFormat(command.cooldown) });
@@ -98,50 +92,35 @@ module.exports = {
 
             return Utils.send(msg, { embeds: [commandEmbed] })
         }
-        
+
         Utils.setCooldown('help', msg.author.id, msg.guildId);
 
         const allEmbed = new EmbedBuilder()
             .setAuthor({ name: client.user.username })
             .setThumbnail(client.user.avatarURL({ size: 2048 }))
-            .setDescription(`Actualmente el bot cuenta con unas \`${categorys.length}\` categorias.\n\nPara mas información sobre una categoria o comando puedes colocar los siguientes comandos:`)
+            .setDescription(`Actualmente el bot cuenta con unas \`${client.categorys.size}\` categorias.\n\nPara mas información sobre una categoria o comando puedes colocar los siguientes comandos:`)
             .setColor(Utils.color)
             .addFields([
                 { name: 'Categorías', value: `\`${guild.prefix}help (categoria)\``, inline: true },
                 { name: 'Comandos', value: `\`${guild.prefix}help (comando)\``, inline: true },
-                { name: '\u200b', value: setBlockFormat(categorys) }
+                { name: '\u200b', value: setBlockFormat(client.categorys.map(category => category.id)) }
             ]);
 
-        const economyEmbed = new EmbedBuilder()
-            .setAuthor({ name: 'Economía', iconURL: client.user.avatarURL() })
-            .setDescription(`Estos son los comandos de \`Economia\`.\nPuedes usarlos para ganar o administrar tus **${guild.coin}**.\n\nPuedes ver información mas detallada de un comando con \`${guild.prefix}help (comando)\``)
-            .setColor(Utils.color)
-            .addFields([{ name: 'Comandos', value: setBlockFormat(economyCommands) }]);
-
-        const utilEmbed = new EmbedBuilder()
-            .setAuthor({ name: 'Utilidad', iconURL: client.user.avatarURL() })
-            .setDescription(`Estos son los comandos de \`Utilidad\`.\nSirven para variedad de cosas como ver el avatar o emojis de un server.\n\nPuedes ver información mas detallada de un comando con \`${guild.prefix}help (comando)\``)
-            .setColor(Utils.color)
-            .addFields([{ name: 'Comandos', value: setBlockFormat(utilCommands) }]);
-
-        const roleplayEmbed = new EmbedBuilder()
-            .setAuthor({ name: 'Roleplay', iconURL: client.user.avatarURL() })
-            .setDescription(`Estos son los comandos \`Roleplay\`.\nSon comandos con los cuales puedes interactuar con otros usuarios.\n\nPuedes ver información mas detallada de un comando con \`${guild.prefix}help (comando)\``)
-            .setColor(Utils.color)
-            .addFields([{ name: 'Comandos', value: setBlockFormat(roleplayCommands) }]);
-
-        const adminEmbed = new EmbedBuilder()
-            .setAuthor({ name: 'Administración', iconURL: client.user.avatarURL() })
-            .setDescription(`Estos son los comandos de \`Administración\`.\nSirven para administrar, moderar o configurar el servidor.\n\nPuedes ver información mas detallada de un comando con \`${guild.prefix}help (comando)\``)
-            .setColor(Utils.color)
-            .addFields([{ name: 'Comandos', value: setBlockFormat(adminCommands) }]);
+        const categoryEmbed = (category) => {
+            let description = category.description;
+            for (const format of formatters) {
+                description = description.split(`{${format.name}}`).join(format.value);
+            }
+            return new EmbedBuilder()
+                .setAuthor({ name: category.name, iconURL: client.user.avatarURL() })
+                .setDescription(`Estos son los comandos de \`${category.name}\`.\n${description}\n\nPuedes ver información mas detallada de un comando con \`${guild.prefix}help (comando)\``)
+                .setColor(Utils.color)
+                .addFields([{ name: 'Comandos', value: setBlockFormat(category.commands) }]);
+        }
 
         let embed = allEmbed;
-        switch (Utils.removeAccents(args[0]?.toLowerCase())) {
-            case 'economia': embed = economyEmbed; break;
-            case 'utilidad': embed = utilEmbed; break;
-            case 'roleplay': embed = roleplayEmbed; break;
-            case 'administracion': embed = adminEmbed; break;
+        if (client.categorys.some(category => category.id === Utils.removeAccents(args[0]))) {
+            embed = categoryEmbed(client.categorys.get(Utils.removeAccents(args[0])));
         }
 
         const row = new ActionRowBuilder()
@@ -153,28 +132,15 @@ module.exports = {
                         {
                             label: 'Inicio',
                             description: 'Panel principal con todas las categorías',
-                            value: 'first',
+                            value: 'init',
                         },
-                        {
-                            label: 'Economía',
-                            description: 'Panel con comandos de economía',
-                            value: 'second',
-                        },
-                        {
-                            label: 'Utilidad',
-                            description: 'Panel con comandos de utilidad',
-                            value: 'third',
-                        },
-                        {
-                            label: 'Roleplay',
-                            description: 'Panel con comandos roleplay',
-                            value: 'fourth',
-                        },
-                        {
-                            label: 'Administración',
-                            description: 'Panel con comandos de administracion',
-                            value: 'five',
-                        }
+                        ...(client.categorys.map(category => {
+                            return {
+                                label: category.name,
+                                description: `Panel con comandos de ${category.name}`,
+                                value: category.id
+                            }
+                        }))
                     )
             );
 
@@ -188,12 +154,11 @@ module.exports = {
         const collector = message.createMessageComponentCollector({ filter, time: 120000, componentType: ComponentType.StringSelect });
 
         collector.on('collect', async (interaction) => {
-            switch (interaction.values[0]) {
-                case 'first': await interaction.update({ embeds: [allEmbed] }); break;
-                case 'second': await interaction.update({ embeds: [economyEmbed] }); break;
-                case 'third': await interaction.update({ embeds: [utilEmbed] }); break;
-                case 'fourth': await interaction.update({ embeds: [roleplayEmbed] }); break;
-                case 'five': await interaction.update({ embeds: [adminEmbed] }); break;
+            if (interaction.values[0] === 'init') {
+                await interaction.update({ embeds: [allEmbed] });
+            } else {
+                const category = client.categorys.get(interaction.values[0]);
+                await interaction.update({ embeds: [categoryEmbed(category)] });
             }
         });
 

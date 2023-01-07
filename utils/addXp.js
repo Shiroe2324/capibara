@@ -7,7 +7,7 @@ const userFetch = require('./userFetch');
  * @param {number} xp - xp to add.
  * @returns {boolean} a boolean if the user levels up.
  */
-module.exports = async (id, guildId, xp) => {
+module.exports = async (userId, guildId, xp) => {
     const user = await userFetch(userId, guildId);
 
     user.xp += xp;
