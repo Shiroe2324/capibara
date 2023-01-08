@@ -1,4 +1,5 @@
 const { PermissionFlagsBits, Message, Client } = require('discord.js');
+const { guildFetch } = require('../../utils');
 const Utils = require('../../utils');
 
 /**
@@ -14,15 +15,15 @@ const Utils = require('../../utils');
  * @property userPermissions - List of user permissions for the command.
  */
 module.exports = {
-    name: 'setdailyvalue',
-    usage: 'setdailyvalue [valor]',
-    examples: ['setdailyvalue 10000', 'setdailyvalue 1m'],
-    aliases: ['dailyvalue'],
+    name: 'setlevelsystem',
+    usage: 'setlevelsystem',
+    examples: ['setlevelsystem'],
+    aliases: ['levelsystem'],
     cooldown: 10000,
     category: 'administracion',
     description: [
-        'Actualiza el valor de {coins} que se consiguen con el comando daily.',
-        'Actualmente el valor de {coins} que se consiguen con el comando daily es de **__{dailyValue}__**.',
+        'Activa o desactiva el sistema de niveles en el servidor.',
+        'Acualmente el sistema de niveles se encuentra **__{levelSystem}__**.'
     ],
     onlyCreator: false,
     botPermissions: [
@@ -38,22 +39,18 @@ module.exports = {
      * @param {Client} client - The bot's client.
      */
     execute: async (msg, args, client) => {
-        const guild = await Utils.guildFetch(msg.guildId);
-        const formatedValue = await Utils.setCoinsFormat(args[0]);
-        const value = Math.round(formatedValue);
+        Utils.setCooldown('setlevelsystem', msg.author.id, msg.guildId);
 
-        if (isNaN(value)) {
-            return Utils.send(msg, `Tienes que colocar un valor de ${guild.coin} valido!`);
-        } else if (value <= 0) {
-            return Utils.send(msg, 'No puedes colocar un valor de 0!');
-        } else if (value === guild.dailyValue) {
-            return Utils.send(msg, 'Ya se está usando ese valor!');
+        const guild = await Utils.guildFetch(msg.guildId);
+
+        if (guild.levelSystem) {
+            guild.levelSystem = false;
+            Utils.send(msg, 'Se ha **desactivado** el sistema de niveles con exito.');
+        } else {
+            guild.levelSystem = true;
+            Utils.send(msg, 'Se ha **activado** el sistema de niveles con exito.');
         }
 
-        Utils.setCooldown('setdailyvalue', msg.author.id, msg.guildId);
-        guild.dailyValue = value;
         await guild.save();
-
-        Utils.send(msg, `El valor ${guild.coin} que se consigue con daily se ha actualizado a **${value}**`);
     }
 }

@@ -32,12 +32,15 @@ const GuildSchema = new mongoose.Schema({
     id: { type: String }, // guild id
     date: { type: Date }, // creation date of database
     prefix: { type: String, default: process.env['PREFIX'] }, // guild prefix
-    levelSystem: { type: Boolean, default: false }, // level system Boolean 
-    minimumBet: { type: Number, default: 20 }, // guild minimum bet 
-    workValue: { type: Object, default: { min: 100, max: 500 }}, // guild work minimum al maximum value
-    dailyValue: { type: Number, default: 10000 }, // guild daily value
     coin: { type: String, default: process.env['COIN_NAME'] }, // guild coin name
-    xp: { type: Number, default: 30 } // guild max xp value
+    xp: { type: Object, default: { min: 10, max: 30 } }, // guild minimum and maximum xp value
+    minimumBet: { type: Number, default: 20 }, // guild minimum bet 
+    workValue: { type: Object, default: { min: 100, max: 500 }}, // guild work minimum and maximum value
+    dailyValue: { type: Number, default: 10000 }, // guild daily value
+    levelSystem: { type: Boolean, default: false }, // level system Boolean 
+    levelChannel: { type: String, default: 'none' }, // guild levels channel
+    levelRoles: { type: Map, default: new Map() }, // guild level roles
+    levelMessage: { type: String, default: 'Felicidades {member}! has subido al nivel **{level}**.' } // level message when a user level up
 });
 
 module.exports = {

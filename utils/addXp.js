@@ -10,7 +10,7 @@ const userFetch = require('./userFetch');
 module.exports = async (userId, guildId, xp) => {
     const user = await userFetch(userId, guildId);
 
-    user.xp += xp;
+    user.xp += parseInt(xp, 10);
     user.level = Math.floor(0.1 * Math.sqrt(user.xp));
 
     await user.save()

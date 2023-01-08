@@ -1,4 +1,4 @@
-const { PermissionFlagsBits, Message, Client } = require('discord.js');
+const { PermissionFlagsBits, Message, Client, ChannelType } = require('discord.js');
 const Utils = require('../../utils');
 
 /**
@@ -14,15 +14,17 @@ const Utils = require('../../utils');
  * @property userPermissions - List of user permissions for the command.
  */
 module.exports = {
-    name: 'setdailyvalue',
-    usage: 'setdailyvalue [valor]',
-    examples: ['setdailyvalue 10000', 'setdailyvalue 1m'],
-    aliases: ['dailyvalue'],
+    name: 'setlevelmessage',
+    usage: 'setlevelmessage [mensaje]',
+    examples: ['setlevelmessage Felicidades {member} has subido al nivel \*\*{level}\*\*!'],
+    aliases: ['levelmessage'],
     cooldown: 10000,
     category: 'administracion',
     description: [
-        'Actualiza el valor de {coins} que se consiguen con el comando daily.',
-        'Actualmente el valor de {coins} que se consiguen con el comando daily es de **__{dailyValue}__**.',
+        'Establece el mensaje enviado cada vez que un usuario sube de nivel.',
+        'Tienes que colocar obligatoriamente **__{member}__** para hacer referencia al usuario y **__{level}__** para indicar el nivel al que sube',
+        'Actualmente el mensaje establecido es:',
+        '\`{levelMessage}\`'
     ],
     onlyCreator: false,
     botPermissions: [
@@ -39,21 +41,17 @@ module.exports = {
      */
     execute: async (msg, args, client) => {
         const guild = await Utils.guildFetch(msg.guildId);
-        const formatedValue = await Utils.setCoinsFormat(args[0]);
-        const value = Math.round(formatedValue);
+        const message = args.join(' ');
+        
+        if (!args[0]) return Utils.send(msg, 'Tienes que colocar un mensaje!');
+        if (!message.includes('{member}')) return Utils.send(msg, 'Tienes que colocar **{member}** una vez como minimo!');
+        if (!message.includes('{level}')) return Utils.send(msg, 'Tienes que colocar **{level}** una vez como minimo!');
+        if (message.length >= 2000) return Utils.send(msg, 'El mensaje colocado es demasiado largo!');
+        if (guild.levelMessage === message) return Utils.send(msg, 'Ya se está usando ese mensaje!'); 
 
-        if (isNaN(value)) {
-            return Utils.send(msg, `Tienes que colocar un valor de ${guild.coin} valido!`);
-        } else if (value <= 0) {
-            return Utils.send(msg, 'No puedes colocar un valor de 0!');
-        } else if (value === guild.dailyValue) {
-            return Utils.send(msg, 'Ya se está usando ese valor!');
-        }
-
-        Utils.setCooldown('setdailyvalue', msg.author.id, msg.guildId);
-        guild.dailyValue = value;
+        guild.levelMessage = message;
         await guild.save();
 
-        Utils.send(msg, `El valor ${guild.coin} que se consigue con daily se ha actualizado a **${value}**`);
+        return Utils.send(msg, `El mensaje de subida de nivel a sido cambiado con exito a:\n\`${message}\``);
     }
 }

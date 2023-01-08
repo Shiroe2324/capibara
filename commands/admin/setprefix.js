@@ -16,11 +16,14 @@ const Utils = require('../../utils');
 module.exports = {
     name: 'setprefix',
     usage: 'setprefix [prefix]',
-    examples: ['setprefix $'],
+    examples: ['setprefix c!'],
     aliases: ['prefix'],
     cooldown: 10000,
     category: 'administracion',
-    description: ['Actualiza el prefix del bot en el servidor.'],
+    description: [
+        'Actualiza el prefix del bot en el servidor.',
+        'El prefix actual del bot en el servidor es **__{prefix}__**'
+    ],
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,

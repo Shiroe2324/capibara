@@ -22,7 +22,8 @@ module.exports = {
     category: 'administracion',
     description: [
         'Especifica que emoji se debe de usar como moneda en el servidor.',
-        'Se puede colocar "default" para reestablecer al emoji predeterminado.'
+        'Se puede colocar "default" para reestablecer al emoji predeterminado.',
+        'El emoji actual del servidor es {coins}'
     ],
     onlyCreator: false,
     botPermissions: [
@@ -42,25 +43,25 @@ module.exports = {
     execute: async (msg, args, client) => {
         const guild = await Utils.guildFetch(msg.guildId);
 
-        if (!args[0]) return Utils.send(msg, 'Tienes que colocar un emoji!')
+        if (!args[0]) return Utils.send(msg, 'Tienes que colocar un emoji!');
 
         if (args[0] === 'default') {
             if (guild.coin === process.env['COIN_NAME']) return Utils.send(msg, 'Ya se está usando el emoji predeterminado!');
             guild.coin = process.env['COIN_NAME'];
             await guild.save();
-            return Utils.send(msg, 'Se ha restablecido el emoji predeterminado.')
+            return Utils.send(msg, 'Se ha restablecido el emoji predeterminado.');
         }
 
         const emoji = Utils.emoji(args[0], client);
 
-        if (!emoji.isEmoji) return Utils.send(msg, 'Tienes que especificar un emoji válido!')
-        if (emoji.type === 'guild' && !emoji.existInBot) return Utils.send(msg, 'Tienes que colocar un emoji predeterminado o que esté en un servidor donde yo esté!')
-        if (args[0] === guild.coin) return Utils.send(msg, 'Ya se está usando ese emoji!')
+        if (!emoji.isEmoji) return Utils.send(msg, 'Tienes que especificar un emoji válido!');
+        if (emoji.type === 'guild' && !emoji.existInBot) return Utils.send(msg, 'Tienes que colocar un emoji predeterminado o que esté en un servidor donde yo esté!');
+        if (args[0] === guild.coin) return Utils.send(msg, 'Ya se está usando ese emoji!');
 
         Utils.setCooldown('setemoji', msg.author.id, msg.guildId);
         guild.coin = args[0];
         await guild.save();
 
-        Utils.send(msg, `Se ha actualizado el emoji de moneda a ${args[0]}.`)
+        Utils.send(msg, `Se ha actualizado el emoji de moneda a ${args[0]}.`);
     }
 }

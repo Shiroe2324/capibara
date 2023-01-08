@@ -46,6 +46,12 @@ module.exports = {
             return await cmd.execute(msg, arg, client);
         };
 
+        const xpFor = (level) => level * level * 100;
+        const levelFor = (xp) => Math.floor(0.1 * Math.sqrt(xp));
+
+        const guild = await Utils.guildFetch(msg.guildId);
+        const user = await Utils.userFetch(msg.author.id, msg.guildId);
+
         try {
             const evaled = await eval(code);
             const result = inspect(evaled, { depth: 0 });

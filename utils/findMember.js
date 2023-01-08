@@ -41,7 +41,7 @@ module.exports = async (msg, args, allowedAuthor = false, includeBots = false) =
         }).map(x => x);
 
         if (includeBots) {
-            member = members.filter(member => member.id !== process.env['BOT_ID'] && !member.bot)
+            member = members.filter(member => member.id !== msg.client.user.id && !member.bot)
         }
 
         if (!name) {

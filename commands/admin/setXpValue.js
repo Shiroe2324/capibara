@@ -14,15 +14,18 @@ const Utils = require('../../utils');
  * @property userPermissions - List of user permissions for the command.
  */
 module.exports = {
-    name: 'setworkvalue',
-    usage: 'setworkvalue [minimo] [maximo]',
-    examples: ['setworkvalue 100 500', 'setworkvalue 1k 10k'],
-    aliases: ['workvalue'],
+    name: 'setxpvalue',
+    usage: 'setxpvalue [minimo] [maximo]',
+    examples: ['setxpvalue 10 30', 'setxpvalue 4k 5k'],
+    aliases: ['xpvalue'],
     cooldown: 10000,
     category: 'administracion',
     description: [
-        'Actualiza el valor maximo y minimo de {coins} que se consiguen con el comando work.',
-        'Actualmente el valor minimo es de **__{minWorkValue}__** y el maximo es de **__{maxWorkValue}__**.'
+        'Establece el minimo y el maximo de xp obtenida en el servidor por cada mensaje.',
+        'Actualmente en el servidor el minimo es **__{minXp}__** y el maximo es **__{maxXp}__**.',
+        'La formula que usa para cada nivel es: **floor(0.1 × √xp)**',
+        'La cantidad de xp que se necesita para un nivel es **(xp * xp * 100)**',
+        '*floor significa que se redondea al numero entero menor más cercano*'
     ],
     onlyCreator: false,
     botPermissions: [
@@ -45,23 +48,23 @@ module.exports = {
         const maxValue = Math.round(formatedMaxValue);
 
         if (isNaN(minValue)) {
-            return Utils.send(msg, `Tienes que colocar un valor minimo de ${guild.coin} valido!`);
+            return Utils.send(msg, `Tienes que colocar un valor minimo de **xp** valido!`);
         } else if (isNaN(maxValue)) {
-            return Utils.send(msg, `Tienes que colocar un valor maximo de ${guild.coin} valido!`);
+            return Utils.send(msg, `Tienes que colocar un valor maximo de **xp** valido!`);
         } else if (minValue <= 0) {
             return Utils.send(msg, 'No puedes colocar un valor minimo de 0!');
         } else if (maxValue <= 0) {
             return Utils.send(msg, 'No puedes colocar un valor maximo de 0!');
-        } else if (minValue === guild.workValue.min && maxValue === guild.workValue.max) {
+        } else if (minValue === guild.xp.min && maxValue === guild.xp.max) {
             return Utils.send(msg, 'Ya se están usando esos valores!');
         } else if (maxValue < minValue) {
             return Utils.send(msg, 'El valor maximo no puede ser menor al valor minimo!');
         }
 
-        Utils.setCooldown('setworkvalue', msg.author.id, msg.guildId);
-        guild.workValue = { min: minValue, max: maxValue };
+        Utils.setCooldown('setxpvalue', msg.author.id, msg.guildId);
+        guild.xp = { min: minValue, max: maxValue };
         await guild.save();
 
-        Utils.send(msg, `los valores minimos y maximos se ha actualizado respectivamente a **${minValue}** y **${maxValue}**`);
+        Utils.send(msg, `los valores de xp minimos y maximos se ha actualizado respectivamente a **${minValue}** y **${maxValue}**`);
     }
 }

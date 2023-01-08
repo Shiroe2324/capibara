@@ -4,6 +4,7 @@ require('dotenv').config();
 const { Client, Collection, Events, PermissionFlagsBits, ChannelType, ActivityType, IntentsBitField } = require('discord.js');
 const http = require('http');
 const handler = require('./handler'); // handler commands
+const levelSystem = require('./levelSystem');
 const Utils = require('./utils'); // help functions
 const client = new Client({ intents: 3276799 }); // bot client
 
@@ -19,13 +20,17 @@ process.on('unhandledRejection', (error) => {
 
 // event when the bot is ready
 client.once('ready', async () => {
-    client.user.setActivity('Torneo de capibaras', { type: ActivityType.Competing }); // bot discord activity0
+    client.user.setActivity('Torneo de capibaras', { type: ActivityType.Competing }); // bot discord activity
     http.createServer((req, res) => res.end('hello world')).listen(); // http server for bot maintenance
     console.log('ready');
 });
 
 // Event when a new message is generated
 client.on(Events.MessageCreate, async (msg) => {
+    // message filter
+    if (msg.author.bot) return;
+    if (msg.channel.type !== ChannelType.GuildText) return;
+
     const guild = await Utils.guildFetch(msg.guildId); // guild database
 
     // checker if used server coin no longer exists
@@ -34,9 +39,15 @@ client.on(Events.MessageCreate, async (msg) => {
         await guild.save();
     }
 
-    // message filter
-    if (msg.author.bot) return;
-    if (msg.channel.type !== ChannelType.GuildText) return;
+    // checker if server level channel no longer exists
+    if (guild.levelChannel !== 'none' && !msg.guild.channels.cache.has(guild.levelChannel)) {
+        guild.levelChannel = 'none';
+        await guild.save();
+    }
+
+    if (guild.levelSystem) {
+        await levelSystem(msg, client);
+    }
 
     // command filter
     if (!msg.content.startsWith(guild.prefix)) return;
@@ -44,7 +55,7 @@ client.on(Events.MessageCreate, async (msg) => {
 
     // name of the executed command and its arguments
     const args = msg.content.slice(guild.prefix.length).trim().split(/\s+/g);
-    const commandName = Utils.removeAccents(args.shift().toLowerCase());
+    const commandName = Utils.removeAccents(args.shift()).toLowerCase();
 
     // global user database
     const globalUser = await Utils.userFetch(msg.author.id, 'global');
@@ -87,7 +98,10 @@ client.on(Events.MessageCreate, async (msg) => {
     }
 
     // command execution
-    await command.execute(msg, args, client).catch((err) => console.error(err));
+    await command.execute(msg, args, client).catch((err) => {
+        Utils.send(msg, `Ocurrió un error al ejecutar el comando: **__${err}__**`);
+        console.error(err);
+    });
 });
 
 // event when a message is deleted

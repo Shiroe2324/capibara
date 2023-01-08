@@ -53,7 +53,13 @@ module.exports = {
             { name: 'dailyValue', value: guild.dailyValue },
             { name: 'minimumBet', value: guild.minimumBet },
             { name: 'minWorkValue', value: guild.workValue.min },
-            { name: 'maxWorkValue', value: guild.workValue.max }
+            { name: 'maxWorkValue', value: guild.workValue.max },
+            { name: 'levelSystem', value: guild.levelSystem ? 'Activado' : 'Desactivado'},
+            { name: 'levelChannel', value: guild.levelChannel === 'none' ? 'Default' : msg.guild.channels.cache.get(guild.levelChannel).toString() },
+            { name: 'levelMessage', value: guild.levelMessage },
+            { name: 'minXp', value: guild.xp.min },
+            { name: 'maxXp', value: guild.xp.max },
+            { name: 'prefix', value: guild.prefix }
         ];
 
         if (args[0] && !client.categorys.some(category => category.id === Utils.removeAccents(args[0]))) {
@@ -98,7 +104,7 @@ module.exports = {
         const allEmbed = new EmbedBuilder()
             .setAuthor({ name: client.user.username })
             .setThumbnail(client.user.avatarURL({ size: 2048 }))
-            .setDescription(`Actualmente el bot cuenta con unas \`${client.categorys.size}\` categorias.\n\nPara mas información sobre una categoria o comando puedes colocar los siguientes comandos:`)
+            .setDescription(`Actualmente el bot cuenta con unas \`${client.categorys.size}\` categorias y \`${client.commands.size}\` comandos.\n\nPara mas información sobre una categoria o comando puedes colocar los siguientes comandos:`)
             .setColor(Utils.color)
             .addFields([
                 { name: 'Categorías', value: `\`${guild.prefix}help (categoria)\``, inline: true },

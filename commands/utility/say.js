@@ -48,6 +48,7 @@ module.exports = {
         if (!client.channels.cache.has(channel.id) || !channel.permissionsFor(client.user).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages])) return Utils.send(msg, 'No puedo enviar mensajes a ese canal!');
         if (!channel.members.has(msg.author.id) || !channel.permissionsFor(msg.author).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages])) return Utils.send(msg, 'No puedes enviar mensajes a ese canal!');
         if (!message) return Utils.send(msg, 'No puedes enviar un mensaje vacio!');
+        if (message.length >= 2000) return Utils.send(msg, 'El mensaje colocado es demasiado largo!');
 
         Utils.setCooldown('say', msg.author.id, msg.guildId);
         

@@ -38,7 +38,7 @@ module.exports = (client) => {
         {
             id: 'administracion',
             name: 'Administración',
-            description: 'Sirven para administrar, moderar o configurar el servidor.',
+            description: 'Sirven para configurar al bot en el servidor.',
             commands: client.commands.filter(c => c.category === 'administracion').map(x => x.name)
         },
     ];

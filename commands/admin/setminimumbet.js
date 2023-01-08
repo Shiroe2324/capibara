@@ -22,7 +22,7 @@ module.exports = {
     category: 'administracion',
     description: [
         'Actualiza el valor minimo de {coins} que se necesitan para apostar.',
-        'Actualmente el valor minimo de {coins} que se necesitan para apostar es de **{minimumBet}**.',
+        'Actualmente el valor minimo de {coins} que se necesitan para apostar es de **__{minimumBet}__**.',
     ],
     onlyCreator: false,
     botPermissions: [
