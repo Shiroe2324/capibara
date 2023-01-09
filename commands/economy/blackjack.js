@@ -213,7 +213,7 @@ module.exports = {
                         embeds: [embed(`Fracasaste! has perdido ${Utils.formatNumber(betCoins)} ${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#ff0000')],
                         components: [rowDisabled]
                     })
-                    Utils.removeCoins(msg.author.id, msg.guildId, Utils.formatNumber(betCoins));
+                    Utils.removeCoins(msg.author.id, msg.guildId, betCoins);
                 } else {
                     await message.edit({
                         embeds: [embed('Es un empate! No has ganado ni perdido monedas', playerTotal, playerHandString, dealerTotal, dealerHandString, '#aaaaaa')],
