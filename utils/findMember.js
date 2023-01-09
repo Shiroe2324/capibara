@@ -23,7 +23,7 @@ const updateMessage = (message, type) => {
  * @param {Boolean} allowedAuthor - Boolean to check if the author of the message is included in the search.
  * @returns {{member: GuildMember, message: updateMessage, error: boolean, messageError: string}} the information of the member found or an object if there was an error.
  */
-module.exports = async (msg, args, allowedAuthor = false, includeBots = true) => {
+module.exports = async (msg, args, allowedAuthor = false, excludeBots = false) => {
     let member = msg.mentions.members.first() || msg.guild.members.cache.get(args[0]);
     let message = updateMessage(msg, 'send');
     let error = false;
@@ -40,7 +40,7 @@ module.exports = async (msg, args, allowedAuthor = false, includeBots = true) =>
             return removeAccents(member.user.tag).toLowerCase().includes(name) || removeAccents(member.nickname).toLowerCase().includes(name);
         }).map(x => x);
 
-        if (includeBots) {
+        if (excludeBots) {
             member = members.filter(member => member.id !== msg.client.user.id && !member.bot)
         }
 
