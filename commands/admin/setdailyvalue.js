@@ -54,6 +54,6 @@ module.exports = {
         guild.dailyValue = value;
         await guild.save();
 
-        Utils.send(msg, `El valor ${guild.coin} que se consigue con daily se ha actualizado a **${value}**`);
+        Utils.send(msg, `El valor ${guild.coin} que se consigue con daily se ha actualizado a **${Utils.formatNumber(value)}**`);
     }
 }

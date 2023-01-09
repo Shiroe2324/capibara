@@ -48,7 +48,7 @@ module.exports = {
         } else if (user.coins < betCoins) {
             return Utils.send(msg, `No puedes apostar **más ${guild.coin}** de las que posees actualmente!`)
         } else if (betCoins < guild.minimumBet) {
-            return Utils.send(msg, `No puedes apostar menos de **${guild.minimumBet} ${guild.coin}**!`)
+            return Utils.send(msg, `No puedes apostar menos de **${Utils.formatNumber(guild.minimumBet)} ${guild.coin}**!`)
         } else if (userSide !== 'head' && userSide !== 'tails') {
             return Utils.send(msg, `Tienes que colocar uno de los dos lados de la moneda **[h/t]** o **[head/tails]**!`)
         }

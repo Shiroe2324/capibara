@@ -74,7 +74,7 @@ module.exports = {
         } else if (user.coins < betCoins) {
             return Utils.send(msg, `No puedes apostar **más ${guild.coin}** de las que posees actualmente!`)
         } else if (betCoins < guild.minimumBet) {
-            return Utils.send(msg, `No puedes apostar menos de **${guild.minimumBet} ${guild.coin}**!`)
+            return Utils.send(msg, `No puedes apostar menos de **${Utils.formatNumber(guild.minimumBet)} ${guild.coin}**!`)
         }
 
         Utils.activedCommand(msg.author.id, 'add');
@@ -139,7 +139,7 @@ module.exports = {
             Utils.activedCommand(msg.author.id, 'remove');
             Utils.addCoins(msg.author.id, msg.guildId, betCoins);
             return Utils.send(msg, {
-                embeds: [embed(`Blackjack! has ganado ${betCoins} ${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#00ff00')],
+                embeds: [embed(`Blackjack! has ganado ${Utils.formatNumber(betCoins)} ${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#00ff00')],
                 components: [rowDisabled]
             });
         }
@@ -177,7 +177,7 @@ module.exports = {
                     })
                 } else if (playerTotal === 21) {
                     await message.edit({
-                        embeds: [embed(`Blackjack! has ganado ${betCoins} ${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#00ff00')],
+                        embeds: [embed(`Blackjack! has ganado ${Utils.formatNumber(betCoins)} ${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#00ff00')],
                         components: [rowDisabled]
                     })
 
@@ -185,7 +185,7 @@ module.exports = {
                     gameStop()
                 } else {
                     await message.edit({
-                        embeds: [embed(`Fracasaste! has perdido ${betCoins} ${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#ff0000')],
+                        embeds: [embed(`Fracasaste! has perdido ${Utils.formatNumber(betCoins)} ${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#ff0000')],
                         components: [rowDisabled]
                     })
 
@@ -204,16 +204,16 @@ module.exports = {
 
                 if (dealerTotal > 21 || dealerTotal < playerTotal) {
                     await message.edit({
-                        embeds: [embed(`Ganaste! has ganado ${betCoins} ${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#00ff00')],
+                        embeds: [embed(`Ganaste! has ganado ${Utils.formatNumber(betCoins)} ${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#00ff00')],
                         components: [rowDisabled]
                     })
                     Utils.addCoins(msg.author.id, msg.guildId, betCoins);
                 } else if (dealerTotal > playerTotal) {
                     await message.edit({
-                        embeds: [embed(`Fracasaste! has perdido ${betCoins} ${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#ff0000')],
+                        embeds: [embed(`Fracasaste! has perdido ${Utils.formatNumber(betCoins)} ${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#ff0000')],
                         components: [rowDisabled]
                     })
-                    Utils.removeCoins(msg.author.id, msg.guildId, betCoins);
+                    Utils.removeCoins(msg.author.id, msg.guildId, Utils.formatNumber(betCoins));
                 } else {
                     await message.edit({
                         embeds: [embed('Es un empate! No has ganado ni perdido monedas', playerTotal, playerHandString, dealerTotal, dealerHandString, '#aaaaaa')],

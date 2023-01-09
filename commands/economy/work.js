@@ -44,7 +44,7 @@ module.exports = {
         const guild = await Utils.guildFetch(msg.guildId);
         const max = guild.workValue.max;
         const min = guild.workValue.min;
-        const money = (max === min ? 0 : Utils.random(max - min)) + guild.workValue.min;
+        const money = Utils.formatNumber((max === min ? 0 : Utils.random(max - min)) + guild.workValue.min);
 
         const texts = [
             `**${msg.author.username}** trabajaste bañando capibaras y ganaste **${money}** ${guild.coin}`,

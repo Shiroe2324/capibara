@@ -49,7 +49,7 @@ module.exports = {
         } else if (user.coins < betCoins) {
             return Utils.send(msg, `No puedes apostar **más ${guild.coin}** de las que posees actualmente!`)
         } else if (betCoins < guild.minimumBet) {
-            return Utils.send(msg, `No puedes apostar menos de **${guild.minimumBet} ${guild.coin}**!`)
+            return Utils.send(msg, `No puedes apostar menos de **${Utils.formatNumber(guild.minimumBet)} ${guild.coin}**!`)
         }
 
         Utils.setCooldown('slot', msg.author.id, msg.guildId);
@@ -116,10 +116,10 @@ module.exports = {
             .setDescription(table.join('\n'))
 
         if (multiplier === 0) {
-            embed.setColor(0xff0000).addFields([{ name: 'Perdiste...', value: `Lastimosamente has perdido **${betCoins}** ${guild.coin}` }]);
+            embed.setColor(0xff0000).addFields([{ name: 'Perdiste...', value: `Lastimosamente has perdido **${Utils.formatNumber(betCoins)}** ${guild.coin}` }]);
             Utils.removeCoins(msg.author.id, msg.guildId, betCoins);
         } else {
-            embed.setColor(0x00ff00).addFields([{ name: 'Ganaste!!', value: `Has ganado **${Math.floor(betCoins * multiplier)}** ${guild.coin}` }]);
+            embed.setColor(0x00ff00).addFields([{ name: 'Ganaste!!', value: `Has ganado **${Utils.formatNumber(parseInt(betCoins * multiplier))}** ${guild.coin}` }]);
             Utils.addCoins(msg.author.id, msg.guildId, Math.floor(betCoins * multiplier));
         }
 

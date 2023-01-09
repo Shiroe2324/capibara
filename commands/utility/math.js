@@ -23,7 +23,7 @@ module.exports = {
     category: 'utilidad',
     description: [
         'Calcula una expresión matemática y devuelve su resultado.',
-        'El comando utiliza el metodo `evaluate` de la librería mathjs, para más información de como usarlo visita **[mathjs.org](https://mathjs.org/index.html)**'
+        'El comando utiliza el metodo `evaluate` de la librería mathjs, para más información de como usarlo visita **[Mathjs.org](https://mathjs.org/index.html)**'
     ],
     onlyCreator: false,
     botPermissions: [
@@ -41,22 +41,17 @@ module.exports = {
      */
     execute: async (msg, args, client) => {
         const expresion = Utils.removeAccents(args.join(' '));
+        const embed = new EmbedBuilder()
+            .setAuthor({ name: `${client.user.username} calculator`, iconURL: client.user.avatarURL() })
+            .setColor(Utils.color);
 
         try {
             const result = calculator.evaluate(expresion);
-            const embed = new EmbedBuilder()
-                .setAuthor({ name: `${client.user.username} calculator`, iconURL: client.user.avatarURL() })
-                .setDescription(codeBlock('yaml', `${result.toString()} `))
-                .setColor(Utils.color);
-
-            Utils.send(msg, { embeds: [embed] });
+            embed.setDescription(codeBlock('yaml', `${result.toString()} `));
         } catch (err) {
-            const embed = new EmbedBuilder()
-                .setAuthor({ name: `${client.user.username} calculator`, iconURL: client.user.avatarURL() })
-                .setDescription(codeBlock('diff', '- Sucedió un error al calcular la expresión!'))
-                .setColor(Utils.color);
-
-            Utils.send(msg, { embeds: [embed] });
+            embed.setDescription(codeBlock('diff', `- Sucedió un error al calcular la expresión!\n${err}`));
         }
+
+        Utils.send(msg, { embeds: [embed] });
     }
 }

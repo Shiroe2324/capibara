@@ -20,7 +20,8 @@ const updateMessage = (message, type) => {
  * Ffunction that performs a search for the members of a server with the given data.
  * @param {Message} msg - The message sent.
  * @param {string[]} args - The message arguments.
- * @param {Boolean} allowedAuthor - Boolean to check if the author of the message is included in the search.
+ * @param {boolean} allowedAuthor - Boolean to check if the author of the message is included in the search.
+ * @param {boolean} excludeBots - Boolean to check if exclude bots in member list.
  * @returns {{member: GuildMember, message: updateMessage, error: boolean, messageError: string}} the information of the member found or an object if there was an error.
  */
 module.exports = async (msg, args, allowedAuthor = false, excludeBots = false) => {

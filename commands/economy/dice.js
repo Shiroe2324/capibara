@@ -51,7 +51,7 @@ module.exports = {
         } else if (user.coins < betCoins) {
             return Utils.send(msg, `No puedes apostar **más ${guild.coin}** de las que posees actualmente!`)
         } else if (betCoins < guild.minimumBet) {
-            return Utils.send(msg, `No puedes apostar menos de **${guild.minimumBet} ${guild.coin}**!`)
+            return Utils.send(msg, `No puedes apostar menos de **${Utils.formatNumber(guild.minimumBet)} ${guild.coin}**!`)
         }
 
         Utils.setCooldown('dice', msg.author.id, msg.guildId);
@@ -72,13 +72,13 @@ module.exports = {
             .setColor('#00FF00')
             .setAuthor({ name: `Dado de ${msg.author.tag}`, iconURL: msg.author.avatarURL({ dynamic: true }) })
             .setDescription(`${diceResult.join(' ')}`)
-            .addFields([{ name: `🎲 - ${dice}`, value: `Has ganado ${parseInt(betCoins * multiplier)} ${guild.coin}` }]);
+            .addFields([{ name: `🎲 - ${dice}`, value: `Has ganado ${Utils.formatNumber(parseInt(betCoins * multiplier))} ${guild.coin}` }]);
 
         const loserEmbed = new EmbedBuilder()
             .setColor('#FF0000')
             .setAuthor({ name: client.user.username, iconURL: client.user.avatarURL() })
             .setDescription(`${diceResult.join(' ')}`)
-            .addFields([{ name: `🎲 - ${dice}`, value: `Has Perdido ${betCoins} ${guild.coin} ...` }]);
+            .addFields([{ name: `🎲 - ${dice}`, value: `Has Perdido ${Utils.formatNumber(betCoins)} ${guild.coin} ...` }]);
 
         if (multiplier !== 0) {
             Utils.addCoins(msg.author.id, msg.guildId, parseInt(betCoins * multiplier));

@@ -62,6 +62,6 @@ module.exports = {
         guild.workValue = { min: minValue, max: maxValue };
         await guild.save();
 
-        Utils.send(msg, `los valores minimos y maximos se ha actualizado respectivamente a **${minValue}** y **${maxValue}**`);
+        Utils.send(msg, `los valores minimos y maximos se ha actualizado respectivamente a **${Utils.formatNumber(minValue)}** y **${Utils.formatNumber(maxValue)}**`);
     }
 }

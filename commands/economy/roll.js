@@ -57,7 +57,7 @@ module.exports = {
         } else if (user.coins < betCoins) {
             return Utils.send(msg, `No puedes apostar **más ${guild.coin}** de las que posees actualmente!`);
         } else if (betCoins < guild.minimumBet) {
-            return Utils.send(msg, `No puedes apostar menos de **${guild.minimumBet} ${guild.coin}**!`);
+            return Utils.send(msg, `No puedes apostar menos de **${Utils.formatNumber(guild.minimumBet)} ${guild.coin}**!`);
         }
 
         const button = (id, disabled = false, style = ButtonStyle.Secondary) => {
@@ -88,8 +88,8 @@ module.exports = {
                     .setColor(Utils.color)
                     .setDescription(`Es el turno de **${turn.id === client.user.id ? client.user.username : turn.tag}**!`)
                     .addFields([
-                        { name: msg.author.tag, value: String(userTotal), inline: true },
-                        { name: client.user.username, value: String(botTotal), inline: true }
+                        { name: msg.author.tag, value: Utils.formatNumber(userTotal), inline: true },
+                        { name: client.user.username, value: Utils.formatNumber(botTotal), inline: true }
                     ])
             }
 
@@ -98,10 +98,10 @@ module.exports = {
 
                 if (winner.id === client.user.id) {
                     embed.setAuthor({ name: `El ganador es ${client.user.username}!!`, iconURL: client.user.avatarURL() })
-                        .setDescription(`lastimosamente has perdido **${betCoins}** ${guild.coin}...`)
+                        .setDescription(`lastimosamente has perdido **${Utils.formatNumber(betCoins)}** ${guild.coin}...`)
                 } else {
                     embed.setAuthor({ name: `El ganador es ${msg.author.tag}!!`, iconURL: msg.author.avatarURL({ dynamic: true }) })
-                        .setDescription(`Has ganado **${betCoins}** ${guild.coin}!!`)
+                        .setDescription(`Has ganado **${Utils.formatNumber(betCoins)}** ${guild.coin}!!`)
                 }
 
                 return embed;
@@ -205,7 +205,7 @@ module.exports = {
         } else {
             const oponentDB = await Utils.userFetch(oponent.id, msg.guildId);
             if (oponentDB.coins < betCoins) {
-                return Utils.send(msg, `No puedes apostar **más ${guild.coin}** de las que ${oponent.user.username} posee actualmente!`);
+                return Utils.send(msg, `No puedes apostar **más ${guild.coin}** de las que ${oponent.user.username} posee actualmente!\nActualmente ${oponent.user.username} tiene **${Utils.formatNumber(oponentDB.coins)}** ${guild.coin}`);
             }
 
             Utils.activedCommand(msg.author.id, 'add');
@@ -221,12 +221,12 @@ module.exports = {
             const requestEmbed = new EmbedBuilder()
                 .setAuthor({ name: client.user.tag, iconURL: client.user.avatarURL() })
                 .setColor(Utils.color)
-                .setDescription(`**${msg.author.username}** te desafía a una apuesta de **${betCoins}** ${guild.coin} en un juego de **dados**!`);
+                .setDescription(`**${msg.author.username}** te desafía a una apuesta de **${Utils.formatNumber(betCoins)}** ${guild.coin} en un juego de **dados**!\nActualmente posees **${Utils.formatNumber(oponentDB.coins)}** ${guild.coin}`);
 
             const finishEmbed = (winner, loser) => {
                 return new EmbedBuilder()
                     .setAuthor({ name: `El ganador es ${winner.user.tag}!!`, iconURL: winner.user.avatarURL({ dynamic: true }) })
-                    .setDescription(`✅ **${winner.user.username}** has ganado **${betCoins}** ${guild.coin}!\n\n❌ **${loser.user.username}** has perdido **${betCoins}** ${guild.coin}...`)
+                    .setDescription(`✅ **${winner.user.username}** has ganado **${Utils.formatNumber(betCoins)}** ${guild.coin}!\n\n❌ **${loser.user.username}** has perdido **${Utils.formatNumber(betCoins)}** ${guild.coin}...`)
                     .setColor(Utils.color);
             }
 
@@ -236,8 +236,8 @@ module.exports = {
                     .setColor(Utils.color)
                     .setDescription(`Es el turno de **${turn.user.tag}**!`)
                     .addFields([
-                        { name: msg.author.tag, value: String(userTotal), inline: true },
-                        { name: oponent.user.tag, value: String(oponentTotal), inline: true }
+                        { name: msg.author.tag, value: Utils.formatNumber(userTotal), inline: true },
+                        { name: oponent.user.tag, value: Utils.formatNumber(oponentTotal), inline: true }
                     ])
             }
 

@@ -50,7 +50,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setAuthor({ name: `Balance de ${search.member.user.tag}`, iconURL: search.member.user.avatarURL({ dynamic: true }) }, msg.author.displayName)
-            .setTitle(`**${user.coins}** ${guild.coin}`)
+            .setTitle(`**${Utils.formatNumber(user.coins)}** ${guild.coin}`)
             .setColor(Utils.color);
 
         search.message({ embeds: [embed], components: [] })

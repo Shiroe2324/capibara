@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 // ————————————————————— BOT START ————————————————————— //
-const { Client, Collection, Events, PermissionFlagsBits, ChannelType, ActivityType, IntentsBitField } = require('discord.js');
+const { Client, Collection, Events, PermissionFlagsBits, ChannelType, ActivityType, MessageType } = require('discord.js');
 const http = require('http');
 const handler = require('./handler'); // handler commands
 const levelSystem = require('./levelSystem');
@@ -45,7 +45,7 @@ client.on(Events.MessageCreate, async (msg) => {
         await guild.save();
     }
 
-    if (guild.levelSystem) {
+    if (guild.levelSystem && (msg.type === MessageType.Default || msg.type === MessageType.Reply)) {
         await levelSystem(msg, client);
     }
 

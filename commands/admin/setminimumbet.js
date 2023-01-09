@@ -54,6 +54,6 @@ module.exports = {
         guild.minimumBet = value;
         await guild.save();
 
-        Utils.send(msg, `El valor minimo de ${guild.coin} para apostar se ha actualizado a **${value}**`);
+        Utils.send(msg, `El valor minimo de ${guild.coin} para apostar se ha actualizado a **${Utils.formatNumber(value)}**`);
     }
 }

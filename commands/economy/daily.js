@@ -48,7 +48,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setAuthor({ name: msg.author.tag, iconURL: msg.author.avatarURL({ dynamic: true })})
-            .setDescription(`**${msg.author.username}** has reclamado tu recompensa diaria y has conseguido:\n\n**${guild.dailyValue}** ${guild.coin}`)
+            .setDescription(`**${msg.author.username}** has reclamado tu recompensa diaria y has conseguido:\n\n**${Utils.formatNumber(guild.dailyValue)}** ${guild.coin}`)
             .setColor(Utils.color);
 
         Utils.send(msg, { embeds: [embed] });

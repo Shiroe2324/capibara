@@ -18,6 +18,13 @@ module.exports = {
     userFetch: require('./utils/userFetch'),
     weightedRandom: require('./utils/weightedRandom'),
 
+    /**
+     * transform a number into a string representation.
+     * @param {number} number - the number to transform.
+     * @returns {number} the formatted string.
+     */
+    formatNumber: (number) => number.toLocaleString(),
+
     /**schemeas of mongodb*/
     schemas: require('./utils/schemas'),
 

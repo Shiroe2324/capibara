@@ -65,6 +65,6 @@ module.exports = {
         guild.xp = { min: minValue, max: maxValue };
         await guild.save();
 
-        Utils.send(msg, `los valores de xp minimos y maximos se ha actualizado respectivamente a **${minValue}** y **${maxValue}**`);
+        Utils.send(msg, `los valores de xp minimos y maximos se ha actualizado respectivamente a **${Utils.formatNumber(minValue)}** y **${Utils.formatNumber(maxValue)}**`);
     }
 }

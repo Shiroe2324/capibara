@@ -32,7 +32,7 @@ module.exports = async (msg, embed, size, time, disabled = false) => {
 
     // mensaje con el embed
     const message = await send(msg, {
-        embeds: [embed(0)],
+        embeds: [await embed(0)],
         components: size <= 10 ? [] : [row(backOff, forward)],
     })
 
