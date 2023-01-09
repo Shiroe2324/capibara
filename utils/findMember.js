@@ -41,7 +41,7 @@ module.exports = async (msg, args, allowedAuthor = false, excludeBots = false) =
         }).map(x => x);
 
         if (excludeBots) {
-            member = members.filter(member => member.id === msg.client.user.id || !member.bot)
+            member = members.filter(member => member.id === msg.client.user.id || !member.user.bot)
         }
 
         if (!name) {
@@ -65,7 +65,7 @@ module.exports = async (msg, args, allowedAuthor = false, excludeBots = false) =
 
             const filter = (interaction) => {
                 const selected = parseInt(interaction.content);
-                return interaction.content === 'cancel' || interaction.author.id === msg.author.id && !isNaN(selected) && selected > 0 && selected <= members.length;
+                return interaction.content.toLowerCase() === 'cancel' || interaction.author.id === msg.author.id && !isNaN(selected) && selected > 0 && selected <= members.length;
             }
 
             const pages = await pageSystem(msg, embed, members.length, 40000);
@@ -74,7 +74,7 @@ module.exports = async (msg, args, allowedAuthor = false, excludeBots = false) =
                 const collected = await msg.channel.awaitMessages({ filter, max: 1, time: 40000, errors: ['time'] }); 
                 const selected = parseInt(collected.first().content) - 1; 
 
-                if (collected.first().content === 'cancel') {
+                if (collected.first().content.toLowerCase() === 'cancel') {
                     error = true;
                     messageError = 'Se canceló la elección de usuario';
                     message = updateMessage(pages, 'edit');
