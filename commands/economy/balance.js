@@ -38,7 +38,7 @@ module.exports = {
      */
     execute: async (msg, args, client) => {
         Utils.activedCommand(msg.author.id, 'add');
-        const search = await Utils.findMember(msg, args, true, false);
+        const search = await Utils.findMember(msg, args, true, true);
         Utils.activedCommand(msg.author.id, 'remove');
 
         if (search.error) return search.message({ content: search.messageError, embeds: [], components: [] })
