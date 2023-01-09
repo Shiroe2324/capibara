@@ -20,11 +20,13 @@ module.exports = {
     aliases: ['lb', 'levels'],
     cooldown: 10000,
     category: 'utilidad',
-    description: [],
+    description: ['Muestra la lista de los usuarios con más xp del servidor.'],
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
-        PermissionFlagsBits.SendMessages
+        PermissionFlagsBits.SendMessages,
+        PermissionFlagsBits.EmbedLinks,
+        PermissionFlagsBits.UseExternalEmojis
     ],
     userPermissions: [],
 
@@ -36,7 +38,7 @@ module.exports = {
      */
     execute: async (msg, args, client) => {
         const users = await Utils.schemas.guildUser.find({ guild: msg.guildId }).sort([['xp', 'descending']]).exec();
-        const rawLeaderboard = users.slice(0, 1000).filter(u => u.user !== client.user.id);
+        const rawLeaderboard = users.slice(0, 1000).filter(u => u.user !== client.user.id && u.xp !== 0);
 
         if (rawLeaderboard.length === 0) return Utils.send(msg, 'Aún no hay nadie en la tabla de clasificación.');
 
