@@ -23,7 +23,7 @@ const updateMessage = (message, type) => {
  * @param {Boolean} allowedAuthor - Boolean to check if the author of the message is included in the search.
  * @returns {{member: GuildMember, message: updateMessage, error: boolean, messageError: string}} the information of the member found or an object if there was an error.
  */
-module.exports = async (msg, args, allowedAuthor = false, includeBots = false) => {
+module.exports = async (msg, args, allowedAuthor = false, includeBots = true) => {
     let member = msg.mentions.members.first() || msg.guild.members.cache.get(args[0]);
     let message = updateMessage(msg, 'send');
     let error = false;
