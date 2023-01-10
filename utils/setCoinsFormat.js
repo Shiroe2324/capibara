@@ -7,7 +7,7 @@ const { guildUser } = require('./schemas');
  * @returns {number} the number of coins already formatted.
  */
 module.exports = (coins, user) => {
-    if (typeof Number(coins) === 'number' && !isNaN(coins)) return coins; 
+    if (typeof Number(coins) === 'number' && !isNaN(coins)) return Number(coins); 
     
     if (Boolean(user)) {
         switch (coins) {
