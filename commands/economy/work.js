@@ -44,15 +44,16 @@ module.exports = {
         const guild = await Utils.guildFetch(msg.guildId);
         const max = guild.workValue.max;
         const min = guild.workValue.min;
-        const money = Utils.formatNumber((max === min ? 0 : Utils.random(max - min)) + guild.workValue.min);
-
+        const money = (max === min ? 0 : Utils.random(max - min)) + guild.workValue.min;
+        const formatedMoney = Utils.formatNumber(money);
+        
         const texts = [
-            `**${msg.author.username}** trabajaste bañando capibaras y ganaste **${money}** ${guild.coin}`,
-            `**${msg.author.username}** trabajaste dandole de comer a los capibaras y ganaste **${money}** ${guild.coin}`,
-            `**${msg.author.username}** trabajaste limpiando el parque de los carpinchos y ganaste **${money}** ${guild.coin}`,
-            `**${msg.author.username}** trabajaste sacando a pasear a los capibaras y ganaste **${money}** ${guild.coin}`,
-            `**${msg.author.username}** trabajaste vendiendo productos de capibaras y ganaste **${money}** ${guild.coin}`,
-            `**${msg.author.username}** jugaste con los carpinchos y el cuidador te dió **${money}** ${guild.coin} como agradecimiento`
+            `**${msg.author.username}** trabajaste bañando capibaras y ganaste **${formatedMoney}** ${guild.coin}`,
+            `**${msg.author.username}** trabajaste dandole de comer a los capibaras y ganaste **${formatedMoney}** ${guild.coin}`,
+            `**${msg.author.username}** trabajaste limpiando el parque de los carpinchos y ganaste **${formatedMoney}** ${guild.coin}`,
+            `**${msg.author.username}** trabajaste sacando a pasear a los capibaras y ganaste **${formatedMoney}** ${guild.coin}`,
+            `**${msg.author.username}** trabajaste vendiendo productos de capibaras y ganaste **${formatedMoney}** ${guild.coin}`,
+            `**${msg.author.username}** jugaste con los carpinchos y el cuidador te dió **${formatedMoney}** ${guild.coin} como agradecimiento`
         ];
 
         Utils.addCoins(msg.author.id, msg.guildId, money); 
