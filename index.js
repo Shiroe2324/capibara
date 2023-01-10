@@ -78,6 +78,17 @@ client.on(Events.MessageCreate, async (msg) => {
         return Utils.send(msg, 'Primero tienes que terminar tu comando anterior!')
     }
 
+    // checker in case the user finds himself with an failed crime.
+    if (Utils.crimeFailed(msg.author.id, msg.guildId) && command.category === 'economia') {
+        const getTime = Utils.crimeFailed(msg.author.id, msg.guildId, 'get');
+        if ((getTime + 300000) > Date.now()) {
+            return Utils.send(msg, `No puedes hacer eso ya que estás en la carcel, tienes que esperar **${Utils.setTimeFormat(getTime + 301000 - Date.now())}** 🕗 más.`)
+        } else {
+            Utils.crimeFailed(msg.author.id, msg.guildId, 'remove');
+            Utils.send(msg, 'Lograste salir de la carcel!');
+        }
+    }
+
     // channel bot permission checker
     if (!msg.channel.permissionsFor(client.user).has(command.botPermissions)) {
         const missingPermissions = msg.channel.permissionsFor(client.user).missing(command.botPermissions).map(permission => `\`${Utils.Permissions[permission]}\``);

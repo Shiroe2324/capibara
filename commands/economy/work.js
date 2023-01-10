@@ -22,7 +22,7 @@ module.exports = {
     category: 'economia',
     description: [
         'Consigues {coins} haciendo trabajos junto a capibaras.',
-        'El minimo de {coins} que puedes conseguir en este servidor es de **{minWorkValue}** y el maximo es de **{maxWorkValue}**.'
+        'El minimo de {coins} que puedes conseguir trabajando en este servidor es de **__{minWorkValue}__** y el maximo es de **__{maxWorkValue}__**.'
     ],
     onlyCreator: false,
     botPermissions: [
@@ -44,7 +44,7 @@ module.exports = {
         const guild = await Utils.guildFetch(msg.guildId);
         const max = guild.workValue.max;
         const min = guild.workValue.min;
-        const money = (max === min ? 0 : Utils.random(max - min)) + guild.workValue.min;
+        const money = (max === min ? 0 : Utils.random(max - min)) + min;
         const formatedMoney = Utils.formatNumber(money);
         
         const texts = [

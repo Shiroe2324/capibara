@@ -14,7 +14,7 @@ module.exports = async (msg, client) => {
     const guild = await Utils.guildFetch(msg.guildId);
     const max = guild.xp.max;
     const min = guild.xp.min;
-    const randomXp = (max === min ? 0 : Utils.random(max - min)) + guild.xp.min;
+    const randomXp = (max === min ? 0 : Utils.random(max - min)) + min;
     const xp = await Utils.addXp(msg.author.id, msg.guildId, randomXp);
     const user = await Utils.userFetch(msg.author.id, msg.guildId);
     const guildChannel = msg.guild.channels.cache.get(guild.levelChannel);

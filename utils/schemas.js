@@ -35,6 +35,7 @@ const GuildSchema = new mongoose.Schema({
     coin: { type: String, default: process.env['COIN_NAME'] }, // guild coin name
     xp: { type: Object, default: { min: 10, max: 30 } }, // guild minimum and maximum xp value
     minimumBet: { type: Number, default: 20 }, // guild minimum bet 
+    crimeValue: { type: Object, default: { min: 100, max: 300, fail: 0.2 }},
     workValue: { type: Object, default: { min: 100, max: 500 }}, // guild work minimum and maximum value
     dailyValue: { type: Number, default: 10000 }, // guild daily value
     levelSystem: { type: Boolean, default: false }, // level system Boolean 

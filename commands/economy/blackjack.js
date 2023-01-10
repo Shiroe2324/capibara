@@ -1,28 +1,6 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, EmbedBuilder, PermissionFlagsBits, Message, Client } = require('discord.js');
 const Utils = require('../../utils');
-
-const getHandValue = (hand) => {
-    let value = 0;
-    let aces = 0;
-
-    for (const card of hand) {
-        if (card.value === 'A') {
-            aces++;
-            value += 11;
-        } else if (card.value === 'J' || card.value === 'Q' || card.value === 'K') {
-            value += 10;
-        } else {
-            value += Number(card.value);
-        }
-    }
-
-    while (value > 21 && aces > 0) {
-        value -= 10;
-        aces--;
-    }
-
-    return value;
-}
+const Blackjack = require('../../classes/blackjack');
 
 /**
  * @property name - The name of the command.
@@ -45,7 +23,7 @@ module.exports = {
     category: 'economia',
     description: [
         'Un juego de Blackjack en solitario contra la maquina!',
-        'las partidas tienen una duración de 2 minutos como maximo.', 
+        'las partidas tienen una duración de 2 minutos como maximo.',
         'Para mas información sobre como jugar blackjack, puedes visitar **[Wikipedia](https://es.wikipedia.org/wiki/Blackjack)**'
     ],
     onlyCreator: false,
@@ -79,156 +57,80 @@ module.exports = {
 
         Utils.activedCommand(msg.author.id, 'add');
 
-        const suits = ['♠', '♥', '♣', '♦'];
-        const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-        const deck = [];
+        const game = new Blackjack(msg, client, betCoins, guild);
 
-        for (const suit of suits) {
-            for (const value of values) {
-                deck.push({ suit, value, string: value + suit });
-            }
-        }
-
-        const randomDeck = Utils.shuffle(deck);
-        
-        let playerHand = [];
-        let dealerHand = [];
-        let playerHandString = [];
-        let dealerHandString = [];
-        for (let x = 0; x < 2; x++) {
-            playerHand.push(randomDeck.pop());
-            dealerHand.push(randomDeck.pop());
-            playerHandString.push(playerHand[x].string);
-            dealerHandString.push(dealerHand[x].string);
-        }
-
-        let playerTotal = getHandValue(playerHand);
-        let dealerTotal = getHandValue(dealerHand);
+        game.deal()
 
         const button = (id, disabled = false) => {
             return new ButtonBuilder()
                 .setCustomId(id)
                 .setLabel(id)
                 .setStyle(ButtonStyle.Secondary)
-                .setDisabled(disabled)
+                .setDisabled(disabled);
         };
 
         const rowEnabled = new ActionRowBuilder()
-            .addComponents(button('hit'), button('stand'))
+            .addComponents(button('hit'), button('stand'));
         const rowDisabled = new ActionRowBuilder()
-            .addComponents(button('hit', true), button('stand', true))
+            .addComponents(button('hit', true), button('stand', true));
 
-        const embed = (name, playerTotal, playerHandString, dealerTotal, dealerHandString, color = '#000000') => {
-            return new EmbedBuilder()            
-                .setAuthor({ name: client.user.username, iconURL: client.user.avatarURL() })
-                .addFields([{ name: name, value: `${msg.author.username}: **${playerTotal}**\n${playerHandString.join(' | ')}\n\n${client.user.username}: **${dealerTotal}**\n${dealerHandString.join(' | ')}` }])
-                .setColor(color);
+        if (game.playerTotal === 21 && game.dealerTotal === 21) {
+            Utils.setCooldown('blackjack', msg.author.id, msg.guildId);
+            Utils.activedCommand(msg.author.id, 'remove');
+            return Utils.send(msg, { embeds: [game.embed('tie')], components: [rowDisabled] });
+        }
+
+        const message = await Utils.send(msg, { embeds: [game.embed()], components: [rowEnabled] });
+
+        const messagefilter = (m) => m.author.id === msg.author.id;
+        const componentfilter = (interaction) => {
+            if (interaction.user.id === msg.author.id) {
+                return true;
+            } else {
+                interaction.reply({ content: `solamente **${msg.author.tag}** puede hacer eso!`, ephemeral: true });
+                return false;
+            }
         };
 
-        if (playerTotal === 21 && dealerTotal === 21) {
-            Utils.setCooldown('blackjack', msg.author.id, msg.guildId);
-            Utils.activedCommand(msg.author.id, 'remove');
-            return Utils.send(msg, {
-                embeds: [embed('Es un empate! No has ganado ni perdido monedas', playerTotal, playerHandString, dealerTotal, dealerHandString, '#aaaaaa')],
-                components: [rowDisabled]
-            });
-        }
-
-        if (playerTotal === 21) {
-            Utils.setCooldown('blackjack', msg.author.id, msg.guildId);
-            Utils.activedCommand(msg.author.id, 'remove');
-            Utils.addCoins(msg.author.id, msg.guildId, betCoins);
-            return Utils.send(msg, {
-                embeds: [embed(`Blackjack! has ganado ${Utils.formatNumber(betCoins)} ${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#00ff00')],
-                components: [rowDisabled]
-            });
-        }
-
-        const message = await Utils.send(msg, {
-            embeds: [embed('Escribe `hit` para agarrar otra carta o `stand` para pasar.', playerTotal, playerHandString, dealerTotal, dealerHandString)],
-            components: [rowEnabled]
-        });
-
-        let filter = (m) => m.author.id === msg.author.id;
-        const messageCollector = message.channel.createMessageCollector({ filter, time: 120000 })
-
-        filter = (interaction) => {
-            if (interaction.user.id === msg.author.id) return true;
-            return interaction.reply({ content: `solamente **${msg.author.tag}** puede hacer eso!`, ephemeral: true })
-        };
-        const componentCollector = message.createMessageComponentCollector({ filter, time: 120000, componentType: ComponentType.Button });
-
-        const gameStop = () => {
-            Utils.setCooldown('blackjack', msg.author.id, msg.guildId);
-            Utils.activedCommand(msg.author.id, 'remove');
-            messageCollector.stop();
-            componentCollector.stop();
-        }
+        const messageCollector = message.channel.createMessageCollector({ filter: messagefilter, time: 120000 });
+        const componentCollector = message.createMessageComponentCollector({ filter: componentfilter, time: 120000, componentType: ComponentType.Button });
 
         const collectorOn = async (content) => {
             if (content === 'hit') {
-                let newCard = randomDeck.pop();
-                playerHand.push(newCard);
-                playerHandString.push(newCard.string);
-                playerTotal = getHandValue(playerHand);
-                if (playerTotal < 21) {
-                    await message.edit({
-                        embeds: [embed('Escribe `hit` para agarrar otra carta o `stand` para pasar.', playerTotal, playerHandString, dealerTotal, dealerHandString)]
-                    })
-                } else if (playerTotal === 21) {
-                    await message.edit({
-                        embeds: [embed(`Blackjack! has ganado ${Utils.formatNumber(betCoins)} ${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#00ff00')],
-                        components: [rowDisabled]
-                    })
+                game.playerPush();
 
-                    Utils.addCoins(msg.author.id, msg.guildId, betCoins);
-                    gameStop()
+                if (game.playerTotal < 21) {
+                    await message.edit({ embeds: [game.embed()] });
+                } else if (game.playerTotal === 21) {
+                    await message.edit({ embeds: [game.embed('blackjack')], components: [rowDisabled] });
+                    game.stop(messageCollector, componentCollector);
                 } else {
-                    await message.edit({
-                        embeds: [embed(`Fracasaste! has perdido ${Utils.formatNumber(betCoins)} ${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#ff0000')],
-                        components: [rowDisabled]
-                    })
-
+                    await message.edit({ embeds: [game.embed('lose')], components: [rowDisabled] });
                     Utils.removeCoins(msg.author.id, msg.guildId, betCoins);
-                    gameStop()
+                    game.stop(messageCollector, componentCollector);
                 }
             } else if (content === 'stand') {
-                gameStop()
+                game.stop(messageCollector, componentCollector);
 
-                while (dealerTotal < 17) {
-                    let newCard = randomDeck.pop();
-                    dealerHand.push(newCard);
-                    dealerHandString.push(newCard.string);
-                    dealerTotal = getHandValue(dealerHand);
+                while (game.dealerTotal < 17) {
+                    game.dealerPush();
                 }
 
-                if (dealerTotal > 21 || dealerTotal < playerTotal) {
-                    await message.edit({
-                        embeds: [embed(`Ganaste! has ganado ${Utils.formatNumber(betCoins)} ${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#00ff00')],
-                        components: [rowDisabled]
-                    })
+                if (game.dealerTotal > 21 || game.dealerTotal < game.playerTotal) {
+                    await message.edit({ embeds: [game.embed('win')], components: [rowDisabled] });
                     Utils.addCoins(msg.author.id, msg.guildId, betCoins);
-                } else if (dealerTotal > playerTotal) {
-                    await message.edit({
-                        embeds: [embed(`Fracasaste! has perdido ${Utils.formatNumber(betCoins)} ${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#ff0000')],
-                        components: [rowDisabled]
-                    })
+                } else if (game.dealerTotal > game.playerTotal) {
+                    await message.edit({ embeds: [game.embed('lose')], components: [rowDisabled] });
                     Utils.removeCoins(msg.author.id, msg.guildId, betCoins);
                 } else {
-                    await message.edit({
-                        embeds: [embed('Es un empate! No has ganado ni perdido monedas', playerTotal, playerHandString, dealerTotal, dealerHandString, '#aaaaaa')],
-                        components: [rowDisabled]
-                    })
+                    await message.edit({ embeds: [game.embed('tie')], components: [rowDisabled] });
                 }
             }
         }
 
         const collectorEnd = (collected, reason) => {
             if (reason === 'time') {
-                message.edit({
-                    embeds: [embed(`Se acabó el tiempo! has perdido ${betCoins} ${guild.coin}`, playerTotal, playerHandString, dealerTotal, dealerHandString, '#ff0000')],
-                    components: [rowDisabled]
-                })
+                message.edit({ embeds: [embed('time')], components: [rowDisabled] });
                 Utils.removeCoins(msg.author.id, msg.guildId, betCoins);
                 Utils.setCooldown('blackjack', msg.author.id, msg.guildId);
                 Utils.activedCommand(msg.author.id, 'remove');
@@ -237,7 +139,7 @@ module.exports = {
 
         messageCollector.on('collect', (m) => collectorOn(m.content.toLowerCase()));
         componentCollector.on('collect', (interaction) => {
-            collectorOn(interaction.customId)
+            collectorOn(interaction.customId);
             interaction.deferUpdate();
         });
 

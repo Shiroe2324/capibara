@@ -50,15 +50,18 @@ module.exports = {
         }
         const formatters = [
             { name: 'coins', value: guild.coin },
-            { name: 'dailyValue', value: guild.dailyValue },
-            { name: 'minimumBet', value: guild.minimumBet },
-            { name: 'minWorkValue', value: guild.workValue.min },
-            { name: 'maxWorkValue', value: guild.workValue.max },
+            { name: 'dailyValue', value: Utils.formatNumber(guild.dailyValue) },
+            { name: 'minimumBet', value: Utils.formatNumber(guild.minimumBet) },
+            { name: 'minWorkValue', value: Utils.formatNumber(guild.workValue.min) },
+            { name: 'maxWorkValue', value: Utils.formatNumber(guild.workValue.max) },
+            { name: 'minCrimeValue', value: Utils.formatNumber(guild.crimeValue.min) },
+            { name: 'maxCrimeValue', value: Utils.formatNumber(guild.crimeValue.max) },
+            { name: 'crimeFail', value: guild.crimeValue.fail * 100 },
             { name: 'levelSystem', value: guild.levelSystem ? 'Activado' : 'Desactivado'},
             { name: 'levelChannel', value: guild.levelChannel === 'none' ? 'Default' : msg.guild.channels.cache.get(guild.levelChannel).toString() },
             { name: 'levelMessage', value: guild.levelMessage },
-            { name: 'minXp', value: guild.xp.min },
-            { name: 'maxXp', value: guild.xp.max },
+            { name: 'minXp', value: Utils.formatNumber(guild.xp.min) },
+            { name: 'maxXp', value: Utils.formatNumber(guild.xp.max) },
             { name: 'prefix', value: guild.prefix }
         ];
 
