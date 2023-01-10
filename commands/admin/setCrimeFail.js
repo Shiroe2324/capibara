@@ -40,7 +40,7 @@ module.exports = {
     execute: async (msg, args, client) => {
         const guild = await Utils.guildFetch(msg.guildId);
         const formatedValue = await Utils.setCoinsFormat(args[0]);
-        const value = Number(Number(formatedValue).toFixed(5));
+        const value = Number(formatedValue.toFixed(5));
 
         if (isNaN(value)) {
             return Utils.send(msg, `Tienes que colocar un porcentaje valido!`);
