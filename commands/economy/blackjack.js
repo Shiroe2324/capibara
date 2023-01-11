@@ -103,6 +103,7 @@ module.exports = {
                     await message.edit({ embeds: [game.embed()] });
                 } else if (game.playerTotal === 21) {
                     await message.edit({ embeds: [game.embed('blackjack')], components: [rowDisabled] });
+                    Utils.addCoins(msg.author.id, msg.guildId, betCoins);
                     game.stop(messageCollector, componentCollector);
                 } else {
                     await message.edit({ embeds: [game.embed('lose')], components: [rowDisabled] });
