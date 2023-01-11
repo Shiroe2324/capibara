@@ -30,7 +30,8 @@ module.exports = {
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
-        PermissionFlagsBits.SendMessages
+        PermissionFlagsBits.SendMessages,
+        PermissionFlagsBits.UseExternalEmojis
     ],
     userPermissions: [PermissionFlagsBits.Administrator],
 
@@ -51,6 +52,8 @@ module.exports = {
             return Utils.send(msg, `Tienes que colocar un valor minimo de **xp** valido!`);
         } else if (isNaN(maxValue)) {
             return Utils.send(msg, `Tienes que colocar un valor maximo de **xp** valido!`);
+        } else if (minValue > 1000000 || maxValue <= 1000000) {
+            return Utils.send(msg, 'Los valores no pueden exceder los 1000000');
         } else if (minValue <= 0) {
             return Utils.send(msg, 'No puedes colocar un valor minimo de 0!');
         } else if (maxValue <= 0) {

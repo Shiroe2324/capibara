@@ -22,7 +22,7 @@ module.exports = {
     /**
      * transform a number into a string representation.
      * @param {number} number - the number to transform.
-     * @returns {number} the formatted string.
+     * @returns {string} the formatted string.
      */
     formatNumber: (number) => number.toLocaleString(),
 

@@ -21,7 +21,8 @@ const GuildUserSchema = new mongoose.Schema({
     guild: { type: String }, // guild id
     date: { type: Date }, // created date of database
     cooldowns: { type: Map, default: new Map() }, // user commands cooldowns
-    coins: { type: Number, default: 0 }, // user coins
+    coins: { type: Number, default: 0 }, // user free coins
+    depositedCoins: { type: Number, default: 0 }, // user deposited coins
     xp: { type: Number, default: 0 }, // user xp
     level: { type: Number, default: 0 }, // user level
 });

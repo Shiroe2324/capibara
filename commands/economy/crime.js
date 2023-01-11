@@ -21,10 +21,10 @@ module.exports = {
     cooldown: 120000,
     category: 'economia',
     description: [
-        'Consigues {coins} robando, pero con una posibilidad de que te quiten una parte de tus monedas y no puedas usar comandos por un tiempo.',
+        'Consigues {coins} robando, pero con una posibilidad de fallar y perder parte de las {coins} que no tengas en el banco y no puedas usar comandos de economía por un tiempo.',
         'Se pueden perder del **10%** hasta el **30%** de las monedas que tienes',
         'El minimo de {coins} que puedes conseguir robando en este servidor es de **__{minCrimeValue}__** y el maximo es de **__{maxCrimeValue}__**.',
-        'La posibilidad de ser atrapado en este servidor es del **{crimeFail}%**'
+        'La posibilidad de fallar en este servidor es del **{crimeFail}%**'
 
     ],
     onlyCreator: false,
@@ -49,10 +49,11 @@ module.exports = {
         if (Math.random() <= guild.crimeValue.fail) {
             const user = await Utils.userFetch(msg.author.id, msg.guildId);
             const coinsRemoved = parseInt(user.coins * ((Utils.random(20) + 10) / 100));
+            const coinText = coinsRemoved === 0 ? `No perdistes ${guild.coin} pero` : `Has perdido **${Utils.formatNumber(coinsRemoved)}** ${guild.coin} y`;
 
             Utils.removeCoins(msg.author.id, msg.guildId, coinsRemoved);
             Utils.crimeFailed(msg.author.id, msg.guildId, 'add');
-            return Utils.send(msg, `Fallaste en el asalto, has perdido **${Utils.formatNumber(coinsRemoved)}** ${guild.coin} y fuiste encarcelado por lo cual no podrás usar comandos de economía durante **5 minutos**`);
+            return Utils.send(msg, `Fallaste el asalto. ${coinText} fuiste encarcelado por lo cual no podrás usar comandos de economía durante **5 minutos**`);
         }
 
         const max = guild.crimeValue.max;

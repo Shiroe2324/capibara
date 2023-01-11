@@ -14,23 +14,20 @@ const Utils = require('../../utils');
  * @property userPermissions - List of user permissions for the command.
  */
 module.exports = {
-    name: 'setminimumbet',
-    usage: 'setminimumbet [valor]',
-    examples: ['setminimumbet 10000', 'setminimumbet 1m'],
-    aliases: ['minimumbet'],
-    cooldown: 10000,
-    category: 'administracion',
-    description: [
-        'Actualiza el valor minimo de {coins} que se necesitan para apostar.',
-        'Actualmente el valor minimo de {coins} que se necesitan para apostar es de **__{minimumBet}__**.',
-    ],
+    name: 'deposit',
+    usage: 'deposit [cantidad]',
+    examples: ['deposit 1k', 'deposit 200', 'deposit all'],
+    aliases: [],
+    cooldown: 5000,
+    category: 'economia',
+    description: ['Deposita {coins} en el banco para protegerlas.'],
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
         PermissionFlagsBits.SendMessages,
         PermissionFlagsBits.UseExternalEmojis
     ],
-    userPermissions: [PermissionFlagsBits.Administrator],
+    userPermissions: [],
 
     /**
      * function with the code to execute the command.
@@ -40,23 +37,22 @@ module.exports = {
      */
     execute: async (msg, args, client) => {
         const guild = await Utils.guildFetch(msg.guildId);
-        const formatedValue = await Utils.setCoinsFormat(args[0]);
-        const value = Math.round(formatedValue);
+        const user = await Utils.userFetch(msg.author.id, msg.guildId);
+        const formatedCoins = await Utils.setCoinsFormat(args[0], user);
+        const coins = Math.round(formatedCoins);
 
-        if (isNaN(value)) {
-            return Utils.send(msg, `Tienes que colocar un valor de ${guild.coin} valido!`);
-        } else if (value > 100000000000) {
-            return Utils.send(msg, 'El valor no puede exceder los 100000000000');
-        } else if (value <= 0) {
-            return Utils.send(msg, 'No puedes colocar un valor de 0!');
-        } else if (value === guild.minimumBet) {
-            return Utils.send(msg, 'Ya se está usando ese valor!');
+        if (isNaN(coins)) {
+            return Utils.send(msg, `Tienes que colocar una cantidad de ${guild.coin} valida!`);
+        } else if (user.coins < coins) {
+            return Utils.send(msg, `No puedes depositar mas ${guild.coin} de las que posees!`);
+        } else if (coins <= 0) {
+            return Utils.send(msg, `La cantidad de ${guild.coin} a depositar no puede ser menor o igual que 0!`);
         }
 
-        Utils.setCooldown('setminimumbet', msg.author.id, msg.guildId);
-        guild.minimumBet = value;
-        await guild.save();
+        user.depositedCoins += coins;
+        user.coins -= coins;
+        await user.save();
 
-        Utils.send(msg, `El valor minimo de ${guild.coin} para apostar se ha actualizado a **${Utils.formatNumber(value)}**`);
+        return Utils.send(msg, `Has depositado **${Utils.formatNumber(coins)}** ${guild.coin} en el banco`);
     }
 }

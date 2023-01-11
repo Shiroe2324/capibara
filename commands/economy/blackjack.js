@@ -52,7 +52,7 @@ module.exports = {
         } else if (user.coins < betCoins) {
             return Utils.send(msg, `No puedes apostar **más ${guild.coin}** de las que posees actualmente!`)
         } else if (betCoins < guild.minimumBet) {
-            return Utils.send(msg, `No puedes apostar menos de **${Utils.formatNumber(guild.minimumBet)} ${guild.coin}**!`)
+            return Utils.send(msg, `No puedes apostar menos de **${Utils.formatNumber(guild.minimumBet)}** ${guild.coin}!`)
         }
 
         Utils.activedCommand(msg.author.id, 'add');

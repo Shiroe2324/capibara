@@ -2,18 +2,19 @@ const { guildUser } = require('./schemas');
 
 /**
  * removes the formats to a string or number of coins.
- * @param {guildUser} user - the user database to get their coins.
  * @param {string|number} coins - the string or number of coins to format.
+ * @param {guildUser} user - the user database to get their coins.
+ * @param {string} type - the type of coins to format.
  * @returns {number} the number of coins already formatted.
  */
-module.exports = (coins, user) => {
+module.exports = (coins, user, type = 'free') => {
     if (typeof Number(coins) === 'number' && !isNaN(coins)) return Number(coins); 
     
     if (Boolean(user)) {
         switch (coins) {
-            case 'all': return user.coins;
-            case 'half': return user.coins / 2;
-            case 'quarter': return user.coins / 4;
+            case 'all': return type === 'free' ? user.coins : user.depositedCoins;
+            case 'half': return type === 'free' ? user.coins : user.depositedCoins / 2;
+            case 'quarter': return type === 'free' ? user.coins : user.depositedCoins / 4;
         }
     }
 

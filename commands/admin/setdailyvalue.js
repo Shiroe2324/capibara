@@ -27,7 +27,8 @@ module.exports = {
     onlyCreator: false,
     botPermissions: [
         PermissionFlagsBits.ViewChannel,
-        PermissionFlagsBits.SendMessages
+        PermissionFlagsBits.SendMessages,
+        PermissionFlagsBits.UseExternalEmojis
     ],
     userPermissions: [PermissionFlagsBits.Administrator],
 
@@ -46,6 +47,8 @@ module.exports = {
             return Utils.send(msg, `Tienes que colocar un valor de ${guild.coin} valido!`);
         } else if (value <= 0) {
             return Utils.send(msg, 'No puedes colocar un valor de 0!');
+        } else if (value > 100000000000) {
+            return Utils.send(msg, 'El valor no puede exceder los 100000000000');
         } else if (value === guild.dailyValue) {
             return Utils.send(msg, 'Ya se está usando ese valor!');
         }
